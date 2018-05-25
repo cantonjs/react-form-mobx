@@ -15,8 +15,8 @@ export default class Demon extends Component {
 		}).isRequired,
 		mapValueOnChangeEvent: PropTypes.func,
 		mapKeyOnKeyPressEvent: PropTypes.func,
-		changeListenerProp: PropTypes.string,
-		keyPressListenerProp: PropTypes.string,
+		propOnChange: PropTypes.string,
+		propOnKeyPress: PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -29,54 +29,56 @@ export default class Demon extends Component {
 			// TODO: should improve error handling
 			return ev.key;
 		},
-		changeListenerProp: 'onChange',
-		keyPressListenerProp: 'onKeyPress',
+		propOnChange: 'onChange',
+		propOnKeyPress: 'onKeyPress',
 	};
 
 	constructor(props) {
 		super(props);
 
 		const { props: forwaredProps, formStore } = props;
-		formStore.attach(forwaredProps.name);
+		this.inputStore = formStore.attach(forwaredProps.name, {
+			noChildren: true,
+		});
+	}
+
+	componentWillUnmount() {
+		const { formStore, props: { name } } = this.props;
+		formStore.detach(name);
 	}
 
 	handleChange = (...args) => {
-		const {
-			props,
-			props: { name, changeListenerProp },
-			formStore,
-			mapValueOnChangeEvent,
-		} = this.props;
-		const onChange = props[changeListenerProp];
+		const { props, mapValueOnChangeEvent } = this.props;
+		const onChange = props[props.propOnChange];
 		const value = mapValueOnChangeEvent(...args);
-		formStore.setValue(name, value);
+		this.inputStore.value = value;
 		if (isFunction(onChange)) onChange(...args);
 	};
 
 	handleKeyPress = (...args) => {
 		const {
 			props,
-			props: { keyPressListenerProp },
+			props: { propOnKeyPress },
 			formStore,
 			mapKeyOnKeyPressEvent,
 		} = this.props;
-		const onKeyPress = props[keyPressListenerProp];
+		const onKeyPress = props[propOnKeyPress];
 		const key = mapKeyOnKeyPressEvent(...args);
 		if (key === 'Enter') formStore.submit();
 		if (isFunction(onKeyPress)) onKeyPress(...args);
 	};
 
 	render() {
+		const { inputStore, props } = this;
 		const {
-			props: { name, ...props },
-			formStore,
-			changeListenerProp,
-			keyPressListenerProp,
+			props: { name, ...forwaredProps },
+			propOnChange,
+			propOnKeyPress,
 			children,
-		} = this.props;
-		props[changeListenerProp] = this.handleChange;
-		props[keyPressListenerProp] = this.handleKeyPress;
-		props.value = formStore.getValue(name);
-		return Children.only(children(props));
+		} = props;
+		forwaredProps[propOnChange] = this.handleChange;
+		forwaredProps[propOnKeyPress] = this.handleKeyPress;
+		forwaredProps.value = inputStore.value;
+		return Children.only(children(forwaredProps));
 	}
 }

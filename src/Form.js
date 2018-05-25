@@ -30,15 +30,19 @@ export default class Form extends Component {
 	componentDidUpdate(prevProps) {
 		const { value } = this.props;
 		if (prevProps.value !== value) {
-			this.formStore.setData(value);
+			this.formStore.value = value;
 		}
 	}
+
+	blockNativeSubmit = (ev) => {
+		ev.preventDefault();
+	};
 
 	render() {
 		const { value, ...other } = this.props;
 		return (
 			<Context.Provider value={this.formStore}>
-				<div {...other} />
+				<form {...other} onSubmit={this.blockNativeSubmit} />
 			</Context.Provider>
 		);
 	}

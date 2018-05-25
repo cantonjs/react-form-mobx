@@ -1,97 +1,56 @@
 import { observable, computed, action } from 'mobx';
 import { isFunction } from './utils';
 
-class InputStore {
-	@observable state = {};
+export default class FormStore {
+	@observable pristineValue;
 
 	@computed
 	get value() {
-		return this.state.value;
+		if (!this.children) return this.pristineValue;
+		const value = {};
+		for (const [key, child] of this.children) {
+			value[key] = child.value;
+		}
+		return { ...this.pristineValue, ...value };
 	}
 	set value(value) {
-		const { state } = this;
-		if (state.value === value) return false;
-		state.value = value;
-		this.state = state;
+		this.pristineValue = value;
+		if (!this.children) return true;
+		for (const [key, child] of this.children) {
+			// TODO: should handle when `key` is not in `value`
+			child.value = value[key];
+		}
 		return true;
 	}
 
-	constructor(value) {
-		this.state = { value };
-	}
-
-	@action
-	setState(state) {
-		this.state = { ...this.state, ...state };
-	}
-}
-
-export default class FormStore {
-	@observable isValid = true;
-	@observable parent = null;
-
-	constructor(data, bus) {
-		this._data = data;
-		this.inputs = observable.map();
-		this._bus = bus;
-	}
-
-	@action
-	setParent(parent) {
-		if (parent) this.parent = parent;
-	}
-
-	@action
-	setData(data) {
-		this._data = data;
-		for (const [key, inputStore] of this.inputs) {
-			inputStore.value = data[key];
+	constructor(value, options = {}) {
+		const { noChildren, onSubmit } = options;
+		this.pristineValue = value;
+		if (!noChildren) {
+			this.children = observable.map();
+			this._bus = { onSubmit };
 		}
 	}
 
-	@action
-	set(name, state) {
-		const inputStore = this.inputs.get(name);
-		if (!inputStore) return false;
-		inputStore.setState(state);
-		return true;
-	}
-
-	get(name) {
-		return this.inputs.get(name);
-	}
-
-	getValue(name) {
-		const inputStore = this.inputs.get(name);
-		if (inputStore) return inputStore.value;
+	getInput(name) {
+		return this.children.get(name);
 	}
 
 	@action
-	setValue(name, value) {
-		const inputStore = this.inputs.get(name);
-		if (!inputStore) return false;
-		inputStore.value = value;
-		return true;
-	}
-
-	@action
-	attach(name) {
-		const value = this._data[name];
-		this.inputs.set(name, new InputStore(value));
+	attach(name, options) {
+		const inputValue = this.pristineValue[name];
+		const store = new FormStore(inputValue, options);
+		this.children.set(name, store);
+		return store;
 	}
 
 	@action
 	detach(name) {
-		this.inputs.delete(name);
+		this.children.delete(name);
 	}
 
-	submit() {
+	submit = () => {
 		const { onSubmit } = this._bus;
-		const data = {};
-		for (const [key, inputStore] of this.inputs) {
-			data[key] = inputStore.value;
-		}
-		this._data = data;
-		if (isFunction(onSubmit)) onSubmit(this._data);
-	}
+		if (isFunction(onSubmit)) onSubmit(this.value);
+	};
 }
