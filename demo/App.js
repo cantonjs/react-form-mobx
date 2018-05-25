@@ -2,20 +2,22 @@ import React, { Component } from 'react';
 import { Form, Input } from '../src';
 
 export default class App extends Component {
-	formData = {
-		hello: 'world',
-		name: 'cap32',
+	state = {
+		formData: {
+			hello: 'world',
+			name: 'cap32',
+		},
 	};
 
-	componentDidMount() {
-		setTimeout(() => {
-			console.log('this.formData', this.formData);
-		}, 3000);
-	}
+	handleSubmit = (formData) => {
+		console.log('submit', formData);
+		this.setState(() => ({ formData }));
+	};
 
 	render() {
+		const { formData } = this.state;
 		return (
-			<Form value={this.formData}>
+			<Form value={formData} onSubmit={this.handleSubmit}>
 				<div style={{ margin: '1em' }}>
 					<label>
 						<span>hello</span>

@@ -1,20 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { observer } from 'mobx-react';
 import FormStore from './FormStore';
 import Context from './Context';
+import { noop } from './utils';
 
+@observer
 export default class Form extends Component {
 	static propTypes = {
 		value: PropTypes.object,
+		onSubmit: PropTypes.func,
 	};
 
 	static defaultProps = {
 		value: {},
+		onSubmit: noop,
 	};
 
 	constructor(props) {
 		super(props);
-		this.formStore = new FormStore(props.value);
+
+		const { onSubmit, value } = props;
+		const formStore = new FormStore(value, {
+			onSubmit,
+		});
+		this.formStore = formStore;
+	}
+
+	componentDidUpdate(prevProps) {
+		const { value } = this.props;
+		if (prevProps.value !== value) {
+			this.formStore.setData(value);
+		}
 	}
 
 	render() {
