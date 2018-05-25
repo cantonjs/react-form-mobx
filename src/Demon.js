@@ -1,7 +1,7 @@
 import { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { isFunction } from './utils';
+import { isFunction, getFieldName } from './utils';
 import withFormStore from './withFormStore';
 
 @withFormStore()
@@ -37,14 +37,14 @@ export default class Demon extends Component {
 		super(props);
 
 		const { props: forwaredProps, formStore } = props;
-		this.inputStore = formStore.attach(forwaredProps.name, {
+		this.fieldName = getFieldName(forwaredProps.name);
+		this.inputStore = formStore.attach(this.fieldName, {
 			noChildren: true,
 		});
 	}
 
 	componentWillUnmount() {
-		const { formStore, props: { name } } = this.props;
-		formStore.detach(name);
+		this.props.formStore.detach(this.fieldName);
 	}
 
 	handleChange = (...args) => {

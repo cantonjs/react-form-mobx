@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, ObjectOf } from '../src';
+import { Form, Input, ObjectOf, ArrayOf } from '../src';
 
 const InputItem = function InputItem({ label, name }) {
 	return (
@@ -47,6 +47,13 @@ export default class App extends Component {
 			<Form value={this.state} onSubmit={this.handleSubmit}>
 				<InputItem label="name" name="name" />
 				<InputItem label="height" name="height" />
+				<ArrayOf name="starships">
+					{(starships) =>
+						starships.map((starship) => (
+							<InputItem label="starship" name={starship} key={starship} />
+						))
+					}
+				</ArrayOf>
 				<ObjectOf name="colors">
 					<InputItem label="hair color" name="hair" />
 					<InputItem label="skin color" name="skin" />
