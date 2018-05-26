@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { isFunction } from './utils';
+import { isFunction, isArray, clone, getFieldName } from './utils';
 import ObservableChildren from './ObservableChildren';
 
 export default class FormStore {
@@ -9,7 +9,7 @@ export default class FormStore {
 	get value() {
 		const { pristineValue } = this;
 		if (!this.children) return pristineValue;
-		const res = this._isArray ? pristineValue.slice() : { ...pristineValue };
+		const res = clone(pristineValue);
 		this.children.forEach((child, key) => {
 			res[key] = child.value;
 		});
@@ -26,30 +26,42 @@ export default class FormStore {
 	}
 
 	constructor(pristineValue, options = {}) {
-		const { noChildren, isArray, onSubmit } = options;
+		const { key, noChildren, array, onSubmit } = options;
+		this.key = key;
 		this.pristineValue = pristineValue;
-		this._isArray = isArray;
 		if (!noChildren) {
-			this.children = new ObservableChildren({ isArray });
+			this.children = new ObservableChildren({ array });
 			this._bus = { onSubmit };
+			if (array) this._index = 0; // for array
 		}
 	}
 
-	getInput(name) {
-		return this.children.get(name);
-	}
-
 	@action
-	attach(name, options) {
-		const inputValue = this.pristineValue[name];
+	attach(name, options = {}) {
+		const { pristineValue, children } = this;
+		let key;
+		if (isArray(pristineValue)) {
+			const nextIndex = this._index++;
+			if (nextIndex >= pristineValue.length) pristineValue.push('');
+			key = nextIndex;
+		}
+		else {
+			key = getFieldName(name);
+		}
+		const inputValue = pristineValue[key];
+		console.log('inputValue', key, inputValue);
+		options.key = key;
+
 		const store = new FormStore(inputValue, options);
-		this.children.set(name, store);
+		children.set(key, store);
 		return store;
 	}
 
 	@action
-	detach(name) {
-		this.children.delete(name);
+	detach(store) {
+		const { children } = this;
+		if (this._index) this._index--;
+		children.delete(store.key);
 	}
 
 	submit = () => {

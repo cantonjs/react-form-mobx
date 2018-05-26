@@ -2,9 +2,9 @@ import { observable } from 'mobx';
 
 export default class ObservableChildren {
 	constructor(options = {}) {
-		const { isArray } = options;
-		this._isArray = isArray;
-		this._dataset = isArray ? observable([]) : observable.map();
+		const { array } = options;
+		this._isArray = array;
+		this._dataset = array ? observable([]) : observable.map();
 	}
 
 	get(key) {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import NestedProvider from './NestedProvider';
 import withFormStore from './withFormStore';
@@ -13,15 +14,16 @@ class ArrayWrapper extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
+	@observable ids = [];
+
 	uniqueId = 0;
 
 	constructor(props) {
 		super(props);
 
 		const { length } = props.formStore.value;
-		this.ids = [];
 		for (let i = 0; i < length; i++) {
-			this.ids.push(this.createId());
+			this.helper.push();
 		}
 	}
 
@@ -30,11 +32,12 @@ class ArrayWrapper extends Component {
 	}
 
 	helper = {
-		push: () => this.ids.push(this.createId()),
+		push: () => this.ids.push(this.helper.createId()),
 		remove: (id) => {
 			const index = this.ids.indexOf(id);
 			if (index > -1) this.ids.splice(index, 1);
 		},
+		createId: () => `${this.props.name}[${this.uniqueId++}]`,
 	};
 
 	render() {
@@ -53,7 +56,7 @@ export default class ArrayOf extends Component {
 	render() {
 		const { children, ...other } = this.props;
 		return (
-			<NestedProvider {...other} isArray>
+			<NestedProvider {...other} array>
 				<ArrayWrapper name={other.name}>{children}</ArrayWrapper>
 			</NestedProvider>
 		);

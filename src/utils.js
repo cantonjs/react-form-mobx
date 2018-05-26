@@ -1,6 +1,10 @@
-export const isFunction = (src) => typeof src === 'function';
-export const isObject = (src) => typeof src === 'object';
+import { isObservableArray } from 'mobx';
+
+export const isFunction = (s) => typeof s === 'function';
+export const isObject = (s) => typeof s === 'object';
+export const isArray = (s) => s.constructor === Array || isObservableArray(s);
 export const noop = () => {};
+export const clone = (s) => (isArray(s) ? s.slice() : { ...s });
 
 export const getFieldName = function getFieldName(name = '') {
 	const regExp = /\[(\d*)\]$/;
@@ -11,5 +15,6 @@ export const getFieldName = function getFieldName(name = '') {
 		if (/\d/.test(i)) index = +i;
 		return '';
 	});
-	return isArray ? index : name;
+	const res = { isArray, index, name };
+	return res.name;
 };

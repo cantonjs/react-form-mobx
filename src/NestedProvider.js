@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import Context from './Context';
 import withFormStore from './withFormStore';
-import { getFieldName } from './utils';
 
 @withFormStore()
 @observer
@@ -12,27 +11,26 @@ export default class NestedProvider extends Component {
 		children: PropTypes.node.isRequired,
 		formStore: PropTypes.object.isRequired,
 		name: PropTypes.string.isRequired,
-		isArray: PropTypes.bool,
+		array: PropTypes.bool,
 	};
 
 	static defaultProps = {
-		isArray: false,
+		array: false,
 	};
 
 	constructor(props) {
 		super(props);
 
-		const { name, formStore: parentStore, isArray } = props;
-		this.fieldName = getFieldName(name);
-		const childStore = parentStore.attach(this.fieldName, {
+		const { name, formStore: parentStore, array } = props;
+		const childStore = parentStore.attach(name, {
 			onSubmit: parentStore.submit,
-			isArray,
+			array,
 		});
 		this.formStore = childStore;
 	}
 
 	componentWillUnmount() {
-		this.props.formStore.detach(this.fieldName);
+		this.props.formStore.detach(this.formStore);
 	}
 
 	render() {

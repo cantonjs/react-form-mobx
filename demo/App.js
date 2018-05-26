@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, ObjectOf, ArrayOf } from '../src';
 
-const InputItem = function InputItem({ label, name }) {
+const InputItem = function InputItem({ label, name, display }) {
 	return (
-		<div style={{ margin: '1em' }}>
+		<div style={{ margin: '1em', display }}>
 			<label>
 				<span>{label}</span>
 				<Input name={name} />
@@ -16,6 +16,11 @@ const InputItem = function InputItem({ label, name }) {
 InputItem.propTypes = {
 	label: PropTypes.string.isRequired,
 	name: PropTypes.string.isRequired,
+	display: PropTypes.oneOf(['inline-block', 'block']),
+};
+
+InputItem.defaultProps = {
+	display: 'block',
 };
 
 export default class App extends Component {
@@ -48,11 +53,25 @@ export default class App extends Component {
 				<InputItem label="name" name="name" />
 				<InputItem label="height" name="height" />
 				<ArrayOf name="starships">
-					{(starships) =>
-						starships.map((starship) => (
-							<InputItem label="starship" name={starship} key={starship} />
-						))
-					}
+					{(starships, helper) => (
+						<div>
+							{starships.map((starship) => (
+								<div key={starship}>
+									<InputItem
+										label="starship"
+										name={starship}
+										display="inline-block"
+									/>
+									<button type="button" onClick={() => helper.remove(starship)}>
+										remove
+									</button>
+								</div>
+							))}
+							<button type="button" onClick={helper.push}>
+								add item
+							</button>
+						</div>
+					)}
 				</ArrayOf>
 				<ObjectOf name="colors">
 					<InputItem label="hair color" name="hair" />
