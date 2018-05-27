@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, ObjectOf, ArrayOf } from '../src';
 
@@ -34,12 +34,18 @@ export default class App extends Component {
 		},
 	};
 
+	formRef = createRef();
+
 	componentDidMount() {
 		setTimeout(() => {
 			this.setState(() => ({
 				height: 200,
 			}));
 		}, 2000);
+
+		setTimeout(() => {
+			console.log(this.formRef.current.submit());
+		}, 4000);
 	}
 
 	handleSubmit = (formData) => {
@@ -49,7 +55,7 @@ export default class App extends Component {
 
 	render() {
 		return (
-			<Form value={this.state} onSubmit={this.handleSubmit}>
+			<Form value={this.state} onSubmit={this.handleSubmit} ref={this.formRef}>
 				<InputItem label="name" name="name" />
 				<InputItem label="height" name="height" />
 				<ArrayOf name="starships">
