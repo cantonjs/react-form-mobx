@@ -39,6 +39,10 @@ export default class Form extends Component {
 		ev.preventDefault();
 	};
 
+	submit() {
+		return this.formStore.submit();
+	}
+
 	render() {
 		const { value, ...other } = this.props;
 		return (

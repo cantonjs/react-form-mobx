@@ -65,6 +65,10 @@ export default class FormStore {
 
 	submit = () => {
 		const { submit } = this._bus;
-		if (isFunction(submit)) submit(this.value);
+		if (isFunction(submit)) {
+			const { value } = this;
+			submit(value);
+			return value;
+		}
 	};
 }
