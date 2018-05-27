@@ -11,26 +11,26 @@ export default class NestedProvider extends Component {
 		children: PropTypes.node.isRequired,
 		formStore: PropTypes.object.isRequired,
 		name: PropTypes.string.isRequired,
-		array: PropTypes.bool,
+		isArray: PropTypes.bool,
 	};
 
 	static defaultProps = {
-		array: false,
+		isArray: false,
 	};
 
 	constructor(props) {
 		super(props);
 
-		const { name, formStore: parentStore, array } = props;
+		const { name, formStore: parentStore, isArray } = props;
 		const childStore = parentStore.attach(name, {
 			onSubmit: parentStore.submit,
-			array,
+			isArray,
 		});
 		this.formStore = childStore;
 	}
 
 	componentWillUnmount() {
-		this.props.formStore.detach(this.formStore);
+		this.props.formStore.detach(this.formStore.key);
 	}
 
 	render() {

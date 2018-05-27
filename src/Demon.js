@@ -43,7 +43,7 @@ export default class Demon extends Component {
 	}
 
 	componentWillUnmount() {
-		this.props.formStore.detach(this.inputStore);
+		this.props.formStore.detach(this.inputStore.key);
 	}
 
 	handleChange = (...args) => {

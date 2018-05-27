@@ -7,7 +7,7 @@ import withFormStore from './withFormStore';
 
 @withFormStore()
 @observer
-class ArrayWrapper extends Component {
+class ItemGroup extends Component {
 	static propTypes = {
 		formStore: PropTypes.object.isRequired,
 		children: PropTypes.func.isRequired,
@@ -21,14 +21,14 @@ class ArrayWrapper extends Component {
 	constructor(props) {
 		super(props);
 
-		const { length } = props.formStore.value;
+		const { length } = props.formStore.pristineValue;
+		props.formStore.children.observe(
+			(ev) => this.handleChildrenChange(ev),
+			true,
+		);
 		for (let i = 0; i < length; i++) {
 			this.helper.push();
 		}
-	}
-
-	createId() {
-		return `${this.props.name}[${this.uniqueId++}]`;
 	}
 
 	helper = {
@@ -38,7 +38,16 @@ class ArrayWrapper extends Component {
 			if (index > -1) this.ids.splice(index, 1);
 		},
 		createId: () => `${this.props.name}[${this.uniqueId++}]`,
+		includes: (id) => ~this.ids.indexOf(id),
 	};
+
+	handleChildrenChange(ev) {
+		if (ev.removedCount) {
+			ev.removed.forEach((store) => {
+				this.helper.remove(store.key);
+			});
+		}
+	}
 
 	render() {
 		const { children } = this.props;
@@ -56,8 +65,8 @@ export default class ArrayOf extends Component {
 	render() {
 		const { children, ...other } = this.props;
 		return (
-			<NestedProvider {...other} array>
-				<ArrayWrapper name={other.name}>{children}</ArrayWrapper>
+			<NestedProvider {...other} isArray>
+				<ItemGroup name={other.name}>{children}</ItemGroup>
 			</NestedProvider>
 		);
 	}

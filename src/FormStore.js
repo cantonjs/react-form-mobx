@@ -1,5 +1,5 @@
-import { observable, computed, action } from 'mobx';
-import { isFunction, isArray, clone, getFieldName } from './utils';
+import { observable, computed, action, keys } from 'mobx';
+import { isFunction, isUndefined } from './utils';
 import ObservableChildren from './ObservableChildren';
 
 export default class FormStore {
@@ -7,61 +7,59 @@ export default class FormStore {
 
 	@computed
 	get value() {
-		const { pristineValue } = this;
+		const { pristineValue, isArray } = this;
 		if (!this.children) return pristineValue;
-		const res = clone(pristineValue);
+		const res = isArray ? [] : {};
 		this.children.forEach((child, key) => {
 			res[key] = child.value;
 		});
 		return res;
 	}
-	set value(value) {
-		this.pristineValue = value;
-		if (!this.children) return true;
+	set value(newValue) {
+		if (!this.children) {
+			this.pristineValue = newValue;
+			return true;
+		}
 		this.children.forEach((child, key) => {
-			// TODO: should handle when `key` is not in `value`
-			child.value = value[key];
+			const value = newValue[key];
+			if (isUndefined(value)) this.children.delete(child.key);
+			else child.value = value;
 		});
 		return true;
 	}
 
 	constructor(pristineValue, options = {}) {
-		const { key, noChildren, array, onSubmit } = options;
+		const { key, noChildren, isArray, onSubmit } = options;
 		this.key = key;
 		this.pristineValue = pristineValue;
+		this.isArray = isArray;
 		if (!noChildren) {
-			this.children = new ObservableChildren({ array });
+			this.children = new ObservableChildren({ isArray });
 			this._bus = { onSubmit };
-			if (array) this._index = 0; // for array
+			this._index = 0; // for array
 		}
 	}
 
 	@action
-	attach(name, options = {}) {
-		const { pristineValue, children } = this;
-		let key;
-		if (isArray(pristineValue)) {
-			const nextIndex = this._index++;
-			if (nextIndex >= pristineValue.length) pristineValue.push('');
-			key = nextIndex;
+	attach(key, options = {}) {
+		const { pristineValue, children, isArray } = this;
+		let inputValue;
+		if (isArray) {
+			const index = this._index++;
+			inputValue = index >= pristineValue.length ? '' : pristineValue[index];
 		}
 		else {
-			key = getFieldName(name);
+			inputValue = pristineValue[key];
 		}
-		const inputValue = pristineValue[key];
-		console.log('inputValue', key, inputValue);
 		options.key = key;
-
 		const store = new FormStore(inputValue, options);
 		children.set(key, store);
 		return store;
 	}
 
 	@action
-	detach(store) {
-		const { children } = this;
-		if (this._index) this._index--;
-		children.delete(store.key);
+	detach(key) {
+		this.children.delete(key);
 	}
 
 	submit = () => {
