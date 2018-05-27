@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import NestedProvider from './NestedProvider';
 import withFormStore from './withFormStore';
+import Demon from './Demon';
 
 @withFormStore()
 @observer
@@ -62,12 +62,16 @@ export default class ArrayOf extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
+	forwardedProps = {
+		name: this.props.name,
+	};
+
 	render() {
-		const { children, ...other } = this.props;
+		const { children, name, ...other } = this.props;
 		return (
-			<NestedProvider {...other} isArray>
-				<ItemGroup name={other.name}>{children}</ItemGroup>
-			</NestedProvider>
+			<Demon {...other} props={this.forwardedProps} isObject isArray>
+				{() => <ItemGroup name={name}>{children}</ItemGroup>}
+			</Demon>
 		);
 	}
 }

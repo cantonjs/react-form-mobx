@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import NestedProvider from './NestedProvider';
+import Demon from './Demon';
 
 export default class ObjectOf extends Component {
 	static propTypes = {
@@ -8,8 +8,16 @@ export default class ObjectOf extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
+	forwardedProps = {
+		name: this.props.name,
+	};
+
 	render() {
-		const { children, ...other } = this.props;
-		return <NestedProvider {...other}>{children}</NestedProvider>;
+		const { children, name, ...other } = this.props;
+		return (
+			<Demon {...other} props={this.forwardedProps} isObject>
+				{() => children}
+			</Demon>
+		);
 	}
 }

@@ -22,7 +22,8 @@ export default class Form extends Component {
 
 		const { onSubmit, value } = props;
 		const formStore = new FormStore(value, {
-			onSubmit,
+			submit: onSubmit,
+			isObject: true,
 		});
 		this.formStore = formStore;
 	}

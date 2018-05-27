@@ -29,13 +29,13 @@ export default class FormStore {
 	}
 
 	constructor(pristineValue, options = {}) {
-		const { key, noChildren, isArray, onSubmit } = options;
+		const { key, isObject, isArray, submit } = options;
 		this.key = key;
 		this.pristineValue = pristineValue;
 		this.isArray = isArray;
-		if (!noChildren) {
+		if (isObject) {
 			this.children = new ObservableChildren({ isArray });
-			this._bus = { onSubmit };
+			this._bus = { submit };
 			this._index = 0; // for array
 		}
 	}
@@ -52,6 +52,7 @@ export default class FormStore {
 			inputValue = pristineValue[key];
 		}
 		options.key = key;
+		options.submit = this.submit;
 		const store = new FormStore(inputValue, options);
 		children.set(key, store);
 		return store;
@@ -63,7 +64,7 @@ export default class FormStore {
 	}
 
 	submit = () => {
-		const { onSubmit } = this._bus;
-		if (isFunction(onSubmit)) onSubmit(this.value);
+		const { submit } = this._bus;
+		if (isFunction(submit)) submit(this.value);
 	};
 }

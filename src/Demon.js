@@ -1,7 +1,8 @@
-import { Component, Children } from 'react';
+import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { isFunction, warn } from './utils';
+import Context from './Context';
 import withFormStore from './withFormStore';
 
 @withFormStore()
@@ -17,6 +18,9 @@ export default class Demon extends Component {
 		mapKeyOnKeyPressEvent: PropTypes.func,
 		propOnChange: PropTypes.string,
 		propOnKeyPress: PropTypes.string,
+
+		isObject: PropTypes.bool,
+		isArray: PropTypes.bool,
 	};
 
 	static defaultProps = {
@@ -29,14 +33,17 @@ export default class Demon extends Component {
 		},
 		propOnChange: 'onChange',
 		propOnKeyPress: 'onKeyPress',
+		isObject: false,
+		isArray: false,
 	};
 
 	constructor(props) {
 		super(props);
 
-		const { props: forwaredProps, formStore } = props;
+		const { props: forwaredProps, formStore, isObject, isArray } = props;
 		this.inputStore = formStore.attach(forwaredProps.name, {
-			noChildren: true,
+			isObject,
+			isArray,
 		});
 	}
 
@@ -83,7 +90,7 @@ export default class Demon extends Component {
 		}
 	};
 
-	render() {
+	renderChildren() {
 		const { inputStore, props } = this;
 		const {
 			props: { name, ...forwaredProps },
@@ -95,5 +102,14 @@ export default class Demon extends Component {
 		forwaredProps[propOnKeyPress] = this.handleKeyPress;
 		forwaredProps.value = inputStore.value;
 		return Children.only(children(forwaredProps));
+	}
+
+	render() {
+		const { inputStore, props: { children, isObject } } = this;
+		return isObject ? (
+			<Context.Provider value={inputStore}>{children()}</Context.Provider>
+		) : (
+			this.renderChildren()
+		);
 	}
 }
