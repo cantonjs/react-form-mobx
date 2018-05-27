@@ -1,7 +1,7 @@
 import { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { isFunction } from './utils';
+import { isFunction, warn } from './utils';
 import withFormStore from './withFormStore';
 
 @withFormStore()
@@ -22,11 +22,9 @@ export default class Demon extends Component {
 	static defaultProps = {
 		props: {},
 		mapValueOnChangeEvent(ev) {
-			// TODO: should improve error handling
 			return ev.currentTarget.value;
 		},
 		mapKeyOnKeyPressEvent(ev) {
-			// TODO: should improve error handling
 			return ev.key;
 		},
 		propOnChange: 'onChange',
@@ -47,24 +45,42 @@ export default class Demon extends Component {
 	}
 
 	handleChange = (...args) => {
-		const { props, mapValueOnChangeEvent } = this.props;
-		const onChange = props[props.propOnChange];
-		const value = mapValueOnChangeEvent(...args);
-		this.inputStore.value = value;
+		const { props, mapValueOnChangeEvent, propOnChange } = this.props;
+		const onChange = props[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
+		try {
+			const value = mapValueOnChangeEvent(...args);
+			this.inputStore.value = value;
+		}
+		catch (err) {
+			warn(
+				`Failed to map value from "${propOnChange}",`,
+				'changing "props.mapValueOnChangeEvent" may resolve this problem.',
+			);
+			console.error(err);
+		}
 	};
 
 	handleKeyPress = (...args) => {
 		const {
 			props,
-			props: { propOnKeyPress },
 			formStore,
+			propOnKeyPress,
 			mapKeyOnKeyPressEvent,
 		} = this.props;
 		const onKeyPress = props[propOnKeyPress];
-		const key = mapKeyOnKeyPressEvent(...args);
-		if (key === 'Enter') formStore.submit();
 		if (isFunction(onKeyPress)) onKeyPress(...args);
+		try {
+			const key = mapKeyOnKeyPressEvent(...args);
+			if (key === 'Enter') formStore.submit();
+		}
+		catch (err) {
+			warn(
+				`Failed to map value from "${propOnKeyPress}",`,
+				'changing "props.mapKeyOnKeyPressEvent" may resolve this problem.',
+			);
+			console.error(err);
+		}
 	};
 
 	render() {

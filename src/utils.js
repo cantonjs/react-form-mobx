@@ -1,4 +1,5 @@
 import { isObservableArray } from 'mobx';
+import warning from 'warning';
 
 export const isUndefined = (s) => typeof s === 'undefined';
 export const isFunction = (s) => typeof s === 'function';
@@ -6,6 +7,9 @@ export const isObject = (s) => typeof s === 'object';
 export const isArray = (s) => s.constructor === Array || isObservableArray(s);
 export const noop = () => {};
 export const clone = (s) => (isArray(s) ? s.slice() : { ...s });
+
+export const warn = (...msgs) =>
+	warning(false, `[react-form-mobx] ${msgs.join(' ')}`);
 
 export const getFieldName = function getFieldName(name = '') {
 	const regExp = /\[(\d*)\]$/;

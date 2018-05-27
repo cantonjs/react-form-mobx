@@ -1,4 +1,4 @@
-import { observable, computed, action, keys } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import { isFunction, isUndefined } from './utils';
 import ObservableChildren from './ObservableChildren';
 

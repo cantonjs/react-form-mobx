@@ -34,7 +34,8 @@
   "dependencies": {
     "create-react-context": "^0.2.2",
     "prop-types": "^15.5.7",
-    "react-lifecycles-compat": "^3.0.4"
+    "react-lifecycles-compat": "^3.0.4",
+    "warning": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
