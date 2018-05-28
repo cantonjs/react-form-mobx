@@ -1,9 +1,15 @@
 import { observable, computed, action } from 'mobx';
-import { isFunction, isUndefined } from './utils';
 import ObservableChildren from './ObservableChildren';
+import {
+	isFunction,
+	isUndefined,
+	isArray as isArrayType,
+	createId,
+} from './utils';
 
 export default class FormStore {
 	@observable pristineValue;
+	@observable isChecked = true;
 	@observable isTouched = false;
 
 	@computed
@@ -17,23 +23,39 @@ export default class FormStore {
 		return res;
 	}
 	set value(newValue) {
+		this.pristineValue = newValue;
 		if (!this.children) {
-			this.pristineValue = newValue;
 			return true;
 		}
+
+		const keysToBeDeleted = [];
+		let keysToBeAdded = [];
+		if (isArrayType(newValue)) {
+			keysToBeAdded = newValue.slice(this.children.size);
+		}
+		else {
+			// TODO: object
+		}
+
 		this.children.forEach((child, key) => {
 			const value = newValue[key];
-			if (isUndefined(value)) this.children.delete(child.key);
+			if (isUndefined(value)) keysToBeDeleted.push(child.key);
 			else child.value = value;
+		});
+		keysToBeDeleted.forEach((key) => this.children.delete(key));
+		keysToBeAdded.forEach(() => {
+			this.attach(createId(this.key), this._options);
 		});
 		return true;
 	}
 
 	constructor(pristineValue, options = {}) {
-		const { key, isObject, isArray, submit } = options;
+		const { key, isChecked = true, isObject, isArray, submit } = options;
 		this.key = key;
 		this.pristineValue = pristineValue;
+		this.isChecked = isChecked;
 		this.isArray = isArray;
+		this._indexes = {};
 		if (isObject) {
 			this.children = new ObservableChildren({ isArray });
 			this._bus = { submit };
@@ -44,19 +66,42 @@ export default class FormStore {
 	@action
 	attach(key, options = {}) {
 		const { pristineValue, children, isArray } = this;
-		let inputValue;
+		this._options = options;
+		let value;
 		if (isArray) {
-			const index = this._index++;
-			inputValue = index >= pristineValue.length ? '' : pristineValue[index];
+			if (!this.children.has(key)) {
+				const index = this._index++;
+				value = index >= pristineValue.length ? '' : pristineValue[index];
+			}
+			else {
+				value = this.children.get(key).value;
+			}
 		}
 		else {
-			inputValue = pristineValue[key];
+			value = pristineValue[key];
 		}
-		options.key = key;
-		options.submit = this.submit;
-		const store = new FormStore(inputValue, options);
-		children.set(key, store);
-		return store;
+
+		// enforce array type
+		if (!options.isArray && isArrayType(value)) {
+			let formStore;
+			if (this.children.has(key)) {
+				formStore = this.children.get(key);
+			}
+			else {
+				formStore = this.attach(key, { isArray: true, isObject: true });
+			}
+			return formStore.attach(createId(key), {
+				isChecked: ~value.indexOf(options.value),
+			});
+		}
+
+		const inputStore = new FormStore(value, {
+			...options,
+			key,
+			submit: this.submit,
+		});
+		children.set(key, inputStore);
+		return inputStore;
 	}
 
 	@action

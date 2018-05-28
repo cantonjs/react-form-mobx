@@ -14,7 +14,9 @@ export default class Demon extends Component {
 		props: PropTypes.shape({
 			name: PropTypes.string.isRequired,
 		}).isRequired,
+		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
+		mapCheckOnChangeEvent: PropTypes.func,
 		mapKeyOnKeyPressEvent: PropTypes.func,
 		propOnChange: PropTypes.string,
 		propOnKeyPress: PropTypes.string,
@@ -26,12 +28,10 @@ export default class Demon extends Component {
 
 	static defaultProps = {
 		props: {},
-		mapValueOnChangeEvent(ev) {
-			return ev.currentTarget.value;
-		},
-		mapKeyOnKeyPressEvent(ev) {
-			return ev.key;
-		},
+		checkable: false,
+		mapValueOnChangeEvent: (ev) => ev.currentTarget.value,
+		mapCheckOnChangeEvent: (ev) => ev.currentTarget.checked,
+		mapKeyOnKeyPressEvent: (ev) => ev.key,
 		propOnChange: 'onChange',
 		propOnKeyPress: 'onKeyPress',
 		propOnBlur: 'onBlur',
@@ -43,9 +43,11 @@ export default class Demon extends Component {
 		super(props);
 
 		const { props: forwaredProps, formStore, isObject, isArray } = props;
-		this.inputStore = formStore.attach(forwaredProps.name, {
+		const { name, value } = forwaredProps;
+		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
+			value,
 		});
 	}
 
@@ -54,12 +56,23 @@ export default class Demon extends Component {
 	}
 
 	handleChange = (...args) => {
-		const { props, mapValueOnChangeEvent, propOnChange } = this.props;
+		const {
+			props,
+			checkable,
+			mapValueOnChangeEvent,
+			mapCheckOnChangeEvent,
+			propOnChange,
+		} = this.props;
 		const onChange = props[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
 		try {
 			const value = mapValueOnChangeEvent(...args);
 			this.inputStore.value = value;
+
+			if (checkable) {
+				const checked = mapCheckOnChangeEvent(...args);
+				this.inputStore.isChecked = checked;
+			}
 		}
 		catch (err) {
 			warn(
@@ -100,20 +113,31 @@ export default class Demon extends Component {
 	};
 
 	renderChildren() {
-		const { inputStore, props } = this;
 		const {
-			props: { name, ...forwaredProps },
-			propOnChange,
-			propOnKeyPress,
-			propOnBlur,
-			children,
-		} = props;
-		forwaredProps[propOnChange] = this.handleChange;
-		forwaredProps[propOnKeyPress] = this.handleKeyPress;
-		forwaredProps[propOnBlur] = this.handleBlur;
-		forwaredProps.value = inputStore.value;
-		forwaredProps.isTouched = inputStore.isTouched;
-		return Children.only(children(forwaredProps));
+			inputStore,
+			props: {
+				props: { name, ...forwaredProps },
+				propOnChange,
+				propOnKeyPress,
+				propOnBlur,
+				checkable,
+				children,
+			},
+		} = this;
+		const props = {
+			value: inputStore.value,
+			...forwaredProps,
+			[propOnChange]: this.handleChange,
+			[propOnKeyPress]: this.handleKeyPress,
+			[propOnBlur]: this.handleBlur,
+		};
+		const helper = {
+			isTouched: inputStore.isTouched,
+		};
+		if (checkable && !props.hasOwnProperty('checked')) {
+			props.checked = inputStore.isChecked;
+		}
+		return Children.only(children(props, helper));
 	}
 
 	render() {
