@@ -18,6 +18,7 @@ export default class Demon extends Component {
 		mapKeyOnKeyPressEvent: PropTypes.func,
 		propOnChange: PropTypes.string,
 		propOnKeyPress: PropTypes.string,
+		propOnBlur: PropTypes.string,
 
 		isObject: PropTypes.bool,
 		isArray: PropTypes.bool,
@@ -33,6 +34,7 @@ export default class Demon extends Component {
 		},
 		propOnChange: 'onChange',
 		propOnKeyPress: 'onKeyPress',
+		propOnBlur: 'onBlur',
 		isObject: false,
 		isArray: false,
 	};
@@ -90,17 +92,27 @@ export default class Demon extends Component {
 		}
 	};
 
+	handleBlur = (...args) => {
+		const { props, formStore, propOnBlur } = this.props;
+		const onBlur = props[propOnBlur];
+		if (isFunction(onBlur)) onBlur(...args);
+		formStore.touch();
+	};
+
 	renderChildren() {
 		const { inputStore, props } = this;
 		const {
 			props: { name, ...forwaredProps },
 			propOnChange,
 			propOnKeyPress,
+			propOnBlur,
 			children,
 		} = props;
 		forwaredProps[propOnChange] = this.handleChange;
 		forwaredProps[propOnKeyPress] = this.handleKeyPress;
+		forwaredProps[propOnBlur] = this.handleBlur;
 		forwaredProps.value = inputStore.value;
+		forwaredProps.isTouched = inputStore.isTouched;
 		return Children.only(children(forwaredProps));
 	}
 

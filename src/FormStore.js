@@ -4,6 +4,7 @@ import ObservableChildren from './ObservableChildren';
 
 export default class FormStore {
 	@observable pristineValue;
+	@observable isTouched = false;
 
 	@computed
 	get value() {
@@ -63,8 +64,14 @@ export default class FormStore {
 		this.children.delete(key);
 	}
 
+	@action
+	touch() {
+		this.isTouched = true;
+	}
+
 	submit = () => {
 		const { submit } = this._bus;
+		this.isTouched = true;
 		if (isFunction(submit)) {
 			const { value } = this;
 			submit(value);
