@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { isFunction, createId } from './utils';
+import { isFunction, createId as createUniqueId } from './utils';
 import withFormStore from './withFormStore';
 import Demon from './Demon';
 
@@ -18,51 +17,30 @@ class ItemGroup extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
-	@observable ids = [];
-
 	constructor(props) {
 		super(props);
 
-		const { length } = props.formStore.pristineValue;
-		this.disposer = props.formStore.children.observe((ev) =>
-			this.handleChildrenChange(ev),
-		);
+		const { formStore, name } = props;
+		const { pristineValue: { length }, arrayStore } = formStore;
+		const createId = () => createUniqueId(name);
+
+		this.helper = {
+			createId,
+			push: () => arrayStore.push(createId()),
+			remove: arrayStore.remove,
+			includes: arrayStore.includes,
+		};
+
 		for (let i = 0; i < length; i++) {
 			this.helper.push();
 		}
 	}
 
-	componentWillUnmount() {
-		this.disposer();
-	}
-
-	helper = {
-		push: () => this.ids.push(this.helper.createId()),
-		remove: (id) => {
-			const index = this.ids.indexOf(id);
-			if (index > -1) this.ids.splice(index, 1);
-		},
-		createId: () => createId(this.props.name),
-		includes: (id) => ~this.ids.indexOf(id),
-	};
-
-	handleChildrenChange(ev) {
-		if (ev.removedCount) {
-			ev.removed.forEach(({ key }) => {
-				this.helper.remove(key);
-			});
-		}
-		if (ev.addedCount) {
-			ev.added.forEach(({ key }) => {
-				const { ids, helper } = this;
-				if (!helper.includes(key)) ids.push(key);
-			});
-		}
-	}
-
 	render() {
-		const { children } = this.props;
-		return isFunction(children) ? children(this.ids, this.helper) : children;
+		const { children, formStore } = this.props;
+		return isFunction(children) ?
+			children(formStore.arrayStore.ids, this.helper) :
+			children;
 	}
 }
 

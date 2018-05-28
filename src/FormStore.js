@@ -1,5 +1,6 @@
 import { observable, computed, action } from 'mobx';
 import ObservableChildren from './ObservableChildren';
+import FormArrayStore from './FormArrayStore';
 import {
 	isFunction,
 	isUndefined,
@@ -11,6 +12,7 @@ export default class FormStore {
 	@observable pristineValue;
 	@observable isChecked = true;
 	@observable isTouched = false;
+	@observable arrayIds = [];
 
 	@computed
 	get value() {
@@ -24,9 +26,7 @@ export default class FormStore {
 	}
 	set value(newValue) {
 		this.pristineValue = newValue;
-		if (!this.children) {
-			return true;
-		}
+		if (!this.children) return true;
 
 		const keysToBeDeleted = [];
 		let keysToBeAdded = [];
@@ -40,12 +40,19 @@ export default class FormStore {
 		this.children.forEach((child, key) => {
 			const value = newValue[key];
 			if (isUndefined(value)) keysToBeDeleted.push(child.key);
-			else child.value = value;
+			else if (child.value !== value) child.value = value;
 		});
-		keysToBeDeleted.forEach((key) => this.children.delete(key));
+
+		keysToBeDeleted.forEach((key) => {
+			this.children.delete(key);
+			if (this.arrayStore) this.arrayStore.remove(key);
+		});
+
 		keysToBeAdded.forEach(() => {
-			this.attach(createId(this.key), this._options);
+			// this.attach(createId(this.key), this._options);
+			if (this.arrayStore) this.arrayStore.push(createId(this.key));
 		});
+
 		return true;
 	}
 
@@ -55,11 +62,13 @@ export default class FormStore {
 		this.pristineValue = pristineValue;
 		this.isChecked = isChecked;
 		this.isArray = isArray;
-		this._indexes = {};
 		if (isObject) {
 			this.children = new ObservableChildren({ isArray });
 			this._bus = { submit };
-			this._index = 0; // for array
+
+			if (isArray) {
+				this.arrayStore = new FormArrayStore();
+			}
 		}
 	}
 
@@ -69,13 +78,8 @@ export default class FormStore {
 		this._options = options;
 		let value;
 		if (isArray) {
-			if (!this.children.has(key)) {
-				const index = this._index++;
-				value = index >= pristineValue.length ? '' : pristineValue[index];
-			}
-			else {
-				value = this.children.get(key).value;
-			}
+			const index = this.arrayStore.attach();
+			value = index >= pristineValue.length ? '' : pristineValue[index];
 		}
 		else {
 			value = pristineValue[key];

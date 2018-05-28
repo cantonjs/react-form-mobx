@@ -1,13 +1,14 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, ObjectOf, ArrayOf } from '../src';
+import { Form, Input, Checkbox, ObjectOf, ArrayOf } from '../src';
 
-const InputItem = function InputItem({ label, name, display }) {
+const InputItem = function InputItem({ label, display, component, ...other }) {
+	const Comp = component;
 	return (
 		<div style={{ margin: '1em', display }}>
 			<label>
 				<span>{label}</span>
-				<Input name={name} />
+				<Comp {...other} />
 			</label>
 		</div>
 	);
@@ -15,11 +16,12 @@ const InputItem = function InputItem({ label, name, display }) {
 
 InputItem.propTypes = {
 	label: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
+	component: PropTypes.any,
 	display: PropTypes.oneOf(['inline-block', 'block']),
 };
 
 InputItem.defaultProps = {
+	component: Input,
 	display: 'block',
 };
 
@@ -32,6 +34,7 @@ export default class App extends Component {
 			hair: 'blond',
 			skin: 'fair',
 		},
+		checkboxes: ['foo', 'baz'],
 	};
 
 	formRef = createRef();
@@ -83,6 +86,25 @@ export default class App extends Component {
 					<InputItem label="hair color" name="hair" />
 					<InputItem label="skin color" name="skin" />
 				</ObjectOf>
+
+				<InputItem
+					component={Checkbox}
+					label="foo"
+					value="foo"
+					name="checkboxes"
+				/>
+				<InputItem
+					component={Checkbox}
+					label="bar"
+					value="bar"
+					name="checkboxes"
+				/>
+				<InputItem
+					component={Checkbox}
+					label="baz"
+					value="baz"
+					name="checkboxes"
+				/>
 			</Form>
 		);
 	}
