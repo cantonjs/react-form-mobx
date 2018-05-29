@@ -4,7 +4,7 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
 
 ## WTF
 
-```js
+```jsx
 import React, { Component } from 'react';
 import { Form, Input, Checkbox, ObjectOf } from 'react-form-mobx';
 
@@ -43,7 +43,7 @@ export default class MyFriend extends Component {
 
 ## Dynamic Array Items
 
-```js
+```jsx
 import React, { Component } from 'react';
 import { Form, Input, ArrayOf, ObjectOf } from 'react-form-mobx';
 
@@ -82,7 +82,7 @@ export default class MyFriend extends Component {
 
 ## Creating Custom Input Component
 
-```js
+```jsx
 import React, { Component } from "react";
 import { Demon } from "react-form-mobx";
 
