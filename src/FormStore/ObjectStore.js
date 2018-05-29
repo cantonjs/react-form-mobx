@@ -47,7 +47,7 @@ export default class ObjectStore extends PrimitiveStore {
 		this.eachChildren((child, key) => {
 			value[key] = child.getValue();
 		});
-		return this.filters.outputFilter(value);
+		return this.getOutputValue(value);
 	}
 
 	eachChildren(iterator) {

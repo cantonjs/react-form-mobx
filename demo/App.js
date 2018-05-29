@@ -62,7 +62,7 @@ export default class App extends Component {
 					validation={(val) => /a/.test(val)}
 					required
 				/>
-				<Input label="height" name="height" inputFilter={(val) => +val || 0} />
+				<Input label="height" name="height" dataType="integer" />
 				<ArrayOf name="starships">
 					{(starships, helper) => (
 						<div>

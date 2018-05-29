@@ -54,7 +54,7 @@ export default class ArrayStore extends ObjectStore {
 		this.eachChildren((child, key) => {
 			value[key] = child.getValue();
 		});
-		return this.filters.outputFilter(value);
+		return this.getOutputValue(value);
 	}
 
 	_findIndexByKey(key) {

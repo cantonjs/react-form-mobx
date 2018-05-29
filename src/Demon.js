@@ -2,6 +2,7 @@ import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { isFunction, warn } from './utils';
+import { DataTypeKeys } from './DataTypes';
 import Context from './Context';
 import withFormStore from './withFormStore';
 
@@ -17,6 +18,10 @@ export default class Demon extends Component {
 			required: PropTypes.bool,
 			inputFilter: PropTypes.func,
 			outputFilter: PropTypes.func,
+			dataType: PropTypes.oneOfType([
+				PropTypes.oneOf(DataTypeKeys),
+				PropTypes.func,
+			]),
 		}).isRequired,
 		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
@@ -54,6 +59,7 @@ export default class Demon extends Component {
 			validation,
 			inputFilter,
 			outputFilter,
+			dataType,
 		} = forwaredProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
@@ -63,6 +69,7 @@ export default class Demon extends Component {
 			validation,
 			inputFilter,
 			outputFilter,
+			dataType,
 		});
 		this.inputStore.emitOutput();
 	}
@@ -146,6 +153,7 @@ export default class Demon extends Component {
 					validation,
 					inputFilter,
 					outputFilter,
+					dataType,
 					...forwaredProps
 				},
 				propOnChange,

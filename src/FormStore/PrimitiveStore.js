@@ -1,5 +1,6 @@
 import { observable, computed, action } from 'mobx';
 import { emptyFunctionReturnsArg } from '../utils';
+import { createFormatDataTypeFunc } from '../DataTypes';
 import Validation from '../Validation';
 
 export default class PrimitiveStore {
@@ -42,6 +43,7 @@ export default class PrimitiveStore {
 			form = this,
 			validation,
 			required,
+			dataType,
 			inputFilter = emptyFunctionReturnsArg,
 			outputFilter = emptyFunctionReturnsArg,
 		} = options;
@@ -49,13 +51,30 @@ export default class PrimitiveStore {
 		this.pristineValue = pristineValue;
 		this.isChecked = isChecked;
 		this.form = form;
-		this.filters = { inputFilter, outputFilter };
+		this._dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
+		this._inputFilter = inputFilter;
+		this._outputFilter = outputFilter;
+		this._filters = { inputFilter, outputFilter };
 		this.validation = new Validation(validation, required);
+	}
+
+	getOutputValue(value) {
+		const { _outputFilter, _dataTypeFilter } = this;
+		if (_outputFilter) value = _outputFilter(value);
+		if (_dataTypeFilter) value = _dataTypeFilter(value);
+		return value;
+	}
+
+	getInputValue(value) {
+		const { _inputFilter } = this;
+		if (_inputFilter) value = _inputFilter(value);
+		// if (_dataTypeFilter) value = _dataTypeFilter(value);
+		return value;
 	}
 
 	getValue() {
 		try {
-			return this.filters.outputFilter(this.value);
+			return this.getOutputValue(this.value);
 		}
 		catch (err) {
 			this.setError(err);
@@ -65,7 +84,7 @@ export default class PrimitiveStore {
 	@action
 	setValue(value) {
 		try {
-			this.value = this.filters.inputFilter(value);
+			this.value = this.getInputValue(value);
 			this.emitOutput();
 		}
 		catch (err) {
