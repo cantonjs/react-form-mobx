@@ -14,7 +14,7 @@ export default class Input extends Component {
 
 	render() {
 		return (
-			<Demon props={this.props}>
+			<Demon forwardedProps={this.props}>
 				{(
 					{ display, label, ...other },
 					{ isTouched, isInvalid, errorMessage },

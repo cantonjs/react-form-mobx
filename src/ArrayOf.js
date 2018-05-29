@@ -59,7 +59,7 @@ export default class ArrayOf extends Component {
 	render() {
 		const { children, name, ...other } = this.props;
 		return (
-			<Demon {...other} props={this.forwardedProps} isObject isArray>
+			<Demon {...other} forwardedProps={this.forwardedProps} isObject isArray>
 				{() => <ItemGroup name={name}>{children}</ItemGroup>}
 			</Demon>
 		);

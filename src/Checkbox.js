@@ -4,7 +4,7 @@ import Demon from './Demon';
 export default class Checkbox extends Component {
 	render() {
 		return (
-			<Demon props={this.props} checkable>
+			<Demon forwardedProps={this.props} checkable>
 				{(props) => <input {...props} type="checkbox" />}
 			</Demon>
 		);

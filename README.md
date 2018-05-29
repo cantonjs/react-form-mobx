@@ -89,7 +89,7 @@ import { Demon } from "react-form-mobx";
 export default class MyInput extends Component {
   render() {
     return (
-      <Demon {...this.props}>
+      <Demon forwardedProps={this.props}>
         {(props, { isInvalid, errorMessage }) => (
           <label>
             <input

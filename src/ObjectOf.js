@@ -15,7 +15,7 @@ export default class ObjectOf extends Component {
 	render() {
 		const { children, name, ...other } = this.props;
 		return (
-			<Demon {...other} props={this.forwardedProps} isObject>
+			<Demon {...other} forwardedProps={this.forwardedProps} isObject>
 				{() => children}
 			</Demon>
 		);

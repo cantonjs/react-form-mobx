@@ -12,7 +12,7 @@ export default class Demon extends Component {
 	static propTypes = {
 		children: PropTypes.func.isRequired,
 		formStore: PropTypes.object.isRequired,
-		props: PropTypes.shape({
+		forwardedProps: PropTypes.shape({
 			name: PropTypes.string.isRequired,
 			validation: PropTypes.oneOfType([
 				PropTypes.arrayOf(PropTypes.func),
@@ -39,7 +39,7 @@ export default class Demon extends Component {
 	};
 
 	static defaultProps = {
-		props: {},
+		forwardedProps: {},
 		checkable: false,
 		mapValueOnChangeEvent: (ev) => ev.currentTarget.value,
 		mapCheckOnChangeEvent: (ev) => ev.currentTarget.checked,
@@ -54,7 +54,7 @@ export default class Demon extends Component {
 	constructor(props) {
 		super(props);
 
-		const { props: forwaredProps, formStore, isObject, isArray } = props;
+		const { forwardedProps, formStore, isObject, isArray } = props;
 		const {
 			name,
 			value,
@@ -63,7 +63,7 @@ export default class Demon extends Component {
 			inputFilter,
 			outputFilter,
 			dataType,
-		} = forwaredProps;
+		} = forwardedProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
@@ -83,14 +83,14 @@ export default class Demon extends Component {
 
 	handleChange = (...args) => {
 		const {
-			props,
+			forwardedProps,
 			checkable,
 			mapValueOnChangeEvent,
 			mapCheckOnChangeEvent,
 			propOnChange,
 			formStore,
 		} = this.props;
-		const onChange = props[propOnChange];
+		const onChange = forwardedProps[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
 		try {
 			const value = mapValueOnChangeEvent(...args);
@@ -113,12 +113,12 @@ export default class Demon extends Component {
 
 	handleKeyPress = (...args) => {
 		const {
-			props,
+			forwardedProps,
 			formStore,
 			propOnKeyPress,
 			mapKeyOnKeyPressEvent,
 		} = this.props;
-		const onKeyPress = props[propOnKeyPress];
+		const onKeyPress = forwardedProps[propOnKeyPress];
 		if (isFunction(onKeyPress)) onKeyPress(...args);
 		try {
 			const key = mapKeyOnKeyPressEvent(...args);
@@ -134,8 +134,8 @@ export default class Demon extends Component {
 	};
 
 	handleBlur = (...args) => {
-		const { props, propOnBlur } = this.props;
-		const onBlur = props[propOnBlur];
+		const { forwardedProps, propOnBlur } = this.props;
+		const onBlur = forwardedProps[propOnBlur];
 		if (isFunction(onBlur)) onBlur(...args);
 		this.inputStore.touch();
 	};
@@ -151,13 +151,13 @@ export default class Demon extends Component {
 				errorMessage,
 			},
 			props: {
-				props: {
+				forwardedProps: {
 					name,
 					validation,
 					inputFilter,
 					outputFilter,
 					dataType,
-					...forwaredProps
+					...forwardedProps
 				},
 				propOnChange,
 				propOnKeyPress,
@@ -168,7 +168,7 @@ export default class Demon extends Component {
 		} = this;
 		const props = {
 			value,
-			...forwaredProps,
+			...forwardedProps,
 			[propOnChange]: this.handleChange,
 			[propOnKeyPress]: this.handleKeyPress,
 			[propOnBlur]: this.handleBlur,

@@ -14,7 +14,7 @@ export default class Checkbox extends Component {
 
 	render() {
 		return (
-			<Demon props={this.props} checkable>
+			<Demon forwardedProps={this.props} checkable>
 				{({ display, label, ...other }) => (
 					<div style={{ margin: '1em', display }}>
 						<label>
