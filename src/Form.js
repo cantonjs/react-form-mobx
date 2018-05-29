@@ -31,7 +31,7 @@ export default class Form extends Component {
 	componentDidUpdate(prevProps) {
 		const { value } = this.props;
 		if (prevProps.value !== value) {
-			this.formStore.value = value;
+			this.formStore.setValue(value);
 		}
 	}
 

@@ -41,13 +41,15 @@ export default class FormStore extends ObjectStore {
 		return store;
 	}
 
-	submit = () => {
+	@action
+	submit = (options = {}) => {
+		const { isValid } = this;
 		const { submit } = this._bus;
-		this.isTouched = true;
+		this.touch();
 		if (isFunction(submit)) {
 			const { value } = this;
-			submit(value);
-			return value;
+			submit(value, { isValid });
+			return isValid || options.force ? value : null;
 		}
 	};
 }

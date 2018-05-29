@@ -10,7 +10,7 @@ export default class ArrayStore extends ObjectStore {
 	@computed
 	get value() {
 		const res = [];
-		this._eachChildren((child, key) => {
+		this.eachChildren((child, key) => {
 			res[key] = child.value;
 		});
 		return res;
@@ -20,7 +20,7 @@ export default class ArrayStore extends ObjectStore {
 		const keysToBeDeleted = [];
 		let keysToBeAdded = [];
 		keysToBeAdded = newValue.slice(this.children.length);
-		this._eachChildren((child, key) => {
+		this.eachChildren((child, key) => {
 			const value = newValue[key];
 			if (isUndefined(value)) keysToBeDeleted.push(child.key);
 			else if (child.value !== value) child.value = value;
@@ -34,6 +34,8 @@ export default class ArrayStore extends ObjectStore {
 			this.push(createId(this.key));
 		});
 
+		this.emitOutput();
+		this.touch(false);
 		return true;
 	}
 
@@ -51,7 +53,7 @@ export default class ArrayStore extends ObjectStore {
 		return this.children.findIndex((item) => item.key === key);
 	}
 
-	_eachChildren(iterator) {
+	eachChildren(iterator) {
 		const filter = (item) => item.isChecked;
 		let index = 0;
 		this.children.forEach((item, _, ...args) => {

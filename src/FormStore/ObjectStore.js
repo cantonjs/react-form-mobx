@@ -5,7 +5,7 @@ export default class ObjectStore extends PrimitiveStore {
 	@computed
 	get value() {
 		const res = {};
-		this._eachChildren((child, key) => {
+		this.eachChildren((child, key) => {
 			res[key] = child.value;
 		});
 		return res;
@@ -15,14 +15,26 @@ export default class ObjectStore extends PrimitiveStore {
 
 		this.pristineValue = newValue;
 
-		this._eachChildren((child, key) => {
+		this.eachChildren((child, key) => {
 			const value = newValue[key];
 
 			// TODO: should handle when value is undefined
 			if (child.value !== value) child.value = value;
 		});
-
+		this.emitOutput();
+		this.touch(false);
 		return true;
+	}
+
+	@computed
+	get isValid() {
+		if (this.error) return false;
+
+		let isValid = true;
+		this.eachChildren((child) => {
+			if (!isValid || !child.isValid) isValid = false;
+		});
+		return isValid;
 	}
 
 	constructor(pristineValue, options = {}) {
@@ -30,7 +42,7 @@ export default class ObjectStore extends PrimitiveStore {
 		this.children = observable.map();
 	}
 
-	_eachChildren(iterator) {
+	eachChildren(iterator) {
 		for (const [key, item] of this.children) {
 			if (item.isChecked) iterator(item, key, this.children);
 		}
@@ -44,6 +56,11 @@ export default class ObjectStore extends PrimitiveStore {
 	setChildren(key, store) {
 		this.children.set(key, store);
 		return true;
+	}
+
+	@action
+	touch(isTouched) {
+		this.eachChildren((child) => child.touch(isTouched));
 	}
 
 	@action

@@ -13,6 +13,7 @@ export default class Demon extends Component {
 		formStore: PropTypes.object.isRequired,
 		props: PropTypes.shape({
 			name: PropTypes.string.isRequired,
+			validation: PropTypes.func,
 		}).isRequired,
 		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
@@ -43,12 +44,14 @@ export default class Demon extends Component {
 		super(props);
 
 		const { props: forwaredProps, formStore, isObject, isArray } = props;
-		const { name, value } = forwaredProps;
+		const { name, value, validation } = forwaredProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
 			value,
+			validation,
 		});
+		this.inputStore.emitOutput();
 	}
 
 	componentWillUnmount() {
@@ -62,12 +65,14 @@ export default class Demon extends Component {
 			mapValueOnChangeEvent,
 			mapCheckOnChangeEvent,
 			propOnChange,
+			formStore,
 		} = this.props;
 		const onChange = props[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
 		try {
 			const value = mapValueOnChangeEvent(...args);
-			this.inputStore.value = value;
+			this.inputStore.setValue(value);
+			this.inputStore.emitOutput();
 
 			if (checkable) {
 				const checked = mapCheckOnChangeEvent(...args);
@@ -81,6 +86,7 @@ export default class Demon extends Component {
 			);
 			console.error(err);
 		}
+		formStore.emitOutput();
 	};
 
 	handleKeyPress = (...args) => {
@@ -106,17 +112,17 @@ export default class Demon extends Component {
 	};
 
 	handleBlur = (...args) => {
-		const { props, formStore, propOnBlur } = this.props;
+		const { props, propOnBlur } = this.props;
 		const onBlur = props[propOnBlur];
 		if (isFunction(onBlur)) onBlur(...args);
-		formStore.touch();
+		this.inputStore.touch();
 	};
 
 	renderChildren() {
 		const {
-			inputStore,
+			inputStore: { value, isChecked, isTouched, isValid, errorMessage },
 			props: {
-				props: { name, ...forwaredProps },
+				props: { name, validation, ...forwaredProps },
 				propOnChange,
 				propOnKeyPress,
 				propOnBlur,
@@ -125,17 +131,19 @@ export default class Demon extends Component {
 			},
 		} = this;
 		const props = {
-			value: inputStore.value,
+			value,
 			...forwaredProps,
 			[propOnChange]: this.handleChange,
 			[propOnKeyPress]: this.handleKeyPress,
 			[propOnBlur]: this.handleBlur,
 		};
 		const helper = {
-			isTouched: inputStore.isTouched,
+			isTouched,
+			isValid,
+			errorMessage,
 		};
 		if (checkable && !props.hasOwnProperty('checked')) {
-			props.checked = inputStore.isChecked;
+			props.checked = isChecked;
 		}
 		return Children.only(children(props, helper));
 	}
