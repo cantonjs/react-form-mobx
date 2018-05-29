@@ -26,6 +26,11 @@ export default class PrimitiveStore {
 	}
 
 	@computed
+	get isInvalid() {
+		return !this.isValid;
+	}
+
+	@computed
 	get errorMessage() {
 		return this.error ? this.error.message || 'Invalid' : '';
 	}
@@ -49,14 +54,23 @@ export default class PrimitiveStore {
 	}
 
 	getValue() {
-		return this.filters.outputFilter(this.value);
+		try {
+			return this.filters.outputFilter(this.value);
+		}
+		catch (err) {
+			this.setError(err);
+		}
 	}
 
 	@action
 	setValue(value) {
-		this.value = this.filters.inputFilter(value);
-		this.emitOutput();
-		this.touch(false);
+		try {
+			this.value = this.filters.inputFilter(value);
+			this.emitOutput();
+		}
+		catch (err) {
+			this.setError(err);
+		}
 	}
 
 	@action
@@ -77,6 +91,7 @@ export default class PrimitiveStore {
 	emitOutput() {
 		try {
 			this.validate();
+			this.touch();
 			this.setError(null);
 		}
 		catch (err) {

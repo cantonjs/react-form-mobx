@@ -23,8 +23,10 @@ export default class Input extends Component {
 						<label>
 							<span>{label}</span>
 							<input {...other} />
-							{isValid || <span style={{ color: 'red' }}>{errorMessage}</span>}
-							{isTouched && 'touched'}
+							{isTouched &&
+								!isValid && (
+								<span style={{ color: 'red' }}>{errorMessage}</span>
+							)}
 						</label>
 					</div>
 				)}

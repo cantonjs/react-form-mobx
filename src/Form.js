@@ -50,6 +50,7 @@ export default class Form extends Component {
 		const { value } = this.props;
 		if (prevProps.value !== value) {
 			this.formStore.setValue(value);
+			this.formStore.touch(false);
 		}
 	}
 

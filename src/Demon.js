@@ -132,7 +132,14 @@ export default class Demon extends Component {
 
 	renderChildren() {
 		const {
-			inputStore: { value, isChecked, isTouched, isValid, errorMessage },
+			inputStore: {
+				value,
+				isChecked,
+				isTouched,
+				isValid,
+				isInvalid,
+				errorMessage,
+			},
 			props: {
 				props: {
 					name,
@@ -158,6 +165,7 @@ export default class Demon extends Component {
 		const helper = {
 			isTouched,
 			isValid,
+			isInvalid,
 			errorMessage,
 		};
 		if (checkable && !props.hasOwnProperty('checked')) {
