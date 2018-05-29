@@ -32,12 +32,18 @@ export default class PrimitiveStore {
 	}
 
 	constructor(pristineValue, options = {}) {
-		const { key, isChecked = true, form = this, validation } = options;
+		const {
+			key,
+			isChecked = true,
+			form = this,
+			validation,
+			required,
+		} = options;
 		this.key = key;
 		this.pristineValue = pristineValue;
 		this.isChecked = isChecked;
 		this.form = form;
-		this.validation = new Validation(validation);
+		this.validation = new Validation(validation, required);
 	}
 
 	@action

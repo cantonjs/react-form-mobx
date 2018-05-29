@@ -7,6 +7,7 @@ export const isUndefined = (s) => typeof s === 'undefined';
 export const isFunction = (s) => typeof s === 'function';
 export const isObject = (s) => typeof s === 'object';
 export const isArray = (s) => s.constructor === Array || isObservableArray(s);
+export const isEmpty = (v) => !v && v !== false && v !== 0;
 export const noop = () => {};
 export const clone = (s) => (isArray(s) ? s.slice() : { ...s });
 

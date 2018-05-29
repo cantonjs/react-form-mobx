@@ -14,6 +14,7 @@ export default class Demon extends Component {
 		props: PropTypes.shape({
 			name: PropTypes.string.isRequired,
 			validation: PropTypes.func,
+			required: PropTypes.bool,
 		}).isRequired,
 		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
@@ -44,11 +45,12 @@ export default class Demon extends Component {
 		super(props);
 
 		const { props: forwaredProps, formStore, isObject, isArray } = props;
-		const { name, value, validation } = forwaredProps;
+		const { name, value, required, validation } = forwaredProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
 			value,
+			required,
 			validation,
 		});
 		this.inputStore.emitOutput();
