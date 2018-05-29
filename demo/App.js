@@ -1,29 +1,7 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
-import { Form, Input, Checkbox, ObjectOf, ArrayOf } from '../src';
-
-const InputItem = function InputItem({ label, display, component, ...other }) {
-	const Comp = component;
-	return (
-		<div style={{ margin: '1em', display }}>
-			<label>
-				<span>{label}</span>
-				<Comp {...other} />
-			</label>
-		</div>
-	);
-};
-
-InputItem.propTypes = {
-	label: PropTypes.string.isRequired,
-	component: PropTypes.any,
-	display: PropTypes.oneOf(['inline-block', 'block']),
-};
-
-InputItem.defaultProps = {
-	component: Input,
-	display: 'block',
-};
+import { Form, ObjectOf, ArrayOf } from '../src';
+import Input from './Input';
+import Checkbox from './Checkbox';
 
 export default class App extends Component {
 	state = {
@@ -51,22 +29,46 @@ export default class App extends Component {
 		}, 4000);
 	}
 
-	handleSubmit = (formData) => {
-		console.log('submit', formData);
-		this.setState(() => formData);
+	handleSubmit = (formData, { isValid }) => {
+		if (isValid) {
+			console.log('submit', formData);
+			this.setState(() => formData);
+		}
+		else {
+			console.warn('invalid');
+		}
+	};
+
+	handleValid = () => {
+		console.log('valid');
+	};
+
+	handleInvalid = () => {
+		console.log('invalid');
 	};
 
 	render() {
 		return (
-			<Form value={this.state} onSubmit={this.handleSubmit} ref={this.formRef}>
-				<InputItem label="name" name="name" />
-				<InputItem label="height" name="height" />
+			<Form
+				value={this.state}
+				onSubmit={this.handleSubmit}
+				onValid={this.handleValid}
+				onInvalid={this.handleInvalid}
+				ref={this.formRef}
+			>
+				<Input
+					label="name"
+					name="name"
+					validation={(val) => /a/.test(val)}
+					required
+				/>
+				<Input label="height" name="height" inputFilter={(val) => +val || 0} />
 				<ArrayOf name="starships">
 					{(starships, helper) => (
 						<div>
 							{starships.map((starship) => (
 								<div key={starship}>
-									<InputItem
+									<Input
 										label="starship"
 										name={starship}
 										display="inline-block"
@@ -83,28 +85,13 @@ export default class App extends Component {
 					)}
 				</ArrayOf>
 				<ObjectOf name="colors">
-					<InputItem label="hair color" name="hair" />
-					<InputItem label="skin color" name="skin" />
+					<Input label="hair color" name="hair" />
+					<Input label="skin color" name="skin" />
 				</ObjectOf>
 
-				<InputItem
-					component={Checkbox}
-					label="foo"
-					value="foo"
-					name="checkboxes"
-				/>
-				<InputItem
-					component={Checkbox}
-					label="bar"
-					value="bar"
-					name="checkboxes"
-				/>
-				<InputItem
-					component={Checkbox}
-					label="baz"
-					value="baz"
-					name="checkboxes"
-				/>
+				<Checkbox label="foo" value="foo" name="checkboxes" />
+				<Checkbox label="bar" value="bar" name="checkboxes" />
+				<Checkbox label="baz" value="baz" name="checkboxes" />
 			</Form>
 		);
 	}
