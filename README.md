@@ -45,7 +45,7 @@ export default class MyFriend extends Component {
 
 ```jsx
 import React, { Component } from 'react';
-import { Form, Input, ArrayOf, ObjectOf } from 'react-form-mobx';
+import { Form, Input, ArrayOf } from 'react-form-mobx';
 
 export default class MyFriend extends Component {
   myData = {
@@ -82,6 +82,8 @@ export default class MyFriend extends Component {
 
 ## Creating Custom Input Component
 
+**MyInput.js**
+
 ```jsx
 import React, { Component } from "react";
 import { Demon } from "react-form-mobx";
@@ -100,6 +102,25 @@ export default class MyInput extends Component {
           </label>
         )}
       </Demon>
+    );
+  }
+}
+```
+
+**MyApp.js**
+
+```jsx
+import React, { Component } from "react";
+import { Form } from "react-form-mobx";
+import MyInput from "./MyInput";
+
+export default class MyApp extends Component {
+  render() {
+    return (
+      <Form value={this.myData}>
+        <MyInput name="name" />
+        {/* ... */}
+      </Form>
     );
   }
 }
