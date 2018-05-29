@@ -3,10 +3,7 @@ import { isEmpty } from './utils';
 export default class Validation {
 	constructor(rules, required, dataTypeFilter) {
 		this.required = required;
-
 		this.rules = [].concat(rules).filter(Boolean);
-
-		console.log('dataTypeFilter', dataTypeFilter);
 
 		if (dataTypeFilter) {
 			const dataTypeValidator = (val) => dataTypeFilter(val) || true;
