@@ -62,21 +62,15 @@ export default class MyFriend extends Component {
       <Form value={this.myData} onSubmit={this.handleSubmit}>
         <Input name="name" />
         <ArrayOf name="starships">
-          {(starships, helper) =>
+          {(starships, { push, removeBy }) =>
             <div>
               {starships.map((starship) =>
                 <span key={starship}>
                   <Input name={starship} />
-                  <button
-                    type="button"
-                    onClick={() => helper.remove(starship)}
-                  >Remove</button>
+                  <button type="button" onClick={removeBy(starship)}>Remove</button>
                 </span>
               )}
-              <button
-                type="button"
-                onClick={helper.push}
-              >Add Starship</button>
+              <button type="button" onClick={push}>Add Starship</button>
             </div>
           }
         </ArrayOf>

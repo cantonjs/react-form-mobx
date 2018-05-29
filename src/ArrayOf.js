@@ -28,6 +28,7 @@ class ItemGroup extends Component {
 			createId,
 			push: () => formStore.push(createId()),
 			remove: formStore.remove,
+			removeBy: (id) => () => formStore.remove(id),
 			includes: formStore.includes,
 		};
 
