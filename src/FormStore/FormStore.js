@@ -47,7 +47,7 @@ export default class FormStore extends ObjectStore {
 		const { submit } = this._bus;
 		this.touch();
 		if (isFunction(submit)) {
-			const { value } = this;
+			const value = this.getValue();
 			submit(value, { isValid });
 			return isValid || options.force ? value : null;
 		}

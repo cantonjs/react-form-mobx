@@ -10,22 +10,16 @@ export default class Validation {
 		const { length } = this.rules;
 
 		if (isEmpty(value)) {
-			if (this.required) return new Error('Required');
-			return null;
+			if (this.required) throw new Error('Required');
+			return;
 		}
 
-		try {
-			for (let index = 0; index < length; index++) {
-				const rule = this.rules[index];
-				const isValid = rule(value);
-				if (!isValid) {
-					return new Error('Invalid');
-				}
+		for (let index = 0; index < length; index++) {
+			const rule = this.rules[index];
+			const isValid = rule(value);
+			if (!isValid) {
+				throw new Error('Invalid');
 			}
 		}
-		catch (err) {
-			return err;
-		}
-		return null;
 	}
 }

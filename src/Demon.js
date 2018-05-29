@@ -15,6 +15,8 @@ export default class Demon extends Component {
 			name: PropTypes.string.isRequired,
 			validation: PropTypes.func,
 			required: PropTypes.bool,
+			inputFilter: PropTypes.func,
+			outputFilter: PropTypes.func,
 		}).isRequired,
 		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
@@ -45,13 +47,22 @@ export default class Demon extends Component {
 		super(props);
 
 		const { props: forwaredProps, formStore, isObject, isArray } = props;
-		const { name, value, required, validation } = forwaredProps;
+		const {
+			name,
+			value,
+			required,
+			validation,
+			inputFilter,
+			outputFilter,
+		} = forwaredProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
 			value,
 			required,
 			validation,
+			inputFilter,
+			outputFilter,
 		});
 		this.inputStore.emitOutput();
 	}
@@ -74,7 +85,6 @@ export default class Demon extends Component {
 		try {
 			const value = mapValueOnChangeEvent(...args);
 			this.inputStore.setValue(value);
-			this.inputStore.emitOutput();
 
 			if (checkable) {
 				const checked = mapCheckOnChangeEvent(...args);
@@ -124,7 +134,13 @@ export default class Demon extends Component {
 		const {
 			inputStore: { value, isChecked, isTouched, isValid, errorMessage },
 			props: {
-				props: { name, validation, ...forwaredProps },
+				props: {
+					name,
+					validation,
+					inputFilter,
+					outputFilter,
+					...forwaredProps
+				},
 				propOnChange,
 				propOnKeyPress,
 				propOnBlur,

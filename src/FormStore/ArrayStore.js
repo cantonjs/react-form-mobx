@@ -49,6 +49,14 @@ export default class ArrayStore extends ObjectStore {
 		this.children = observable([]);
 	}
 
+	getValue() {
+		const value = [];
+		this.eachChildren((child, key) => {
+			value[key] = child.getValue();
+		});
+		return this.filters.outputFilter(value);
+	}
+
 	_findIndexByKey(key) {
 		return this.children.findIndex((item) => item.key === key);
 	}

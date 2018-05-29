@@ -42,6 +42,14 @@ export default class ObjectStore extends PrimitiveStore {
 		this.children = observable.map();
 	}
 
+	getValue() {
+		const value = {};
+		this.eachChildren((child, key) => {
+			value[key] = child.getValue();
+		});
+		return this.filters.outputFilter(value);
+	}
+
 	eachChildren(iterator) {
 		for (const [key, item] of this.children) {
 			if (item.isChecked) iterator(item, key, this.children);

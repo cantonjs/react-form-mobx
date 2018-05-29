@@ -9,6 +9,7 @@ export const isObject = (s) => typeof s === 'object';
 export const isArray = (s) => s.constructor === Array || isObservableArray(s);
 export const isEmpty = (v) => !v && v !== false && v !== 0;
 export const noop = () => {};
+export const emptyFunctionReturnsArg = (arg) => arg;
 export const clone = (s) => (isArray(s) ? s.slice() : { ...s });
 
 export const createId = (key) => `${key}[${uniqueId++}]`;
