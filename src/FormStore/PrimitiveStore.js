@@ -57,42 +57,41 @@ export default class PrimitiveStore {
 		this.validation = new Validation(validation, required, dataTypeFilter);
 	}
 
+	@action
+	try(fn) {
+		try {
+			return fn();
+		}
+		catch (error) {
+			this.error = error;
+		}
+	}
+
 	getOutputValue(value) {
-		const { _outputFilter, _dataTypeFilter } = this;
-		if (_outputFilter) value = _outputFilter(value);
-		if (_dataTypeFilter) value = _dataTypeFilter(value);
-		return value;
+		return this.try(() => {
+			const { _outputFilter, _dataTypeFilter } = this;
+			if (_outputFilter) value = _outputFilter(value);
+			if (_dataTypeFilter) value = _dataTypeFilter(value);
+			return value;
+		});
 	}
 
 	getInputValue(value) {
-		const { _inputFilter } = this;
-		if (_inputFilter) value = _inputFilter(value);
-		return value;
+		return this.try(() => {
+			const { _inputFilter } = this;
+			if (_inputFilter) value = _inputFilter(value);
+			return value;
+		});
 	}
 
 	getValue() {
-		try {
-			return this.getOutputValue(this.value);
-		}
-		catch (err) {
-			this.setError(err);
-		}
+		return this.getOutputValue(this.value);
 	}
 
 	@action
 	setValue(value) {
-		try {
-			this.value = this.getInputValue(value);
-			this.dirty();
-		}
-		catch (err) {
-			this.setError(err);
-		}
-	}
-
-	@action
-	setError(error) {
-		this.error = error;
+		this.value = this.getInputValue(value);
+		this.dirty();
 	}
 
 	@action
@@ -102,14 +101,11 @@ export default class PrimitiveStore {
 
 	@action
 	dirty() {
-		try {
+		this.try(() => {
 			this.validation.exec(this.value);
 			this.touch();
-			this.setError(null);
-		}
-		catch (err) {
-			this.setError(err);
-		}
+			this.error = null;
+		});
 	}
 
 	submit = (...args) => this.form.submit(...args);
