@@ -17,14 +17,14 @@ export default class Input extends Component {
 			<Demon props={this.props}>
 				{(
 					{ display, label, ...other },
-					{ isTouched, isValid, errorMessage },
+					{ isTouched, isInvalid, errorMessage },
 				) => (
 					<div style={{ margin: '1em', display }}>
 						<label>
 							<span>{label}</span>
 							<input {...other} />
 							{isTouched &&
-								!isValid && (
+								isInvalid && (
 								<span style={{ color: 'red' }}>{errorMessage}</span>
 							)}
 						</label>

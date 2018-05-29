@@ -15,14 +15,11 @@ export default class Checkbox extends Component {
 	render() {
 		return (
 			<Demon props={this.props} checkable>
-				{({ display, label, ...other }, helper) => (
+				{({ display, label, ...other }) => (
 					<div style={{ margin: '1em', display }}>
 						<label>
 							<span>{label}</span>
 							<input {...other} type="checkbox" />
-							{helper.isValid || (
-								<span style={{ color: 'red' }}>{helper.errorMessage}</span>
-							)}
 						</label>
 					</div>
 				)}
