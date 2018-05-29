@@ -1,5 +1,4 @@
 import { observable, computed, action } from 'mobx';
-import { emptyFunctionReturnsArg } from '../utils';
 import { createFormatDataTypeFunc } from '../DataTypes';
 import Validation from '../Validation';
 
@@ -44,8 +43,8 @@ export default class PrimitiveStore {
 			validation,
 			required,
 			dataType,
-			inputFilter = emptyFunctionReturnsArg,
-			outputFilter = emptyFunctionReturnsArg,
+			inputFilter,
+			outputFilter,
 		} = options;
 		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
 		this.key = key;
