@@ -33,9 +33,6 @@ export default class ArrayStore extends ObjectStore {
 		keysToBeAdded.forEach(() => {
 			this.push(createId(this.key));
 		});
-
-		this.emitOutput();
-		this.touch(false);
 		return true;
 	}
 

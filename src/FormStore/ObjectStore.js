@@ -21,8 +21,6 @@ export default class ObjectStore extends PrimitiveStore {
 			// TODO: should handle when value is undefined
 			if (child.value !== value) child.value = value;
 		});
-		this.emitOutput();
-		this.touch(false);
 		return true;
 	}
 

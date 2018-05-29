@@ -47,15 +47,15 @@ export default class PrimitiveStore {
 			inputFilter = emptyFunctionReturnsArg,
 			outputFilter = emptyFunctionReturnsArg,
 		} = options;
+		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
 		this.key = key;
 		this.pristineValue = pristineValue;
 		this.isChecked = isChecked;
 		this.form = form;
-		this._dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
+		this._dataTypeFilter = dataTypeFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
-		this._filters = { inputFilter, outputFilter };
-		this.validation = new Validation(validation, required);
+		this.validation = new Validation(validation, required, dataTypeFilter);
 	}
 
 	getOutputValue(value) {
@@ -68,7 +68,6 @@ export default class PrimitiveStore {
 	getInputValue(value) {
 		const { _inputFilter } = this;
 		if (_inputFilter) value = _inputFilter(value);
-		// if (_dataTypeFilter) value = _dataTypeFilter(value);
 		return value;
 	}
 
@@ -85,7 +84,7 @@ export default class PrimitiveStore {
 	setValue(value) {
 		try {
 			this.value = this.getInputValue(value);
-			this.emitOutput();
+			this.dirty();
 		}
 		catch (err) {
 			this.setError(err);
@@ -98,18 +97,14 @@ export default class PrimitiveStore {
 	}
 
 	@action
-	validate() {
-		this.validation.exec(this.value);
-	}
-
-	@action
 	touch(isTouched = true) {
 		this.isTouched = isTouched;
 	}
 
-	emitOutput() {
+	@action
+	dirty() {
 		try {
-			this.validate();
+			this.validation.exec(this.value);
 			this.touch();
 			this.setError(null);
 		}

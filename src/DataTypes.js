@@ -1,17 +1,16 @@
-import {
-	warn,
-	isEmpty,
-	isDate,
-	isString,
-	isNumber,
-	isByte,
-	padEnd,
-} from './utils';
+import { isEmpty, isDate, isString, isNumber, isByte, padEnd } from './utils';
 
 const tsToDate = (n) => new Date(+padEnd(n, 13, '0')).toISOString();
 
-const toInt = (val) => parseInt(val, 10) || 0;
-const toNumber = (val) => +val || 0;
+const validNumber = (val) => {
+	if (!/^-?\d+\.?\d*$/.test(val)) {
+		throw new Error(`${val} is NOT a valid Number`);
+	}
+};
+
+const toInt = (val) => validNumber(val) && (parseInt(val, 10) || 0);
+const toNumber = (val) => validNumber(val) && (+val || 0);
+
 const toStr = (val) => (!val ? '' : val + '');
 const toBoolean = (val) =>
 	!!val &&
@@ -21,7 +20,7 @@ const toBoolean = (val) =>
 	val !== 'null';
 const toByte = (val) => {
 	const formated = toStr(val);
-	if (!isByte(formated)) warn(`${val} is NOT a valid Byte type`);
+	if (!isByte(formated)) throw new Error(`${val} is NOT a valid Byte type`);
 	return formated;
 };
 
@@ -49,8 +48,7 @@ const toDateTime = (val) => {
 		}
 		return new Date(val).toISOString();
 	}
-	warn(`${val} is NOT a valid dateTime type`);
-	return val;
+	throw new Error(`${val} is NOT a valid dateTime type`);
 };
 
 const toDate = (val) => {
@@ -79,8 +77,7 @@ const toDate = (val) => {
 		}
 		return [year, month, date].join('/');
 	}
-	warn(`${val} is NOT a valid date type`);
-	return val;
+	throw new Error(`${val} is NOT a valid date type`);
 };
 
 const DataTypes = {
@@ -96,6 +93,7 @@ const DataTypes = {
 
 export const DataTypeKeys = Object.keys(DataTypes);
 
+// TODO: add cache
 export function createFormatDataTypeFunc(type) {
 	return function formatDataType(val) {
 		if (isEmpty(val)) return val;

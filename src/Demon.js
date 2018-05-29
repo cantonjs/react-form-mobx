@@ -14,7 +14,10 @@ export default class Demon extends Component {
 		formStore: PropTypes.object.isRequired,
 		props: PropTypes.shape({
 			name: PropTypes.string.isRequired,
-			validation: PropTypes.func,
+			validation: PropTypes.oneOfType([
+				PropTypes.arrayOf(PropTypes.func),
+				PropTypes.func,
+			]),
 			required: PropTypes.bool,
 			inputFilter: PropTypes.func,
 			outputFilter: PropTypes.func,
@@ -71,7 +74,7 @@ export default class Demon extends Component {
 			outputFilter,
 			dataType,
 		});
-		this.inputStore.emitOutput();
+		this.inputStore.dirty();
 	}
 
 	componentWillUnmount() {
@@ -105,7 +108,7 @@ export default class Demon extends Component {
 			);
 			console.error(err);
 		}
-		formStore.emitOutput();
+		formStore.dirty();
 	};
 
 	handleKeyPress = (...args) => {
