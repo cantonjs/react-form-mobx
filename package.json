@@ -4,10 +4,10 @@
 	"description": "react form in react's way, built on top of mobx",
 	"repository": "cantonjs/react-form-mobx",
 	"scripts": {
-		"start": "yarn test -- --watchAll",
+		"start": "yarn test --watchAll",
 		"demo": "cross-env REACT_DEMO=true webpack-dev-server",
 		"test": "cross-env BABEL_ENV=cjs jest",
-		"coverage": "yarn test -- --coverage",
+		"coverage": "yarn test --coverage",
 		"format": "prettier-eslint --write \"+(src|test)/**/*.js\"",
 		"rimraf": "rimraf ./dist ./lib ./es",
 		"mkdir": "mkdirp ./dist ./lib ./es",

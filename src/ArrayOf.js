@@ -21,14 +21,14 @@ class ItemGroup extends Component {
 		super(props);
 
 		const { formStore, name } = props;
-		const { pristineValue: { length }, arrayStore } = formStore;
+		const { pristineValue: { length } } = formStore;
 		const createId = () => createUniqueId(name);
 
 		this.helper = {
 			createId,
-			push: () => arrayStore.push(createId()),
-			remove: arrayStore.remove,
-			includes: arrayStore.includes,
+			push: () => formStore.push(createId()),
+			remove: formStore.remove,
+			includes: formStore.includes,
 		};
 
 		for (let i = 0; i < length; i++) {
@@ -39,7 +39,7 @@ class ItemGroup extends Component {
 	render() {
 		const { children, formStore } = this.props;
 		return isFunction(children) ?
-			children(formStore.arrayStore.ids, this.helper) :
+			children(formStore.ids, this.helper) :
 			children;
 	}
 }
