@@ -6,6 +6,7 @@ const validNumber = (val) => {
 	if (!/^-?\d+\.?\d*$/.test(val)) {
 		throw new Error(`${val} is NOT a valid Number`);
 	}
+	return true;
 };
 
 const toInt = (val) => validNumber(val) && (parseInt(val, 10) || 0);
