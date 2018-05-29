@@ -1,16 +1,18 @@
-# react-form-mobx
+# [WIP] react-form-mobx
+
+Declarative Form components for [React](https://reactjs.org/), built on top of [MobX](https://mobx.js.org/)
 
 ## WTF
 
 ```js
-import React, { Component, Fragment } from 'react';
-import { Form, Input, ArrayOf, ObjectOf } from 'react-form-mobx';
+import React, { Component } from 'react';
+import { Form, Input, Checkbox, ObjectOf } from 'react-form-mobx';
 
 export default class MyFriend extends Component {
   myData = {
     name: 'Luke Skywalker',
     height: 172,
-    starships: ['X-wing', 'Imperial shuttle'],
+    films: ['A New Hope', 'The Empire Strikes Back', 'Return of the Jedi'],
     colors: {
       hair: 'blond',
       skin: 'fair',
@@ -26,15 +28,58 @@ export default class MyFriend extends Component {
       <Form value={this.myData} onSubmit={this.handleSubmit}>
         <Input name="name" />
         <Input name="height" dataType="number" />
-        <ArrayOf name="starships">
-          {(starships, helper) => starships.map((starship) =>
-            <Input name={starship} key={starship} />
-          )}
-        </ArrayOf>
+        <Checkbox name="films" value="A New Hope" />
+        <Checkbox name="films" value="The Empire Strikes Back" />
+        <Checkbox name="films" value="Return of the Jedi" />
         <ObjectOf name="colors">
           <Input name="hair" />
           <Input name="skin" />
         </ObjectOf>
+      </Form>
+    );
+  }
+}
+```
+
+## Dynamic Array Items
+
+```js
+import React, { Component } from 'react';
+import { Form, Input, ArrayOf, ObjectOf } from 'react-form-mobx';
+
+export default class MyFriend extends Component {
+  myData = {
+    name: 'Luke Skywalker',
+    starships: ['X-wing', 'Imperial shuttle'],
+  },
+
+  handleSubmit = (data) => {
+    console.log('data', data);
+  };
+
+  render() {
+    return (
+      <Form value={this.myData} onSubmit={this.handleSubmit}>
+        <Input name="name" />
+        <ArrayOf name="starships">
+          {(starships, helper) =>
+            <div>
+              {starships.map((starship) =>
+                <span key={starship}>
+                  <Input name={starship} />
+                  <button
+                    type="button"
+                    onClick={() => helper.remove(starship)}
+                  >Remove</button>
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={helper.push}
+              >Add Starship</button>
+            </div>
+          }
+        </ArrayOf>
       </Form>
     );
   }
@@ -51,14 +96,11 @@ export default class MyInput extends Component {
   render() {
     return (
       <Demon {...this.props}>
-        {({ label, isRequired, isInvalid, errorMessage, ...other }) => (
+        {(props, { isInvalid, errorMessage }) => (
           <label>
-            <span>
-              {label} {isRequired ? "*" : ""}
-            </span>
             <input
               style={{ borderColor: isInvalid ? "red" : "green" }}
-              {...other}
+              {...props}
             />
             {isInvalid && <span style={{ color: "red" }}>{errorMessage}</span>}
           </label>
