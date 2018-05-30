@@ -1,7 +1,7 @@
 import { observable, computed, action } from 'mobx';
 import { createFormatDataTypeFunc } from '../DataTypes';
 import Validation from '../Validation';
-import { isUndefined } from '../utils';
+import { isEmpty, isArray, isPlainObject } from '../utils';
 
 export default class PrimitiveStore {
 	@observable _pristineValue;
@@ -11,8 +11,7 @@ export default class PrimitiveStore {
 
 	@computed
 	get pristineValue() {
-		const { _pristineValue, defaultValue } = this;
-		return isUndefined(_pristineValue) ? defaultValue : _pristineValue;
+		return this[this._isPristineValueEmpty ? 'defaultValue' : '_pristineValue'];
 	}
 	set pristineValue(newValue) {
 		if (this.pristineValue !== newValue) {
@@ -49,6 +48,11 @@ export default class PrimitiveStore {
 		return this.error ? this.error.message || 'Invalid' : '';
 	}
 
+	@computed
+	get _isPristineValueEmpty() {
+		return isEmpty(this._pristineValue);
+	}
+
 	constructor(pristineValue, options = {}) {
 		const {
 			key,
@@ -60,6 +64,7 @@ export default class PrimitiveStore {
 			dataType,
 			inputFilter,
 			outputFilter,
+			enforceSubmit,
 		} = options;
 		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
 		this.key = key;
@@ -71,6 +76,7 @@ export default class PrimitiveStore {
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this.validation = new Validation(validation, required, dataTypeFilter);
+		this._enforceSubmit = enforceSubmit;
 	}
 
 	@action
@@ -85,8 +91,8 @@ export default class PrimitiveStore {
 
 	getOutputValue(value) {
 		return this.try(() => {
-			const { _outputFilter, _dataTypeFilter } = this;
-			if (_outputFilter) value = _outputFilter(value);
+			const { _outputFilter, _dataTypeFilter, _pristineValue } = this;
+			if (_outputFilter) value = _outputFilter(value, _pristineValue);
 			if (_dataTypeFilter) value = _dataTypeFilter(value);
 			return value;
 		});
@@ -94,14 +100,15 @@ export default class PrimitiveStore {
 
 	getInputValue(value) {
 		return this.try(() => {
-			const { _inputFilter } = this;
-			if (_inputFilter) value = _inputFilter(value);
+			const { _inputFilter, _pristineValue } = this;
+			if (_inputFilter) value = _inputFilter(value, _pristineValue);
 			return value;
 		});
 	}
 
 	getValue() {
-		return this.getOutputValue(this.value);
+		const value = this.getOutputValue(this.value);
+		return this.shouldIgnore(value) ? undefined : value;
 	}
 
 	@action
@@ -122,6 +129,13 @@ export default class PrimitiveStore {
 			this.touch();
 			this.error = null;
 		});
+	}
+
+	shouldIgnore(value) {
+		if (this._enforceSubmit || !this._isPristineValueEmpty) return false;
+		if (isArray(value)) return !value.length;
+		if (isPlainObject(value)) return !Object.keys(value).length;
+		return isEmpty(value);
 	}
 
 	submit = (...args) => this.form.submit(...args);

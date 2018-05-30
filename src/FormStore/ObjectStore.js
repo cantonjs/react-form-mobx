@@ -41,11 +41,13 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	getValue() {
-		const value = {};
+		const res = {};
 		this.eachChildren((child, key) => {
-			value[key] = child.getValue();
+			const val = child.getValue();
+			if (!child.shouldIgnore(val)) res[key] = val;
 		});
-		return this.getOutputValue(value);
+		const value = this.getOutputValue(res);
+		return this.shouldIgnore(value) ? undefined : value;
 	}
 
 	eachChildren(iterator) {

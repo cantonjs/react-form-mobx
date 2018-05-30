@@ -26,6 +26,7 @@ export default class Demon extends Component {
 				PropTypes.oneOf(DataTypeKeys),
 				PropTypes.func,
 			]),
+			enforceSubmit: PropTypes.bool,
 		}).isRequired,
 		defaultValue: PropTypes.any,
 		checkable: PropTypes.bool,
@@ -73,6 +74,7 @@ export default class Demon extends Component {
 			inputFilter,
 			outputFilter,
 			dataType,
+			enforceSubmit,
 		} = forwardedProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
@@ -84,6 +86,7 @@ export default class Demon extends Component {
 			inputFilter,
 			outputFilter,
 			dataType,
+			enforceSubmit,
 		});
 		this.inputStore.dirty();
 	}
@@ -169,6 +172,7 @@ export default class Demon extends Component {
 					inputFilter,
 					outputFilter,
 					dataType,
+					enforceSubmit,
 					...forwardedProps
 				},
 				propOnChange,

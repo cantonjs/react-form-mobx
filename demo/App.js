@@ -68,7 +68,7 @@ export default class App extends Component {
 				/>
 				<Input label="height" name="height" dataType="integer" />
 				<ArrayOf name="starships">
-					{(starships, helper) => (
+					{(starships, { push, removeBy }) => (
 						<div>
 							{starships.map((starship) => (
 								<div key={starship}>
@@ -77,19 +77,19 @@ export default class App extends Component {
 										name={starship}
 										display="inline-block"
 									/>
-									<button type="button" onClick={() => helper.remove(starship)}>
+									<button type="button" onClick={removeBy(starship)}>
 										remove
 									</button>
 								</div>
 							))}
-							<button type="button" onClick={helper.push}>
+							<button type="button" onClick={push}>
 								add item
 							</button>
 						</div>
 					)}
 				</ArrayOf>
 				<ObjectOf name="colors">
-					<Input label="hair color" name="hair" defaultValue="black" />
+					<Input label="hair color" name="hair" />
 					<Input label="skin color" name="skin" />
 				</ObjectOf>
 

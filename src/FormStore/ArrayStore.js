@@ -48,11 +48,13 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	getValue() {
-		const value = [];
-		this.eachChildren((child, key) => {
-			value[key] = child.getValue();
+		const res = [];
+		this.eachChildren((child) => {
+			const val = child.getValue();
+			if (!this.shouldIgnore(val)) res.push(val);
 		});
-		return this.getOutputValue(value);
+		const value = this.getOutputValue(res);
+		return this.shouldIgnore(value) ? undefined : value;
 	}
 
 	_findIndexByKey(key) {
