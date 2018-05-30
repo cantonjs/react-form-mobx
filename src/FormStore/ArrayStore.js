@@ -19,17 +19,18 @@ export default class ArrayStore extends ObjectStore {
 		this.pristineValue = newValue;
 		const keysToBeDeleted = [];
 		let keysToBeAdded = [];
-		keysToBeAdded = newValue.slice(this.children.length);
-		this.eachChildren((child, key) => {
-			const value = newValue[key];
+		keysToBeAdded = this.pristineValue.slice(this.children.length);
+		this.eachChildren((child, index) => {
+			const { pristineValue } = this;
+			const { length } = pristineValue;
+			const value = index >= length ? undefined : pristineValue[index];
 			if (isUndefined(value)) keysToBeDeleted.push(child.key);
 			else if (child.value !== value) child.value = value;
 		});
 		keysToBeDeleted.forEach((key) => {
-			this.children.remove(key);
+			this.detach(key);
 			this.remove(key);
 		});
-
 		keysToBeAdded.forEach(() => {
 			this.push(createId(this.key));
 		});
@@ -90,7 +91,8 @@ export default class ArrayStore extends ObjectStore {
 
 	@action
 	detach(key) {
-		this.children.remove(key);
+		const index = this._findIndexByKey(key);
+		if (index > -1) this.children.splice(index, 1);
 	}
 
 	push = (id) => this.ids.push(id);
