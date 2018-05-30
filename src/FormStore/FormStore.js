@@ -8,8 +8,8 @@ export default class FormStore extends ObjectStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 
-		const { submit } = options;
-		this._bus = { submit };
+		const { submit, clear, reset } = options;
+		this._bus = { submit, clear, reset };
 	}
 
 	@action
@@ -20,9 +20,10 @@ export default class FormStore extends ObjectStore {
 		if (!isArray && isArrayType(value)) {
 			let store = parentStore.getChildren(key);
 			if (!store) {
-				store = parentStore.attach(key, { isArray: true });
+				store = parentStore.attach(key, { isArray: true, defaultValue: [] });
 			}
 			return store.attach(createId(key), {
+				...options,
 				isChecked: ~value.indexOf(options.value),
 			});
 		}
@@ -51,5 +52,15 @@ export default class FormStore extends ObjectStore {
 			submit(value, { isValid });
 			return isValid || options.force ? value : null;
 		}
+	};
+
+	@action
+	reset = () => {
+		this.setValue(this.pristineValue);
+	};
+
+	@action
+	clear = () => {
+		this.setValue({});
 	};
 }

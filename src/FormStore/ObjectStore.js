@@ -16,7 +16,7 @@ export default class ObjectStore extends PrimitiveStore {
 		this.pristineValue = newValue;
 
 		this.eachChildren((child, key) => {
-			const value = newValue[key];
+			const value = this.pristineValue[key];
 
 			// TODO: should handle when value is undefined
 			if (child.value !== value) child.value = value;

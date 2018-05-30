@@ -12,10 +12,17 @@ export default class ObjectOf extends Component {
 		name: this.props.name,
 	};
 
+	defaultValue = {};
+
 	render() {
 		const { children, name, ...other } = this.props;
 		return (
-			<Demon {...other} forwardedProps={this.forwardedProps} isObject>
+			<Demon
+				{...other}
+				forwardedProps={this.forwardedProps}
+				defaultValue={this.defaultValue}
+				isObject
+			>
 				{() => children}
 			</Demon>
 		);

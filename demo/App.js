@@ -18,14 +18,18 @@ export default class App extends Component {
 	formRef = createRef();
 
 	componentDidMount() {
-		setTimeout(() => {
-			this.setState(() => ({
-				height: 200,
-			}));
-		}, 2000);
+		// setTimeout(() => {
+		// 	this.setState(() => ({
+		// 		height: 200,
+		// 	}));
+		// }, 2000);
+
+		// setTimeout(() => {
+		// 	console.log(this.formRef.current.submit());
+		// }, 4000);
 
 		setTimeout(() => {
-			console.log(this.formRef.current.submit());
+			this.formRef.current.reset();
 		}, 4000);
 	}
 
@@ -85,7 +89,7 @@ export default class App extends Component {
 					)}
 				</ArrayOf>
 				<ObjectOf name="colors">
-					<Input label="hair color" name="hair" />
+					<Input label="hair color" name="hair" defaultValue="black" />
 					<Input label="skin color" name="skin" />
 				</ObjectOf>
 

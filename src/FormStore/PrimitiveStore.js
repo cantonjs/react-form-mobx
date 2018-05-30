@@ -1,12 +1,26 @@
 import { observable, computed, action } from 'mobx';
 import { createFormatDataTypeFunc } from '../DataTypes';
 import Validation from '../Validation';
+import { isUndefined } from '../utils';
 
 export default class PrimitiveStore {
-	@observable pristineValue;
+	@observable _pristineValue;
 	@observable isChecked = true;
 	@observable isTouched = false;
 	@observable error = null;
+
+	@computed
+	get pristineValue() {
+		const { _pristineValue, defaultValue } = this;
+		return isUndefined(_pristineValue) ? defaultValue : _pristineValue;
+	}
+	set pristineValue(newValue) {
+		if (this.pristineValue !== newValue) {
+			this._pristineValue = newValue;
+			return true;
+		}
+		return false;
+	}
 
 	@computed
 	get value() {
@@ -38,6 +52,7 @@ export default class PrimitiveStore {
 	constructor(pristineValue, options = {}) {
 		const {
 			key,
+			defaultValue,
 			isChecked = true,
 			form = this,
 			validation,
@@ -48,7 +63,8 @@ export default class PrimitiveStore {
 		} = options;
 		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
 		this.key = key;
-		this.pristineValue = pristineValue;
+		this._pristineValue = pristineValue;
+		this.defaultValue = defaultValue;
 		this.isChecked = isChecked;
 		this.form = form;
 		this._dataTypeFilter = dataTypeFilter;
@@ -109,4 +125,6 @@ export default class PrimitiveStore {
 	}
 
 	submit = (...args) => this.form.submit(...args);
+	reset = (...args) => this.form.reset(...args);
+	clear = (...args) => this.form.clear(...args);
 }

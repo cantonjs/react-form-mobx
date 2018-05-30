@@ -66,6 +66,14 @@ export default class Form extends Component {
 		return this.formStore.submit();
 	}
 
+	reset() {
+		return this.formStore.reset();
+	}
+
+	clear() {
+		return this.formStore.clear();
+	}
+
 	render() {
 		const { value, onValidChange, onValid, onInvalid, ...other } = this.props;
 		return (

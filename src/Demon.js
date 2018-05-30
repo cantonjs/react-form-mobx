@@ -1,7 +1,7 @@
 import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { isFunction, warn } from './utils';
+import { isFunction, isUndefined, warn } from './utils';
 import { DataTypeKeys } from './DataTypes';
 import Context from './Context';
 import withFormStore from './withFormStore';
@@ -14,6 +14,7 @@ export default class Demon extends Component {
 		formStore: PropTypes.object.isRequired,
 		forwardedProps: PropTypes.shape({
 			name: PropTypes.string.isRequired,
+			defaultValue: PropTypes.any,
 			validation: PropTypes.oneOfType([
 				PropTypes.arrayOf(PropTypes.func),
 				PropTypes.func,
@@ -26,6 +27,7 @@ export default class Demon extends Component {
 				PropTypes.func,
 			]),
 		}).isRequired,
+		defaultValue: PropTypes.any,
 		checkable: PropTypes.bool,
 		mapValueOnChangeEvent: PropTypes.func,
 		mapCheckOnChangeEvent: PropTypes.func,
@@ -40,6 +42,7 @@ export default class Demon extends Component {
 
 	static defaultProps = {
 		forwardedProps: {},
+		defaultValue: '',
 		checkable: false,
 		mapValueOnChangeEvent: (ev) => ev.currentTarget.value,
 		mapCheckOnChangeEvent: (ev) => ev.currentTarget.checked,
@@ -54,10 +57,17 @@ export default class Demon extends Component {
 	constructor(props) {
 		super(props);
 
-		const { forwardedProps, formStore, isObject, isArray } = props;
+		const {
+			forwardedProps,
+			formStore,
+			defaultValue,
+			isObject,
+			isArray,
+		} = props;
 		const {
 			name,
 			value,
+			defaultValue: _defaultValue,
 			required,
 			validation,
 			inputFilter,
@@ -68,6 +78,7 @@ export default class Demon extends Component {
 			isObject,
 			isArray,
 			value,
+			defaultValue: isUndefined(_defaultValue) ? defaultValue : _defaultValue,
 			required,
 			validation,
 			inputFilter,
@@ -152,6 +163,7 @@ export default class Demon extends Component {
 			},
 			props: {
 				forwardedProps: {
+					defaultValue,
 					name,
 					validation,
 					inputFilter,
