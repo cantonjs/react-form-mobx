@@ -4,9 +4,11 @@ import Context from './Context';
 
 export default function withFormStore() {
 	return function createFormStoreComponent(WrappedComponent) {
+		const { displayName, name } = WrappedComponent;
+
 		@polyfill
 		class WithFormStore extends Component {
-			static displayName = 'WithFormStore(Demon)';
+			static displayName = `WithFormStore(${displayName || name})`;
 
 			render() {
 				return (

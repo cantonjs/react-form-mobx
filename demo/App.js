@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { Form, ObjectOf, ArrayOf } from '../src';
+import { Form, Submit, Reset, Clear, ObjectOf, ArrayOf } from '../src';
 import Input from './Input';
 import Checkbox from './Checkbox';
 
@@ -96,6 +96,10 @@ export default class App extends Component {
 				<Checkbox label="foo" value="foo" name="checkboxes" />
 				<Checkbox label="bar" value="bar" name="checkboxes" />
 				<Checkbox label="baz" value="baz" name="checkboxes" />
+
+				<Submit>submit</Submit>
+				<Reset>reset</Reset>
+				<Clear>clear</Clear>
 			</Form>
 		);
 	}

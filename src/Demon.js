@@ -29,9 +29,9 @@ export default class Demon extends Component {
 		}).isRequired,
 		defaultValue: PropTypes.any,
 		checkable: PropTypes.bool,
-		mapValueOnChangeEvent: PropTypes.func,
-		mapCheckOnChangeEvent: PropTypes.func,
-		mapKeyOnKeyPressEvent: PropTypes.func,
+		getValueFromChangeEvent: PropTypes.func,
+		getCheckedFromChangeEvent: PropTypes.func,
+		getKeyFromKeyPressEvent: PropTypes.func,
 		propOnChange: PropTypes.string,
 		propOnKeyPress: PropTypes.string,
 		propOnBlur: PropTypes.string,
@@ -44,9 +44,9 @@ export default class Demon extends Component {
 		forwardedProps: {},
 		defaultValue: '',
 		checkable: false,
-		mapValueOnChangeEvent: (ev) => ev.currentTarget.value,
-		mapCheckOnChangeEvent: (ev) => ev.currentTarget.checked,
-		mapKeyOnKeyPressEvent: (ev) => ev.key,
+		getValueFromChangeEvent: (ev) => ev.currentTarget.value,
+		getCheckedFromChangeEvent: (ev) => ev.currentTarget.checked,
+		getKeyFromKeyPressEvent: (ev) => ev.key,
 		propOnChange: 'onChange',
 		propOnKeyPress: 'onKeyPress',
 		propOnBlur: 'onBlur',
@@ -96,26 +96,26 @@ export default class Demon extends Component {
 		const {
 			forwardedProps,
 			checkable,
-			mapValueOnChangeEvent,
-			mapCheckOnChangeEvent,
+			getValueFromChangeEvent,
+			getCheckedFromChangeEvent,
 			propOnChange,
 			formStore,
 		} = this.props;
 		const onChange = forwardedProps[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
 		try {
-			const value = mapValueOnChangeEvent(...args);
+			const value = getValueFromChangeEvent(...args);
 			this.inputStore.setValue(value);
 
 			if (checkable) {
-				const checked = mapCheckOnChangeEvent(...args);
+				const checked = getCheckedFromChangeEvent(...args);
 				this.inputStore.isChecked = checked;
 			}
 		}
 		catch (err) {
 			warn(
 				`Failed to map value from "${propOnChange}",`,
-				'changing "props.mapValueOnChangeEvent" may resolve this problem.',
+				'changing "props.getValueFromChangeEvent" may resolve this problem.',
 			);
 			console.error(err);
 		}
@@ -127,18 +127,18 @@ export default class Demon extends Component {
 			forwardedProps,
 			formStore,
 			propOnKeyPress,
-			mapKeyOnKeyPressEvent,
+			getKeyFromKeyPressEvent,
 		} = this.props;
 		const onKeyPress = forwardedProps[propOnKeyPress];
 		if (isFunction(onKeyPress)) onKeyPress(...args);
 		try {
-			const key = mapKeyOnKeyPressEvent(...args);
+			const key = getKeyFromKeyPressEvent(...args);
 			if (key === 'Enter') formStore.submit();
 		}
 		catch (err) {
 			warn(
 				`Failed to map value from "${propOnKeyPress}",`,
-				'changing "props.mapKeyOnKeyPressEvent" may resolve this problem.',
+				'changing "props.getKeyFromKeyPressEvent" may resolve this problem.',
 			);
 			console.error(err);
 		}
