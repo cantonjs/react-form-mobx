@@ -9,7 +9,7 @@ export default class App extends Component {
 		height: 172,
 		starships: ['X-wing', 'Imperial shuttle'],
 		colors: {
-			hair: 'blond',
+			// hair: 'blond',
 			skin: 'fair',
 		},
 		checkboxes: ['foo', 'baz'],
@@ -89,7 +89,7 @@ export default class App extends Component {
 					)}
 				</ArrayOf>
 				<ObjectOf name="colors">
-					<Input label="hair color" name="hair" />
+					<Input label="hair color" name="hair" defaultValue="black" />
 					<Input label="skin color" name="skin" />
 				</ObjectOf>
 
