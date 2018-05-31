@@ -1,7 +1,8 @@
 import { isEmpty } from './utils';
 
 export default class Validation {
-	constructor(rules, required, dataTypeFilter) {
+	constructor(options) {
+		const { validation: rules, required, dataTypeFilter } = options;
 		this.required = required;
 		this.rules = [].concat(rules).filter(Boolean);
 

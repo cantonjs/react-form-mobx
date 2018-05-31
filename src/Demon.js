@@ -28,7 +28,6 @@ export default class Demon extends Component {
 			]),
 			enforceSubmit: PropTypes.bool,
 		}).isRequired,
-		defaultValue: PropTypes.any,
 		checkable: PropTypes.bool,
 		getValueFromChangeEvent: PropTypes.func,
 		getCheckedFromChangeEvent: PropTypes.func,
@@ -43,7 +42,6 @@ export default class Demon extends Component {
 
 	static defaultProps = {
 		forwardedProps: {},
-		defaultValue: '',
 		checkable: false,
 		getValueFromChangeEvent: (ev) => ev.currentTarget.value,
 		getCheckedFromChangeEvent: (ev) => ev.currentTarget.checked,
@@ -58,17 +56,11 @@ export default class Demon extends Component {
 	constructor(props) {
 		super(props);
 
-		const {
-			forwardedProps,
-			formStore,
-			defaultValue,
-			isObject,
-			isArray,
-		} = props;
+		const { forwardedProps, formStore, isObject, isArray } = props;
 		const {
 			name,
 			value,
-			defaultValue: _defaultValue,
+			defaultValue,
 			required,
 			validation,
 			inputFilter,
@@ -80,7 +72,7 @@ export default class Demon extends Component {
 			isObject,
 			isArray,
 			value,
-			defaultValue: isUndefined(_defaultValue) ? defaultValue : _defaultValue,
+			defaultValue,
 			required,
 			validation,
 			inputFilter,

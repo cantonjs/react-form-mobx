@@ -1,7 +1,13 @@
 import { observable, computed, action } from 'mobx';
 import { createFormatDataTypeFunc } from '../DataTypes';
 import Validation from '../Validation';
-import { isEmpty, isArray, isPlainObject } from '../utils';
+import {
+	isEmpty,
+	isArray,
+	isUndefined,
+	isPlainObject,
+	filtersFlow,
+} from '../utils';
 
 export default class PrimitiveStore {
 	// the real pristine value, provided by setting form value
@@ -16,7 +22,8 @@ export default class PrimitiveStore {
 
 	@computed
 	get pristineValue() {
-		return this[this._isPristineValueEmpty ? 'defaultValue' : '_pristineValue'];
+		if (this._isPristineValueEmpty) return this.getDefaultStoreValue();
+		return this._pristineValue;
 	}
 	set pristineValue(value) {
 		this._pristineValue = value;
@@ -25,7 +32,8 @@ export default class PrimitiveStore {
 
 	@computed
 	get value() {
-		return this[this._isCurrentValueEmpty ? 'defaultValue' : '_value'];
+		if (this._isCurrentValueEmpty) return this.getDefaultStoreValue();
+		return this._value;
 	}
 	set value(value) {
 		this._value = value;
@@ -63,8 +71,6 @@ export default class PrimitiveStore {
 			defaultValue,
 			isChecked = true,
 			form = this,
-			validation,
-			required,
 			dataType,
 			inputFilter,
 			outputFilter,
@@ -78,12 +84,20 @@ export default class PrimitiveStore {
 		this._dataTypeFilter = dataTypeFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
-		this.validation = new Validation(validation, required, dataTypeFilter);
+		this.validation = new Validation({
+			dataTypeFilter,
+			...options,
+		});
 		this._enforceSubmit = enforceSubmit;
 
-		// TODO: should apply `inputFilter()` and `dirty()`
-		this._pristineValue = pristineValue;
-		this._value = pristineValue;
+		const intialValue = this.getInputValue(pristineValue);
+
+		this._pristineValue = intialValue;
+		this._value = intialValue;
+	}
+
+	getDefaultStoreValue() {
+		return '';
 	}
 
 	@action
@@ -96,20 +110,28 @@ export default class PrimitiveStore {
 		}
 	}
 
+	_ensureDefaultValue = (value) => {
+		const { defaultValue } = this;
+		if (!isUndefined(defaultValue) && isEmpty(value)) {
+			return defaultValue;
+		}
+		return value;
+	};
+
 	getOutputValue(value) {
 		return this.try(() => {
-			const { _outputFilter, _dataTypeFilter, _pristineValue } = this;
-			if (_outputFilter) value = _outputFilter(value, _pristineValue);
-			if (_dataTypeFilter) value = _dataTypeFilter(value);
-			return value;
+			const { _outputFilter, _dataTypeFilter, _ensureDefaultValue } = this;
+			return filtersFlow(
+				[_outputFilter, _dataTypeFilter, _ensureDefaultValue],
+				value,
+			);
 		});
 	}
 
 	getInputValue(value) {
 		return this.try(() => {
-			const { _inputFilter, _pristineValue } = this;
-			if (_inputFilter) value = _inputFilter(value, _pristineValue);
-			return value;
+			const { _inputFilter, _ensureDefaultValue } = this;
+			return filtersFlow([_inputFilter, _ensureDefaultValue], value);
 		});
 	}
 

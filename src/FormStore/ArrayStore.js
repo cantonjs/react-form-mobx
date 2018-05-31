@@ -8,18 +8,6 @@ export default class ArrayStore extends ObjectStore {
 	_index = 0;
 
 	@computed
-	get value() {
-		const res = [];
-		this.eachChildren((child, key) => {
-			res[key] = child.value;
-		});
-		return res;
-	}
-	set value(value) {
-		this._value = value;
-	}
-
-	@computed
 	get length() {
 		return this.ids.length;
 	}
@@ -27,6 +15,10 @@ export default class ArrayStore extends ObjectStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 		this.children = observable([]);
+	}
+
+	getDefaultStoreValue() {
+		return [];
 	}
 
 	@action
@@ -52,7 +44,7 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	getValue() {
-		const res = [];
+		const res = this.getDefaultStoreValue();
 		this.eachChildren((child) => {
 			const val = child.getValue();
 			if (!this.shouldIgnore(val)) res.push(val);

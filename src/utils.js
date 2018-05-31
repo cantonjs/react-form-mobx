@@ -27,3 +27,13 @@ export const padEnd = (target, length, fillString) => {
 	while (target.length < length) target += fillString;
 	return target;
 };
+
+export const filtersFlow = (filters, value, options) => {
+	filters = filters.filter(Boolean);
+	const next = (value, options) => {
+		if (!filters.length) return value;
+		const filter = filters.shift();
+		return next(filter(value, options), options);
+	};
+	return next(value, options);
+};

@@ -4,7 +4,7 @@ import PrimitiveStore from './PrimitiveStore';
 export default class ObjectStore extends PrimitiveStore {
 	@computed
 	get value() {
-		const res = {};
+		const res = this.getDefaultStoreValue();
 		this.eachChildren((child, key) => {
 			res[key] = child.value;
 		});
@@ -31,6 +31,10 @@ export default class ObjectStore extends PrimitiveStore {
 		this.children = observable.map();
 	}
 
+	getDefaultStoreValue() {
+		return {};
+	}
+
 	@action
 	applySettingValue(newValue, type, method) {
 		// TODO: should handle deleted and added keys
@@ -42,7 +46,7 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	getValue() {
-		const res = {};
+		const res = this.getDefaultStoreValue();
 		this.eachChildren((child, key) => {
 			const val = child.getValue();
 			if (!child.shouldIgnore(val)) res[key] = val;

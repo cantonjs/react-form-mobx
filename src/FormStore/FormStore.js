@@ -23,7 +23,7 @@ export default class FormStore extends ObjectStore {
 		if (!isArray && isArrayType(value)) {
 			let store = parentStore.getChildren(key);
 			if (!store) {
-				store = parentStore.attach(key, { isArray: true, defaultValue: [] });
+				store = parentStore.attach(key, { isArray: true });
 			}
 			return store.attach(createId(key), {
 				...options,

@@ -23,14 +23,12 @@ export default class App extends Component {
 		// 		height: 200,
 		// 	}));
 		// }, 2000);
-
 		// setTimeout(() => {
 		// 	console.log(this.formRef.current.submit());
 		// }, 4000);
-
-		setTimeout(() => {
-			this.formRef.current.reset();
-		}, 4000);
+		// setTimeout(() => {
+		// 	this.formRef.current.reset();
+		// }, 4000);
 	}
 
 	handleSubmit = (formData, { isValid }) => {
