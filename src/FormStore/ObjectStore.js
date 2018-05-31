@@ -3,15 +3,6 @@ import PrimitiveStore from './PrimitiveStore';
 
 export default class ObjectStore extends PrimitiveStore {
 	@computed
-	get pristineValue() {
-		return this[this._isPristineValueEmpty ? 'defaultValue' : '_pristineValue'];
-	}
-	set pristineValue(value) {
-		this._pristineValue = value;
-		return true;
-	}
-
-	@computed
 	get value() {
 		const res = {};
 		this.eachChildren((child, key) => {
