@@ -3,6 +3,15 @@ import PrimitiveStore from './PrimitiveStore';
 
 export default class ObjectStore extends PrimitiveStore {
 	@computed
+	get pristineValue() {
+		return this[this._isPristineValueEmpty ? 'defaultValue' : '_pristineValue'];
+	}
+	set pristineValue(value) {
+		this._pristineValue = value;
+		return true;
+	}
+
+	@computed
 	get value() {
 		const res = {};
 		this.eachChildren((child, key) => {
@@ -10,17 +19,8 @@ export default class ObjectStore extends PrimitiveStore {
 		});
 		return res;
 	}
-	set value(newValue) {
-		// TODO: should handle deleted and added keys
-
-		this.pristineValue = newValue;
-
-		this.eachChildren((child, key) => {
-			const value = this.pristineValue[key];
-
-			// TODO: should handle when value is undefined
-			if (child.value !== value) child.value = value;
-		});
+	set value(value) {
+		this._value = value;
 		return true;
 	}
 
@@ -38,6 +38,16 @@ export default class ObjectStore extends PrimitiveStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 		this.children = observable.map();
+	}
+
+	@action
+	applySettingValue(newValue, type, method) {
+		// TODO: should handle deleted and added keys
+		this[type] = newValue;
+		this.eachChildren((child, key) => {
+			const value = this[type][key];
+			child[method](value);
+		});
 	}
 
 	getValue() {

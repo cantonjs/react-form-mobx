@@ -15,26 +15,8 @@ export default class ArrayStore extends ObjectStore {
 		});
 		return res;
 	}
-	set value(newValue) {
-		this.pristineValue = newValue;
-		const keysToBeDeleted = [];
-		let keysToBeAdded = [];
-		keysToBeAdded = this.pristineValue.slice(this.children.length);
-		this.eachChildren((child, index) => {
-			const { pristineValue } = this;
-			const { length } = pristineValue;
-			const value = index >= length ? undefined : pristineValue[index];
-			if (isUndefined(value)) keysToBeDeleted.push(child.key);
-			else if (child.value !== value) child.value = value;
-		});
-		keysToBeDeleted.forEach((key) => {
-			this.detach(key);
-			this.remove(key);
-		});
-		keysToBeAdded.forEach(() => {
-			this.push(createId(this.key));
-		});
-		return true;
+	set value(value) {
+		this._value = value;
 	}
 
 	@computed
@@ -45,6 +27,28 @@ export default class ArrayStore extends ObjectStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 		this.children = observable([]);
+	}
+
+	@action
+	applySettingValue(newValue, type, method) {
+		this[type] = newValue;
+		const keysToBeDeleted = [];
+		let keysToBeAdded = [];
+		keysToBeAdded = this.pristineValue.slice(this.children.length);
+		this.eachChildren((child, index) => {
+			const parentValue = this[type];
+			const { length } = parentValue;
+			const value = index >= length ? undefined : parentValue[index];
+			if (isUndefined(value)) keysToBeDeleted.push(child.key);
+			else child[method](value);
+		});
+		keysToBeDeleted.forEach((key) => {
+			this.detach(key);
+			this.remove(key);
+		});
+		keysToBeAdded.forEach(() => {
+			this.push(createId(this.key));
+		});
 	}
 
 	getValue() {

@@ -6,7 +6,10 @@ import ArrayStore from './ArrayStore';
 
 export default class FormStore extends ObjectStore {
 	constructor(pristineValue, options = {}) {
-		super(pristineValue, options);
+		super(pristineValue, {
+			...options,
+			key: '<FORM>',
+		});
 
 		const { submit, clear, reset } = options;
 		this._bus = { submit, clear, reset };
@@ -56,11 +59,11 @@ export default class FormStore extends ObjectStore {
 
 	@action
 	reset = () => {
-		this.setValue(this.pristineValue);
+		this.setPristineValue(this.pristineValue);
 	};
 
 	@action
 	clear = () => {
-		this.setValue({});
+		this.setPristineValue({});
 	};
 }

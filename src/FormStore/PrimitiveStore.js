@@ -4,7 +4,12 @@ import Validation from '../Validation';
 import { isEmpty, isArray, isPlainObject } from '../utils';
 
 export default class PrimitiveStore {
+	// the real pristine value, provided by setting form value
 	@observable _pristineValue;
+
+	// the real current value, provided by form value or user typing
+	@observable _value;
+
 	@observable isChecked = true;
 	@observable isTouched = false;
 	@observable error = null;
@@ -13,24 +18,18 @@ export default class PrimitiveStore {
 	get pristineValue() {
 		return this[this._isPristineValueEmpty ? 'defaultValue' : '_pristineValue'];
 	}
-	set pristineValue(newValue) {
-		if (this.pristineValue !== newValue) {
-			this._pristineValue = newValue;
-			return true;
-		}
-		return false;
+	set pristineValue(value) {
+		this._pristineValue = value;
+		return true;
 	}
 
 	@computed
 	get value() {
-		return this.pristineValue;
+		return this[this._isCurrentValueEmpty ? 'defaultValue' : '_value'];
 	}
-	set value(newValue) {
-		if (this.pristineValue !== newValue) {
-			this.pristineValue = newValue;
-			return true;
-		}
-		return false;
+	set value(value) {
+		this._value = value;
+		return true;
 	}
 
 	@computed
@@ -53,6 +52,11 @@ export default class PrimitiveStore {
 		return isEmpty(this._pristineValue);
 	}
 
+	@computed
+	get _isCurrentValueEmpty() {
+		return isEmpty(this._value);
+	}
+
 	constructor(pristineValue, options = {}) {
 		const {
 			key,
@@ -68,15 +72,18 @@ export default class PrimitiveStore {
 		} = options;
 		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
 		this.key = key;
-		this._pristineValue = pristineValue;
+		this.form = form;
 		this.defaultValue = defaultValue;
 		this.isChecked = isChecked;
-		this.form = form;
 		this._dataTypeFilter = dataTypeFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this.validation = new Validation(validation, required, dataTypeFilter);
 		this._enforceSubmit = enforceSubmit;
+
+		// TODO: should apply `inputFilter()` and `dirty()`
+		this._pristineValue = pristineValue;
+		this._value = pristineValue;
 	}
 
 	@action
@@ -106,6 +113,11 @@ export default class PrimitiveStore {
 		});
 	}
 
+	@action
+	applySettingValue(newValue, type) {
+		this[type] = newValue;
+	}
+
 	getValue() {
 		const value = this.getOutputValue(this.value);
 		return this.shouldIgnore(value) ? undefined : value;
@@ -113,7 +125,15 @@ export default class PrimitiveStore {
 
 	@action
 	setValue(value) {
-		this.value = this.getInputValue(value);
+		this.applySettingValue(value, 'value', 'setValue');
+		this.dirty();
+	}
+
+	@action
+	setPristineValue(value) {
+		const finalValue = this.getInputValue(value);
+		this.applySettingValue(finalValue, 'pristineValue', 'setPristineValue');
+		this.applySettingValue(finalValue, 'value', 'setValue');
 		this.dirty();
 	}
 
@@ -132,6 +152,13 @@ export default class PrimitiveStore {
 	}
 
 	shouldIgnore(value) {
+		// console.log(
+		// 	this.key,
+		// 	this._isPristineValueEmpty,
+		// 	this._pristineValue,
+		// 	value,
+		// );
+
 		if (this._enforceSubmit || !this._isPristineValueEmpty) return false;
 		if (isArray(value)) return !value.length;
 		if (isPlainObject(value)) return !Object.keys(value).length;
