@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import DemonButton from './DemonButton';
 
-export default function Reset(props) {
-	return (
-		<DemonButton forwardedProps={props} type="reset">
-			{(forwardedProps) => <button {...forwardedProps} type="button" />}
-		</DemonButton>
-	);
+export default class Reset extends Component {
+	render() {
+		return (
+			<DemonButton forwardedProps={this.props} type="reset">
+				{(forwardedProps) => <button {...forwardedProps} type="button" />}
+			</DemonButton>
+		);
+	}
 }
