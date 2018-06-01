@@ -78,9 +78,9 @@ export default class ObjectStore extends PrimitiveStore {
 
 	@action
 	attach(key, options = {}) {
-		const { pristineValue, form } = this;
-		const value = pristineValue[key];
-		return form.createChildren(this, key, value, options);
+		const { sourceValue, form } = this;
+		const childVal = sourceValue[key];
+		return form.createChildren(this, key, childVal, options);
 	}
 
 	@action

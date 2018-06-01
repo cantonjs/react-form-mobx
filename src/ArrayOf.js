@@ -21,7 +21,7 @@ class ItemGroup extends Component {
 		super(props);
 
 		const { formStore, name } = props;
-		const { pristineValue: { length } } = formStore;
+		const { sourceValue: { length } } = formStore;
 		const createId = () => createUniqueId(name);
 
 		this.helper = {

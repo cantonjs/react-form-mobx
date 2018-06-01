@@ -6,12 +6,15 @@ import {
 	isArray,
 	isUndefined,
 	isPlainObject,
+	clone,
 	filtersFlow,
 } from '../utils';
 
 export default class PrimitiveStore {
 	// the real pristine value, provided by setting form value
-	@observable _pristineValue;
+	@observable pristineValue;
+
+	@observable _sourceValue;
 
 	// the real current value, provided by form value or user typing
 	@observable _value;
@@ -21,12 +24,13 @@ export default class PrimitiveStore {
 	@observable error = null;
 
 	@computed
-	get pristineValue() {
-		if (this._isPristineValueEmpty) return this.getDefaultStoreValue();
-		return this._pristineValue;
+	get sourceValue() {
+		return this._sourceValue;
 	}
-	set pristineValue(value) {
-		this._pristineValue = value;
+	set sourceValue(value) {
+		this._sourceValue = isEmpty(value) ?
+			this.getDefaultStoreValue() :
+			clone(value);
 		return true;
 	}
 
@@ -57,7 +61,7 @@ export default class PrimitiveStore {
 
 	@computed
 	get _isPristineValueEmpty() {
-		return isEmpty(this._pristineValue);
+		return isEmpty(this.pristineValue);
 	}
 
 	@computed
@@ -91,8 +95,8 @@ export default class PrimitiveStore {
 		this._enforceSubmit = enforceSubmit;
 
 		const intialValue = this.getInputValue(pristineValue);
-
-		this._pristineValue = intialValue;
+		this.pristineValue = intialValue;
+		this.sourceValue = intialValue;
 		this._value = intialValue;
 	}
 
@@ -120,10 +124,16 @@ export default class PrimitiveStore {
 
 	getOutputValue(value) {
 		return this.try(() => {
-			const { _outputFilter, _dataTypeFilter, _ensureDefaultValue } = this;
+			const {
+				_outputFilter,
+				_dataTypeFilter,
+				_ensureDefaultValue,
+				pristineValue,
+			} = this;
 			return filtersFlow(
 				[_outputFilter, _dataTypeFilter, _ensureDefaultValue],
 				value,
+				{ pristineValue },
 			);
 		});
 	}
@@ -154,7 +164,8 @@ export default class PrimitiveStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		this.applySettingValue(finalValue, 'pristineValue', 'setPristineValue');
+		this.pristineValue = finalValue;
+		this.applySettingValue(finalValue, 'sourceValue', 'setPristineValue');
 		this.applySettingValue(finalValue, 'value', 'setValue');
 		this.dirty();
 	}
@@ -177,7 +188,7 @@ export default class PrimitiveStore {
 		// console.log(
 		// 	this.key,
 		// 	this._isPristineValueEmpty,
-		// 	this._pristineValue,
+		// 	this.pristineValue,
 		// 	value,
 		// );
 

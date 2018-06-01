@@ -26,7 +26,7 @@ export default class ArrayStore extends ObjectStore {
 		this[type] = newValue;
 		const keysToBeDeleted = [];
 		let keysToBeAdded = [];
-		keysToBeAdded = this.pristineValue.slice(this.children.length);
+		keysToBeAdded = this.sourceValue.slice(this.children.length);
 		this.eachChildren((child, index) => {
 			const parentValue = this[type];
 			const { length } = parentValue;
@@ -81,9 +81,9 @@ export default class ArrayStore extends ObjectStore {
 
 	@action
 	attach(key, options = {}) {
-		const { pristineValue, form } = this;
+		const { sourceValue, form } = this;
 		const index = this._index++;
-		const value = index >= pristineValue.length ? '' : pristineValue[index];
+		const value = index >= sourceValue.length ? '' : sourceValue[index];
 		return form.createChildren(this, key, value, options);
 	}
 

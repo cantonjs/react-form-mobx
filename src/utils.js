@@ -18,6 +18,12 @@ export const isByte = (s) =>
 export const isObject = (s) => typeof s === 'object';
 export const isPlainObject = (obj) => !!(obj && isObject(obj) && !isDate(obj));
 
+export const clone = (s) => {
+	if (isArray(s)) return s.slice();
+	if (isObject(s)) return { ...s };
+	return s;
+};
+
 export const createId = (key) => `${key}[${uniqueId++}]`;
 
 export const warn = (...msgs) =>
