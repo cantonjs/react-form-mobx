@@ -2,11 +2,19 @@ import { isEmpty } from './utils';
 
 export default class Validation {
 	static enum(list) {
-		return function validateEnum(val) {
-			const included = !!~list.indexOf(val);
-			if (included) return true;
+		return function validateByEnum(val) {
+			const valid = !!~list.indexOf(val);
+			if (valid) return true;
 			const whiteList = list.map((str) => `"${str}"`).join(', ');
-			throw new Error(`Only one of ${whiteList} is valid.`);
+			throw new Error(`Expect one of ${whiteList}, but received "${val}"`);
+		};
+	}
+
+	static pattern(regexp) {
+		return function validateByPattern(val) {
+			const valid = regexp.test(val);
+			if (valid) return true;
+			throw new Error(`"${val}" did NOT match pattern "${regexp}"`);
 		};
 	}
 
@@ -15,12 +23,14 @@ export default class Validation {
 			validation: rules,
 			required,
 			enumeration,
+			pattern,
 			dataTypeFilter,
 		} = options;
 		this.required = required;
 		this.rules = [].concat(rules).filter(Boolean);
 
 		if (enumeration) this.rules.push(Validation.enum(enumeration));
+		if (pattern) this.rules.push(Validation.pattern(pattern));
 
 		if (dataTypeFilter) {
 			const dataTypeValidator = (val) => dataTypeFilter(val) || true;

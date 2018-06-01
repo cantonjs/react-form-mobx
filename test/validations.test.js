@@ -69,3 +69,35 @@ describe('enum prop', () => {
 		);
 	});
 });
+
+describe('pattern prop', () => {
+	test('should be invalid if fail to pattern', () => {
+		const formRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" pattern={/^f/} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to pattern', () => {
+		const formRef = createRef();
+		const value = { hello: 'foo' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" pattern={/^f/} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
