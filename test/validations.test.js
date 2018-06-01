@@ -165,3 +165,191 @@ describe('minLength prop', () => {
 		);
 	});
 });
+
+describe('maximum prop', () => {
+	test('should be invalid if fail to maximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" maximum={30} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to maximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" maximum={100} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+
+	test('should be valid if equal to maximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" maximum={32} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
+
+describe('exclusiveMaximum prop', () => {
+	test('should be invalid if fail to exclusiveMaximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMaximum={30} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to exclusiveMaximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMaximum={100} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+
+	test('should be invalid if equal to exclusiveMaximum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMaximum={32} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+});
+
+describe('minimum prop', () => {
+	test('should be invalid if fail to minimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" minimum={100} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to minimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" minimum={30} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+
+	test('should be valid if equal to minimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" minimum={32} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
+
+describe('exclusiveMinimum prop', () => {
+	test('should be invalid if fail to exclusiveMinimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMinimum={100} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to exclusiveMinimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMinimum={30} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+
+	test('should be invalid if equal to exclusiveMinimum', () => {
+		const formRef = createRef();
+		const value = { num: 32 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="num" exclusiveMinimum={32} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+});

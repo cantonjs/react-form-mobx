@@ -43,6 +43,50 @@ export default class Validation {
 		};
 	}
 
+	static maximum(max) {
+		return function validateByMaximum(val) {
+			return throwIfNot(
+				max >= +val,
+
+				/* eslint-disable-next-line max-len */
+				`Expect strictly less than or exactly equal "${max}", but received "${val}"`,
+			);
+		};
+	}
+
+	static exclusiveMaximum(max) {
+		return function validateByExclusiveMaximum(val) {
+			return throwIfNot(
+				max > +val,
+
+				/* eslint-disable-next-line max-len */
+				`Expect strictly less than (not equal to) "${max}", but received "${val}"`,
+			);
+		};
+	}
+
+	static minimum(min) {
+		return function validateByMinimum(val) {
+			return throwIfNot(
+				min <= +val,
+
+				/* eslint-disable-next-line max-len */
+				`Expect strictly greater than or exactly equal "${min}", but received "${val}"`,
+			);
+		};
+	}
+
+	static exclusiveMinimum(min) {
+		return function validateByExclusiveMinimum(val) {
+			return throwIfNot(
+				min < +val,
+
+				/* eslint-disable-next-line max-len */
+				`Expect strictly greater than (not equal to) "${min}", but received "${val}"`,
+			);
+		};
+	}
+
 	constructor(options) {
 		const {
 			validation: rules,
@@ -51,6 +95,10 @@ export default class Validation {
 			pattern,
 			maxLength,
 			minLength,
+			maximum,
+			exclusiveMaximum,
+			minimum,
+			exclusiveMinimum,
 			dataTypeFilter,
 		} = options;
 		this.required = required;
@@ -60,6 +108,14 @@ export default class Validation {
 		if (pattern) this.rules.push(Validation.pattern(pattern));
 		if (maxLength) this.rules.push(Validation.maxLength(maxLength));
 		if (minLength) this.rules.push(Validation.minLength(minLength));
+		if (maximum) this.rules.push(Validation.maximum(maximum));
+		if (exclusiveMaximum) {
+			this.rules.push(Validation.exclusiveMaximum(exclusiveMaximum));
+		}
+		if (minimum) this.rules.push(Validation.minimum(minimum));
+		if (exclusiveMinimum) {
+			this.rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
+		}
 
 		if (dataTypeFilter) {
 			const dataTypeValidator = (val) => dataTypeFilter(val) || true;
