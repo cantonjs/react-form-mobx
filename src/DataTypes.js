@@ -97,6 +97,6 @@ export const DataTypeKeys = Object.keys(DataTypes);
 export function createFormatDataTypeFunc(type) {
 	return function formatDataType(val) {
 		if (isEmpty(val)) return val;
-		return isString(type) ? DataTypes[type](val) : type(val);
+		return DataTypes[type](val);
 	};
 }
