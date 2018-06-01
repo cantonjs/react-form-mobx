@@ -1,13 +1,32 @@
 /* eslint-disable react/no-find-dom-node */
 
+import React, { Component, cloneElement } from 'react';
 import { render, unmountComponentAtNode, findDOMNode } from 'react-dom';
+import PropTypes from 'prop-types';
 import { Simulate } from 'react-dom/test-utils';
 
 let div;
 
+class Wrapper extends Component {
+	static propTypes = {
+		children: PropTypes.node.isRequired,
+	};
+
+	state = {};
+
+	render() {
+		const { props, state } = this;
+		return cloneElement(props.children, state);
+	}
+}
+
 export function mount(element) {
 	div = document.createElement('div');
-	render(element, div);
+	const instance = render(<Wrapper>{element}</Wrapper>, div);
+	return {
+		setProps: (props) => instance.setState(props),
+		element,
+	};
 }
 
 export function unmount() {
