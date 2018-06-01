@@ -1,5 +1,7 @@
 # [WIP] react-form-mobx
 
+[![Build Status](https://travis-ci.org/cantonjs/react-form-mobx.svg?branch=master)](https://travis-ci.org/cantonjs/react-form-mobx)
+
 Declarative Form components for [React](https://reactjs.org/), built on top of [MobX](https://mobx.js.org/)
 
 ## WTF
