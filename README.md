@@ -4,6 +4,8 @@
 
 Declarative Form components for [React](https://reactjs.org/), built on top of [MobX](https://mobx.js.org/)
 
+![screenshot](/.github/screenshot.png)
+
 ## WTF
 
 ```jsx
