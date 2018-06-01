@@ -27,6 +27,8 @@ export default class Demon extends Component {
 
 			enum: PropTypes.array,
 			pattern: PropTypes.instanceOf(RegExp),
+			maxLength: PropTypes.number,
+			minLength: PropTypes.number,
 		}).isRequired,
 		checkable: PropTypes.bool,
 		getValueFromChangeEvent: PropTypes.func,
@@ -57,32 +59,11 @@ export default class Demon extends Component {
 		super(props);
 
 		const { forwardedProps, formStore, isObject, isArray } = props;
-		const {
-			name,
-			value,
-			defaultValue,
-			required,
-			validation,
-			inputFilter,
-			outputFilter,
-			dataType,
-			enforceSubmit,
-			enum: enumeration,
-			pattern,
-		} = forwardedProps;
+		const { name, ...otherForwardedProps } = forwardedProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
 			isArray,
-			value,
-			defaultValue,
-			required,
-			validation,
-			inputFilter,
-			outputFilter,
-			dataType,
-			enforceSubmit,
-			enumeration,
-			pattern,
+			...otherForwardedProps,
 		});
 		this.inputStore.dirty();
 	}
@@ -165,6 +146,8 @@ export default class Demon extends Component {
 					enforceSubmit,
 					enum: enumeration,
 					pattern,
+					maxLength,
+					minLength,
 					...forwardedProps
 				},
 				propOnChange,

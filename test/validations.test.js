@@ -101,3 +101,67 @@ describe('pattern prop', () => {
 		);
 	});
 });
+
+describe('maxLength prop', () => {
+	test('should be invalid if fail to maxLength', () => {
+		const formRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" maxLength={1} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to maxLength', () => {
+		const formRef = createRef();
+		const value = { hello: 'foo' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" maxLength={10} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
+
+describe('minLength prop', () => {
+	test('should be invalid if fail to minLength', () => {
+		const formRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" minLength={10} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if success to minLength', () => {
+		const formRef = createRef();
+		const value = { hello: 'foo' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" minLength={1} />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});

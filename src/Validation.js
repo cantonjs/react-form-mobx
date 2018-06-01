@@ -1,20 +1,45 @@
 import { isEmpty } from './utils';
 
+const throwIfNot = function throwIfNot(isValid, errorMessage) {
+	if (isValid) return true;
+	throw new Error(errorMessage);
+};
+
 export default class Validation {
 	static enum(list) {
 		return function validateByEnum(val) {
-			const valid = !!~list.indexOf(val);
-			if (valid) return true;
 			const whiteList = list.map((str) => `"${str}"`).join(', ');
-			throw new Error(`Expect one of ${whiteList}, but received "${val}"`);
+			return throwIfNot(
+				~list.indexOf(val),
+				`Expect one of ${whiteList}, but received "${val}"`,
+			);
 		};
 	}
 
 	static pattern(regexp) {
 		return function validateByPattern(val) {
-			const valid = regexp.test(val);
-			if (valid) return true;
-			throw new Error(`"${val}" did NOT match pattern "${regexp}"`);
+			return throwIfNot(
+				regexp.test(val),
+				`"${val}" did NOT match pattern "${regexp}"`,
+			);
+		};
+	}
+
+	static maxLength(max) {
+		return function validateByMaxLength(val) {
+			return throwIfNot(
+				max > val.toString().length,
+				`Expect max length is "${max}", but received "${val}"`,
+			);
+		};
+	}
+
+	static minLength(min) {
+		return function validateByMinLength(val) {
+			return throwIfNot(
+				min < val.toString().length,
+				`Expect min length is "${min}", but received "${val}"`,
+			);
 		};
 	}
 
@@ -22,8 +47,10 @@ export default class Validation {
 		const {
 			validation: rules,
 			required,
-			enumeration,
+			enum: enumeration,
 			pattern,
+			maxLength,
+			minLength,
 			dataTypeFilter,
 		} = options;
 		this.required = required;
@@ -31,6 +58,8 @@ export default class Validation {
 
 		if (enumeration) this.rules.push(Validation.enum(enumeration));
 		if (pattern) this.rules.push(Validation.pattern(pattern));
+		if (maxLength) this.rules.push(Validation.maxLength(maxLength));
+		if (minLength) this.rules.push(Validation.minLength(minLength));
 
 		if (dataTypeFilter) {
 			const dataTypeValidator = (val) => dataTypeFilter(val) || true;
