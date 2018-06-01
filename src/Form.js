@@ -86,6 +86,10 @@ export default class Form extends Component {
 		return this.formStore.clear();
 	}
 
+	getValidState() {
+		return this.formStore.getValidState();
+	}
+
 	render() {
 		const {
 			value,

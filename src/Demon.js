@@ -24,6 +24,8 @@ export default class Demon extends Component {
 			outputFilter: PropTypes.func,
 			dataType: PropTypes.oneOf(DataTypeKeys),
 			enforceSubmit: PropTypes.bool,
+
+			enum: PropTypes.array,
 		}).isRequired,
 		checkable: PropTypes.bool,
 		getValueFromChangeEvent: PropTypes.func,
@@ -64,6 +66,7 @@ export default class Demon extends Component {
 			outputFilter,
 			dataType,
 			enforceSubmit,
+			enum: enumeration,
 		} = forwardedProps;
 		this.inputStore = formStore.attach(name, {
 			isObject,
@@ -76,6 +79,7 @@ export default class Demon extends Component {
 			outputFilter,
 			dataType,
 			enforceSubmit,
+			enumeration,
 		});
 		this.inputStore.dirty();
 	}
@@ -145,14 +149,8 @@ export default class Demon extends Component {
 
 	renderChildren() {
 		const {
-			inputStore: {
-				value,
-				isChecked,
-				isTouched,
-				isValid,
-				isInvalid,
-				errorMessage,
-			},
+			inputStore,
+			inputStore: { value, isChecked },
 			props: {
 				forwardedProps: {
 					defaultValue,
@@ -162,6 +160,7 @@ export default class Demon extends Component {
 					outputFilter,
 					dataType,
 					enforceSubmit,
+					enum: enumeration,
 					...forwardedProps
 				},
 				propOnChange,
@@ -178,16 +177,11 @@ export default class Demon extends Component {
 			[propOnKeyPress]: this.handleKeyPress,
 			[propOnBlur]: this.handleBlur,
 		};
-		const helper = {
-			isTouched,
-			isValid,
-			isInvalid,
-			errorMessage,
-		};
+		const validState = inputStore.getValidState();
 		if (checkable && !props.hasOwnProperty('checked')) {
 			props.checked = isChecked;
 		}
-		return Children.only(children(props, helper));
+		return Children.only(children(props, validState));
 	}
 
 	render() {

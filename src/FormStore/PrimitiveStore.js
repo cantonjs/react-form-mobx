@@ -187,6 +187,11 @@ export default class PrimitiveStore {
 		return isEmpty(value);
 	}
 
+	getValidState() {
+		const { isValid, isInvalid, isTouched, errorMessage } = this;
+		return { isValid, isInvalid, isTouched, errorMessage };
+	}
+
 	submit = (...args) => this.form.submit(...args);
 	reset = (...args) => this.form.reset(...args);
 	clear = (...args) => this.form.clear(...args);
