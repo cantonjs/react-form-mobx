@@ -8,14 +8,16 @@ export default class ObjectOf extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
-	forwardedProps = {
-		name: this.props.name,
-	};
+	constructor(props) {
+		super(props);
+		const { children, ...forwardedProps } = props;
+		this.forwardedProps = forwardedProps;
+	}
 
 	render() {
-		const { children, name, ...other } = this.props;
+		const { children } = this.props;
 		return (
-			<Demon {...other} forwardedProps={this.forwardedProps} isObject>
+			<Demon forwardedProps={this.forwardedProps} isObject>
 				{() => children}
 			</Demon>
 		);

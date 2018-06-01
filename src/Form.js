@@ -14,6 +14,8 @@ export default class Form extends Component {
 		onValidChange: PropTypes.func,
 		onValid: PropTypes.func,
 		onInvalid: PropTypes.func,
+		inputFilter: PropTypes.func,
+		outputFilter: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -27,10 +29,20 @@ export default class Form extends Component {
 	constructor(props) {
 		super(props);
 
-		const { onSubmit, onValidChange, onValid, onInvalid, value } = props;
+		const {
+			onSubmit,
+			onValidChange,
+			onValid,
+			onInvalid,
+			value,
+			inputFilter,
+			outputFilter,
+		} = props;
 		const formStore = new FormStore(value, {
 			submit: onSubmit,
 			isObject: true,
+			inputFilter,
+			outputFilter,
 		});
 		this.formStore = formStore;
 
@@ -75,7 +87,15 @@ export default class Form extends Component {
 	}
 
 	render() {
-		const { value, onValidChange, onValid, onInvalid, ...other } = this.props;
+		const {
+			value,
+			onValidChange,
+			onValid,
+			onInvalid,
+			inputFilter,
+			outputFilter,
+			...other
+		} = this.props;
 		return (
 			<Context.Provider value={this.formStore}>
 				<form {...other} onSubmit={this.blockNativeSubmit} />

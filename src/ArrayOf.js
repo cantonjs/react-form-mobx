@@ -52,14 +52,20 @@ export default class ArrayOf extends Component {
 		name: PropTypes.string.isRequired,
 	};
 
+	constructor(props) {
+		super(props);
+		const { children, ...forwardedProps } = props;
+		this.forwardedProps = forwardedProps;
+	}
+
 	forwardedProps = {
 		name: this.props.name,
 	};
 
 	render() {
-		const { children, name, ...other } = this.props;
+		const { children } = this.props;
 		return (
-			<Demon {...other} forwardedProps={this.forwardedProps} isObject isArray>
+			<Demon forwardedProps={this.forwardedProps} isObject isArray>
 				{() => <ItemGroup name={name}>{children}</ItemGroup>}
 			</Demon>
 		);
