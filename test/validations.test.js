@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
-import { Form, Input, ObjectOf, ArrayOf } from '../src';
-import { mount, unmount, simulate } from './utils';
+import { Form, Input } from '../src';
+import { mount, unmount } from './utils';
 
 afterEach(unmount);
 

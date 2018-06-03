@@ -4,7 +4,7 @@ import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
-describe('input filters', () => {
+describe('Input filters', () => {
 	test('default value with input filter', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
@@ -104,7 +104,7 @@ describe('input filters', () => {
 	});
 });
 
-describe('output filters', () => {
+describe('Output filters', () => {
 	test('default value with output filter', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
