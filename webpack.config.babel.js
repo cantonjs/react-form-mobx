@@ -86,6 +86,8 @@ module.exports = (webpackEnv = {}) => {
 		config.externals = {
 			react: 'React',
 			'react-dom': 'ReactDom',
+			mobx: 'mobx',
+			'mobx-react': 'mobxReact',
 		};
 	}
 
