@@ -10,38 +10,72 @@ import {
 	filtersFlow,
 } from '../utils';
 
+class Actual {
+	@observable value;
+	@observable sourceValue;
+	@observable pristineValue;
+
+	constructor(initialValue) {
+		this.pristineValue = initialValue;
+		this.sourceValue = initialValue;
+		this.value = initialValue;
+	}
+}
+
 export default class PrimitiveStore {
 	// the real pristine value, provided by setting form value
 	@observable pristineValue;
-
-	@observable _sourceValue;
-
-	// the real current value, provided by form value or user typing
-	@observable _value;
 
 	@observable isChecked = true;
 	@observable isTouched = false;
 	@observable error = null;
 
 	@computed
+	get pristineValue() {
+		const { actual: { pristineValue }, isPristineValueEmpty } = this;
+		return isPristineValueEmpty ? this.getDefaultStoreValue() : pristineValue;
+	}
+	set pristineValue(value) {
+		const finalValue = this.getInputValue(value);
+		this.actual.pristineValue = finalValue;
+		this.sourceValue = finalValue;
+		this.value = finalValue;
+		this.dirty();
+		return true;
+	}
+
+	@computed
 	get sourceValue() {
-		return this._sourceValue;
+		const { actual: { sourceValue }, isSourceValueEmpty } = this;
+		return isSourceValueEmpty ? this.getDefaultStoreValue() : sourceValue;
 	}
 	set sourceValue(value) {
-		this._sourceValue = isEmpty(value) ?
-			this.getDefaultStoreValue() :
-			clone(value);
+		this.actual.sourceValue = clone(value);
 		return true;
 	}
 
 	@computed
 	get value() {
-		if (this._isCurrentValueEmpty) return this.getDefaultStoreValue();
-		return this._value;
+		return this.applyGetValue();
 	}
 	set value(value) {
-		this._value = value;
+		this.applySetValue(value);
 		return true;
+	}
+
+	@computed
+	get isPristineValueEmpty() {
+		return isEmpty(this.actual.pristineValue);
+	}
+
+	@computed
+	get isSourceValueEmpty() {
+		return isEmpty(this.actual.sourceValue);
+	}
+
+	@computed
+	get isValueEmpty() {
+		return isEmpty(this.actual.value);
 	}
 
 	@computed
@@ -57,16 +91,6 @@ export default class PrimitiveStore {
 	@computed
 	get errorMessage() {
 		return this.error ? this.error.message || 'Invalid' : '';
-	}
-
-	@computed
-	get _isPristineValueEmpty() {
-		return isEmpty(this.pristineValue);
-	}
-
-	@computed
-	get _isCurrentValueEmpty() {
-		return isEmpty(this._value);
 	}
 
 	constructor(pristineValue, options = {}) {
@@ -94,10 +118,8 @@ export default class PrimitiveStore {
 		});
 		this._enforceSubmit = enforceSubmit;
 
-		const intialValue = this.getInputValue(pristineValue);
-		this.pristineValue = intialValue;
-		this.sourceValue = intialValue;
-		this._value = intialValue;
+		const initialValue = this.getInputValue(pristineValue);
+		this.actual = new Actual(initialValue);
 	}
 
 	getDefaultStoreValue() {
@@ -128,7 +150,7 @@ export default class PrimitiveStore {
 				_outputFilter,
 				_dataTypeFilter,
 				_ensureDefaultValue,
-				pristineValue,
+				actual: { pristineValue },
 			} = this;
 			return filtersFlow(
 				[_outputFilter, _dataTypeFilter, _ensureDefaultValue],
@@ -145,28 +167,27 @@ export default class PrimitiveStore {
 		});
 	}
 
-	@action
-	applySettingValue(newValue, type) {
-		this[type] = newValue;
+	applyGetValue() {
+		const { isValueEmpty, actual: { value } } = this;
+		return isValueEmpty ? this.getDefaultStoreValue() : value;
 	}
 
-	getValue() {
+	applySetValue(newValue) {
+		this.actual.value = newValue;
+	}
+
+	getFormData() {
 		const value = this.getOutputValue(this.value);
 		return this.shouldIgnore(value) ? undefined : value;
 	}
 
 	@action
-	setValue(value) {
-		this.applySettingValue(value, 'value', 'setValue');
-		this.dirty();
-	}
-
-	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		this.pristineValue = finalValue;
-		this.applySettingValue(finalValue, 'sourceValue', 'setPristineValue');
-		this.applySettingValue(finalValue, 'value', 'setValue');
+		// this.pristineValue = finalValue;
+		this.actual.pristineValue = finalValue;
+		this.sourceValue = finalValue;
+		this.value = finalValue;
 		this.dirty();
 	}
 
@@ -187,12 +208,12 @@ export default class PrimitiveStore {
 	shouldIgnore(value) {
 		// console.log(
 		// 	this.key,
-		// 	this._isPristineValueEmpty,
+		// 	this.isPristineValueEmpty,
 		// 	this.pristineValue,
 		// 	value,
 		// );
 
-		if (this._enforceSubmit || !this._isPristineValueEmpty) return false;
+		if (this._enforceSubmit || !this.isPristineValueEmpty) return false;
 		if (isArray(value)) return !value.length;
 		if (isPlainObject(value)) return !Object.keys(value).length;
 		return isEmpty(value);

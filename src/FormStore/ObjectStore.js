@@ -3,19 +3,6 @@ import PrimitiveStore from './PrimitiveStore';
 
 export default class ObjectStore extends PrimitiveStore {
 	@computed
-	get value() {
-		const res = this.getDefaultStoreValue();
-		this.eachChildren((child, key) => {
-			res[key] = child.value;
-		});
-		return res;
-	}
-	set value(value) {
-		this._value = value;
-		return true;
-	}
-
-	@computed
 	get isValid() {
 		if (this.error) return false;
 
@@ -35,20 +22,40 @@ export default class ObjectStore extends PrimitiveStore {
 		return {};
 	}
 
+	// applyGetValue() {
+	// 	const res = this.getDefaultStoreValue();
+	// 	this.eachChildren((child, key) => {
+	// 		res[key] = child.value;
+	// 	});
+	// 	return res;
+	// }
+
+	// @action
+	// applySetValue(newValue) {
+	// 	// TODO: should handle deleted and added keys
+	// 	this.actual.value = newValue;
+	// 	this.eachChildren((child, key) => {
+	// 		child.value = this.value[key];
+	// 	});
+	// }
+
 	@action
-	applySettingValue(newValue, type, method) {
-		// TODO: should handle deleted and added keys
-		this[type] = newValue;
+	setPristineValue(value) {
+		const finalValue = this.getInputValue(value);
+		this.actual.pristineValue = finalValue;
+		this.sourceValue = finalValue;
 		this.eachChildren((child, key) => {
-			const value = this[type][key];
-			child[method](value);
+			const value = this.sourceValue[key];
+			child.setPristineValue(value);
 		});
+		this.value = finalValue;
+		this.dirty();
 	}
 
-	getValue() {
+	getFormData() {
 		const res = this.getDefaultStoreValue();
 		this.eachChildren((child, key) => {
-			const val = child.getValue();
+			const val = child.getFormData();
 			if (!child.shouldIgnore(val)) res[key] = val;
 		});
 		const value = this.getOutputValue(res);
@@ -79,8 +86,8 @@ export default class ObjectStore extends PrimitiveStore {
 	@action
 	attach(key, options = {}) {
 		const { sourceValue, form } = this;
-		const childVal = sourceValue[key];
-		return form.createChildren(this, key, childVal, options);
+		const val = sourceValue[key];
+		return form.createChildren(this, key, val, options);
 	}
 
 	@action

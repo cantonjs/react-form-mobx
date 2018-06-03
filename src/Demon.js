@@ -89,12 +89,14 @@ export default class Demon extends Component {
 		if (isFunction(onChange)) onChange(...args);
 		try {
 			const value = getValueFromChangeEvent(...args);
-			this.inputStore.setValue(value);
+			this.inputStore.value = value;
 
 			if (checkable) {
 				const checked = getCheckedFromChangeEvent(...args);
 				this.inputStore.isChecked = checked;
 			}
+
+			this.inputStore.dirty();
 		}
 		catch (err) {
 			warn(

@@ -51,7 +51,7 @@ export default class FormStore extends ObjectStore {
 		const { submit } = this._bus;
 		this.touch();
 		if (isFunction(submit)) {
-			const value = this.getValue();
+			const value = this.getFormData();
 			submit(value, { isValid });
 			return isValid || options.force ? value : null;
 		}
@@ -59,7 +59,7 @@ export default class FormStore extends ObjectStore {
 
 	@action
 	reset = () => {
-		this.setPristineValue(this.pristineValue);
+		this.setPristineValue(this.actual.pristineValue);
 	};
 
 	@action

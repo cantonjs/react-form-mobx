@@ -22,17 +22,17 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	@action
-	applySettingValue(newValue, type, method) {
-		this[type] = newValue;
+	applySetValue(newValue) {
+		this.actual.value = newValue;
 		const keysToBeDeleted = [];
 		let keysToBeAdded = [];
 		keysToBeAdded = this.sourceValue.slice(this.children.length);
 		this.eachChildren((child, index) => {
-			const parentValue = this[type];
+			const parentValue = this.value;
 			const { length } = parentValue;
 			const value = index >= length ? undefined : parentValue[index];
 			if (isUndefined(value)) keysToBeDeleted.push(child.key);
-			else child[method](value);
+			else child.value = value;
 		});
 		keysToBeDeleted.forEach((key) => {
 			this.detach(key);
@@ -43,10 +43,25 @@ export default class ArrayStore extends ObjectStore {
 		});
 	}
 
-	getValue() {
+	@action
+	setPristineValue(value) {
+		const finalValue = this.getInputValue(value);
+		this.actual.pristineValue = finalValue;
+		this.sourceValue = finalValue;
+		this.eachChildren((child, key) => {
+			if (key < this.sourceValue.length) {
+				const value = this.sourceValue[key];
+				child.setPristineValue(value);
+			}
+		});
+		this.value = finalValue;
+		this.dirty();
+	}
+
+	getFormData() {
 		const res = this.getDefaultStoreValue();
 		this.eachChildren((child) => {
-			const val = child.getValue();
+			const val = child.getFormData();
 			if (!this.shouldIgnore(val)) res.push(val);
 		});
 		const value = this.getOutputValue(res);
@@ -90,7 +105,9 @@ export default class ArrayStore extends ObjectStore {
 	@action
 	detach(key) {
 		const index = this._findIndexByKey(key);
-		if (index > -1) this.children.splice(index, 1);
+		if (index < 0) return;
+		this.sourceValue.splice(index, 1);
+		this.children.splice(index, 1);
 	}
 
 	push = (id) => this.ids.push(id);
