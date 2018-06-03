@@ -48,11 +48,24 @@ export default class ArrayStore extends ObjectStore {
 		const finalValue = this.getInputValue(value);
 		this.actual.pristineValue = finalValue;
 		this.sourceValue = finalValue;
+		const keysToBeDeleted = [];
+		let keysToBeAdded = [];
+		keysToBeAdded = this.sourceValue.slice(this.children.length);
 		this.eachChildren((child, key) => {
 			if (key < this.sourceValue.length) {
 				const value = this.sourceValue[key];
 				child.setPristineValue(value);
 			}
+			else {
+				keysToBeDeleted.push(child.key);
+			}
+		});
+		keysToBeDeleted.forEach((key) => {
+			this.detach(key);
+			this.remove(key);
+		});
+		keysToBeAdded.forEach(() => {
+			this.push(createId(this.key));
 		});
 		this.value = finalValue;
 		this.dirty();
@@ -73,7 +86,8 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	eachChildren(iterator) {
-		const filter = (item) => item.isChecked;
+		const filter = () => true;
+		// const filter = (item) => item.isChecked;
 		let index = 0;
 		this.children.forEach((item, _, ...args) => {
 			if (filter(item)) iterator(item, index++, ...args);
