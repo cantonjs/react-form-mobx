@@ -1,5 +1,6 @@
 import { observable, computed, action } from 'mobx';
 import PrimitiveStore from './PrimitiveStore';
+import { isFunction } from '../utils';
 
 export default class ObjectStore extends PrimitiveStore {
 	@computed
@@ -16,28 +17,29 @@ export default class ObjectStore extends PrimitiveStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 		this.children = observable.map();
+		this._handleChange = options.onChange;
 	}
 
 	getDefaultStoreValue() {
 		return {};
 	}
 
-	// applyGetValue() {
-	// 	const res = this.getDefaultStoreValue();
-	// 	this.eachChildren((child, key) => {
-	// 		res[key] = child.value;
-	// 	});
-	// 	return res;
-	// }
+	applyGetValue() {
+		const res = this.getDefaultStoreValue();
+		this.eachChildren((child, key) => {
+			res[key] = child.value;
+		});
+		return res;
+	}
 
-	// @action
-	// applySetValue(newValue) {
-	// 	// TODO: should handle deleted and added keys
-	// 	this.actual.value = newValue;
-	// 	this.eachChildren((child, key) => {
-	// 		child.value = this.value[key];
-	// 	});
-	// }
+	@action
+	applySetValue(newValue) {
+		// TODO: should handle deleted and added keys
+		this.actual.value = newValue;
+		this.eachChildren((child, key) => {
+			child.value = this.value[key];
+		});
+	}
 
 	@action
 	setPristineValue(value) {
@@ -94,4 +96,14 @@ export default class ObjectStore extends PrimitiveStore {
 	detach(key) {
 		this.children.delete(key);
 	}
+
+	emitChange = () => {
+		if (!isFunction(this._handleChange)) return;
+		const ev = {};
+		Object.defineProperty(ev, 'value', {
+			enumerable: true,
+			get: () => this.value,
+		});
+		this._handleChange(ev);
+	};
 }

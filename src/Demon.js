@@ -62,13 +62,23 @@ export default class Demon extends Component {
 	constructor(props) {
 		super(props);
 
-		const { forwardedProps, formStore, isObject, isArray } = props;
+		const {
+			forwardedProps,
+			formStore,
+			isObject,
+			isArray,
+			propOnChange,
+		} = props;
 		const { name, ...otherForwardedProps } = forwardedProps;
-		this.inputStore = formStore.attach(name, {
+		const options = {
 			isObject,
 			isArray,
 			...otherForwardedProps,
-		});
+		};
+		if (isObject) {
+			options.onChange = otherForwardedProps[propOnChange];
+		}
+		this.inputStore = formStore.attach(name, options);
 		this.inputStore.dirty();
 	}
 
@@ -106,6 +116,7 @@ export default class Demon extends Component {
 			console.error(err);
 		}
 		formStore.dirty();
+		formStore.emitChange();
 	};
 
 	handleKeyPress = (...args) => {

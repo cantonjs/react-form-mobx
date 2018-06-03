@@ -14,6 +14,7 @@ export default class Form extends Component {
 		onValidChange: PropTypes.func,
 		onValid: PropTypes.func,
 		onInvalid: PropTypes.func,
+		onChange: PropTypes.func,
 		inputFilter: PropTypes.func,
 		outputFilter: PropTypes.func,
 	};
@@ -34,6 +35,7 @@ export default class Form extends Component {
 			onValidChange,
 			onValid,
 			onInvalid,
+			onChange,
 			value,
 			inputFilter,
 			outputFilter,
@@ -43,6 +45,7 @@ export default class Form extends Component {
 			isObject: true,
 			inputFilter,
 			outputFilter,
+			onChange,
 		});
 		this.formStore = formStore;
 
@@ -96,6 +99,7 @@ export default class Form extends Component {
 			onValidChange,
 			onValid,
 			onInvalid,
+			onChange,
 			inputFilter,
 			outputFilter,
 			...other
