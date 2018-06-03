@@ -116,7 +116,7 @@ export default class Demon extends Component {
 			console.error(err);
 		}
 		formStore.dirty();
-		formStore.emitChange();
+		formStore.change();
 	};
 
 	handleKeyPress = (...args) => {

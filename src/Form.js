@@ -42,10 +42,10 @@ export default class Form extends Component {
 		} = props;
 		const formStore = new FormStore(value, {
 			submit: onSubmit,
+			change: onChange,
 			isObject: true,
 			inputFilter,
 			outputFilter,
-			onChange,
 		});
 		this.formStore = formStore;
 

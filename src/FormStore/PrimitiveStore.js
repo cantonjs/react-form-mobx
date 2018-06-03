@@ -109,6 +109,7 @@ export default class PrimitiveStore {
 		this.form = form;
 		this.defaultValue = defaultValue;
 		this.isChecked = isChecked;
+		this._bus = {};
 		this._dataTypeFilter = dataTypeFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;

@@ -17,7 +17,7 @@ export default class ObjectStore extends PrimitiveStore {
 	constructor(pristineValue, options = {}) {
 		super(pristineValue, options);
 		this.children = observable.map();
-		this._handleChange = options.onChange;
+		this._bus.change = options.onChange;
 	}
 
 	getDefaultStoreValue() {
@@ -97,13 +97,13 @@ export default class ObjectStore extends PrimitiveStore {
 		this.children.delete(key);
 	}
 
-	emitChange = () => {
-		if (!isFunction(this._handleChange)) return;
+	change = () => {
+		if (!isFunction(this._bus.change)) return;
 		const ev = {};
 		Object.defineProperty(ev, 'value', {
 			enumerable: true,
 			get: () => this.value,
 		});
-		this._handleChange(ev);
+		this._bus.change(ev);
 	};
 }
