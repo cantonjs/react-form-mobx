@@ -4,8 +4,8 @@
 	"description": "Declarative Form components for React, built on top of MobX",
 	"repository": "cantonjs/react-form-mobx",
 	"scripts": {
-		"start": "yarn test --watchAll",
-		"demo": "cross-env REACT_DEMO=true webpack-dev-server",
+		"start": "cross-env REACT_DEMO=true webpack-dev-server",
+		"watch": "yarn test --watchAll",
 		"test": "cross-env BABEL_ENV=cjs jest",
 		"coverage": "yarn test --coverage",
 		"format": "prettier-eslint --write \"+(src|test)/**/*.js\"",
@@ -19,13 +19,7 @@
 		"build": "run-p build:*",
 		"preversion": "yarn test && yarn build"
 	},
-	"files": [
-		"README.md",
-		"LICENSE.md",
-		"lib",
-		"es",
-		"dist"
-	],
+	"files": ["README.md", "LICENSE.md", "lib", "es", "dist"],
 	"main": "lib/index.js",
 	"module": "es/index.js",
 	"jsnext:main": "es/index.js",
@@ -82,5 +76,9 @@
 	"peerDependencies": {
 		"mobx": "^4.3.0",
 		"mobx-react": "^5.1.2"
+	},
+	"jest": {
+		"collectCoverageFrom": ["src/**/*.js"],
+		"modulePathIgnorePatterns": ["node_modules", "lib"]
 	}
 }
