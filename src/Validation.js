@@ -99,7 +99,7 @@ export default class Validation {
 			exclusiveMaximum,
 			minimum,
 			exclusiveMinimum,
-			dataTypeFilter,
+			formatFilter,
 		} = options;
 		this.required = required;
 		this.rules = [].concat(rules).filter(Boolean);
@@ -117,9 +117,9 @@ export default class Validation {
 			this.rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
 		}
 
-		if (dataTypeFilter) {
-			const dataTypeValidator = (val) => dataTypeFilter(val) || true;
-			this.rules.push(dataTypeValidator);
+		if (formatFilter) {
+			const formatFilterValidator = (val) => formatFilter(val) || true;
+			this.rules.push(formatFilterValidator);
 		}
 	}
 

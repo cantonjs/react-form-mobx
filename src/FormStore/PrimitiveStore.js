@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { createFormatDataTypeFunc } from '../DataTypes';
+import { createFormatFunc } from '../FormatTypes';
 import Validation from '../Validation';
 import {
 	isEmpty,
@@ -99,22 +99,22 @@ export default class PrimitiveStore {
 			defaultValue,
 			isChecked = true,
 			form = this,
-			dataType,
+			format,
 			inputFilter,
 			outputFilter,
 			enforceSubmit,
 		} = options;
-		const dataTypeFilter = dataType && createFormatDataTypeFunc(dataType);
+		const formatFilter = format && createFormatFunc(format);
 		this.key = key;
 		this.form = form;
 		this.defaultValue = defaultValue;
 		this.isChecked = isChecked;
 		this._bus = {};
-		this._dataTypeFilter = dataTypeFilter;
+		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this.validation = new Validation({
-			dataTypeFilter,
+			formatFilter,
 			...options,
 		});
 		this._enforceSubmit = enforceSubmit;
@@ -149,12 +149,12 @@ export default class PrimitiveStore {
 		return this.try(() => {
 			const {
 				_outputFilter,
-				_dataTypeFilter,
+				_formatFilter,
 				_ensureDefaultValue,
 				actual: { pristineValue },
 			} = this;
 			return filtersFlow(
-				[_outputFilter, _dataTypeFilter, _ensureDefaultValue],
+				[_outputFilter, _formatFilter, _ensureDefaultValue],
 				value,
 				{ pristineValue },
 			);

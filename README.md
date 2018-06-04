@@ -31,7 +31,7 @@ export default class MyFriend extends Component {
     return (
       <Form value={this.myData} onSubmit={this.handleSubmit}>
         <Input name="name" />
-        <Input name="height" dataType="number" />
+        <Input name="height" format="number" />
         <Checkbox name="films" value="A New Hope" />
         <Checkbox name="films" value="The Empire Strikes Back" />
         <Checkbox name="films" value="Return of the Jedi" />

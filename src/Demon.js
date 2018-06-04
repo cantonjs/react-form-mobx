@@ -2,7 +2,7 @@ import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { isFunction, warn } from './utils';
-import { DataTypeKeys } from './DataTypes';
+import { FormatTypesKeys } from './FormatTypes';
 import Context from './Context';
 import withFormStore from './withFormStore';
 
@@ -22,7 +22,7 @@ export default class Demon extends Component {
 			required: PropTypes.bool,
 			inputFilter: PropTypes.func,
 			outputFilter: PropTypes.func,
-			dataType: PropTypes.oneOf(DataTypeKeys),
+			format: PropTypes.oneOf(FormatTypesKeys),
 			enforceSubmit: PropTypes.bool,
 
 			enum: PropTypes.array,
@@ -159,7 +159,7 @@ export default class Demon extends Component {
 					validation,
 					inputFilter,
 					outputFilter,
-					dataType,
+					format,
 					enforceSubmit,
 					enum: enumeration,
 					pattern,
