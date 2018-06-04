@@ -1,4 +1,4 @@
-import { isEmpty, isDate, isString, isArray, padStart, padEnd } from './utils';
+import { isEmpty, isDate, isString, padStart, padEnd } from './utils';
 
 const ensureDate = (date) => {
 	if (isDate(date)) return date;
@@ -13,8 +13,8 @@ const validNumber = (val) => {
 	return true;
 };
 
-const toInt = (val) => validNumber(val) && (parseInt(val, 10) || 0);
 const toNumber = (val) => validNumber(val) && (+val || 0);
+const toInt = (val) => ~~toNumber(val);
 
 const toStr = (val) => val.toString();
 const toBoolean = (val) =>
@@ -27,10 +27,10 @@ const toBoolean = (val) =>
 const toDateTime = (val) => {
 	// handle multi dateTime string by "," seperator
 	if (isString(val) && val.includes(',')) {
-		return val.split(',').map(toDateTime);
-	}
-	if (isArray(val)) {
-		return val.map(toDateTime);
+		return val
+			.split(',')
+			.map(toDateTime)
+			.join(',');
 	}
 
 	try {
@@ -44,10 +44,10 @@ const toDateTime = (val) => {
 const toDate = (val) => {
 	// handle multi date string by "," seperator
 	if (isString(val) && val.includes(',')) {
-		return val.split(',').map(toDate);
-	}
-	if (isArray(val)) {
-		return val.map(toDate);
+		return val
+			.split(',')
+			.map(toDate)
+			.join(',');
 	}
 
 	try {
@@ -66,10 +66,10 @@ const toDate = (val) => {
 const toTime = (val) => {
 	// handle multi time string by "," seperator
 	if (isString(val) && val.includes(',')) {
-		return val.split(',').map(toTime);
-	}
-	if (isArray(val)) {
-		return val.map(toTime);
+		return val
+			.split(',')
+			.map(toTime)
+			.join(',');
 	}
 
 	try {
@@ -81,7 +81,10 @@ const toTime = (val) => {
 		const milliseconds = padStart(d.getMilliseconds(), 3, 0);
 		const partialTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
 		const zoneOffset = -d.getTimezoneOffset();
+
+		/* istanbul ignore next */
 		const offsetDif = zoneOffset < 0 ? '-' : '+';
+
 		const offsetZoneHours = padStart(Math.abs(zoneOffset / 60), 2, 0);
 		const offsetZoneMinutes = padStart(Math.abs(zoneOffset % 60), 2, 0);
 		const offset = `${offsetDif}${offsetZoneHours}:${offsetZoneMinutes}`;

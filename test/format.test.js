@@ -5,6 +5,18 @@ import { DateTime } from 'luxon';
 
 afterEach(unmount);
 
+describe('formating empty data', () => {
+	test('should not format empty data', () => {
+		const formRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<Input name="hello" format="integer" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({});
+	});
+});
+
 describe('integer format', () => {
 	test('should integer work', () => {
 		const formRef = createRef();
@@ -54,6 +66,17 @@ describe('number format', () => {
 			</Form>,
 		);
 		expect(formRef.current.submit()).toEqual({ hello: 3.2 });
+	});
+
+	test('should 0 work', () => {
+		const formRef = createRef();
+		const value = { hello: 0 };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="number" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: 0 });
 	});
 
 	test('should be invalid if value could not convert to number format', () => {
@@ -205,6 +228,24 @@ describe('date format', () => {
 		expect(formRef.current.submit()).toEqual({ hello: expected });
 	});
 
+	test('should array of date string work', () => {
+		const formRef = createRef();
+		const dates = [
+			new Date('2018-1-11 5:20:00'),
+			new Date('2018-7-20 5:20:00'),
+		];
+		const expected = dates
+			.map((date) => DateTime.fromJSDate(date).toISODate())
+			.join(',');
+		const value = { hello: dates.map((date) => date.getTime()).join(',') };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="date" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
 	test('should be invalid if value could not convert to date format', () => {
 		const formRef = createRef();
 		const value = { hello: 'foo' };
@@ -254,6 +295,24 @@ describe('time format', () => {
 		const date = new Date(dateString);
 		const expected = DateTime.fromJSDate(date).toISOTime();
 		const value = { hello: dateString };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="time" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
+	test('should array of time string work', () => {
+		const formRef = createRef();
+		const dates = [
+			new Date('2018-1-11 5:20:00'),
+			new Date('2018-7-20 5:20:00'),
+		];
+		const expected = dates
+			.map((date) => DateTime.fromJSDate(date).toISOTime())
+			.join(',');
+		const value = { hello: dates.map((date) => date.getTime()).join(',') };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" format="time" />
@@ -325,6 +384,24 @@ describe('dateTime format', () => {
 		const date = new Date(dateString);
 		const expected = DateTime.fromJSDate(date).toISO();
 		const value = { hello: dateString };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
+	test('should array of dateTime string work', () => {
+		const formRef = createRef();
+		const dates = [
+			new Date('2018-1-11 5:20:00'),
+			new Date('2018-7-20 5:20:00'),
+		];
+		const expected = dates
+			.map((date) => DateTime.fromJSDate(date).toISO())
+			.join(',');
+		const value = { hello: dates.map((date) => date.getTime()).join(',') };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" format="dateTime" />
