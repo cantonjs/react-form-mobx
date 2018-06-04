@@ -21,6 +21,47 @@ describe('Submit component', () => {
 			{ isValid: true },
 		);
 	});
+
+	test('press ENTER key to submit', () => {
+		const buttonRef = createRef();
+		const value = { hello: 'world' };
+		const handleSubmit = jest.fn();
+		mount(
+			<Form value={value} onSubmit={handleSubmit}>
+				<Input name="hello" />
+				<Submit ref={buttonRef} />
+			</Form>,
+		);
+		simulate(buttonRef).keyPress('Enter');
+		expect(handleSubmit).toHaveBeenCalledWith(
+			{ hello: 'world' },
+			{ isValid: true },
+		);
+	});
+
+	test('should onClick() work', () => {
+		const handleClick = jest.fn();
+		const buttonRef = createRef();
+		mount(
+			<Form>
+				<Submit ref={buttonRef} onClick={handleClick} />
+			</Form>,
+		);
+		simulate(buttonRef).click();
+		expect(handleClick).toHaveBeenCalledTimes(1);
+	});
+
+	test('should onKeyPress() work', () => {
+		const handlePress = jest.fn();
+		const buttonRef = createRef();
+		mount(
+			<Form>
+				<Submit ref={buttonRef} onKeyPress={handlePress} />
+			</Form>,
+		);
+		simulate(buttonRef).keyPress('Enter');
+		expect(handlePress).toHaveBeenCalledTimes(1);
+	});
 });
 
 describe('submit', () => {

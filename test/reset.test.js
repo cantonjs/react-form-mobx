@@ -20,6 +20,46 @@ describe('Reset component', () => {
 		simulate(buttonRef).click();
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });
 	});
+
+	test('press ENTER key to reset', () => {
+		const formRef = createRef();
+		const inputRef = createRef();
+		const buttonRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" ref={inputRef} />
+				<Reset ref={buttonRef} />
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'foo');
+		simulate(buttonRef).keyPress('Enter');
+		expect(formRef.current.submit()).toEqual({ hello: 'world' });
+	});
+
+	test('should onClick() work', () => {
+		const handleClick = jest.fn();
+		const buttonRef = createRef();
+		mount(
+			<Form>
+				<Reset ref={buttonRef} onClick={handleClick} />
+			</Form>,
+		);
+		simulate(buttonRef).click();
+		expect(handleClick).toHaveBeenCalledTimes(1);
+	});
+
+	test('should onKeyPress() work', () => {
+		const handlePress = jest.fn();
+		const buttonRef = createRef();
+		mount(
+			<Form>
+				<Reset ref={buttonRef} onKeyPress={handlePress} />
+			</Form>,
+		);
+		simulate(buttonRef).keyPress('Enter');
+		expect(handlePress).toHaveBeenCalledTimes(1);
+	});
 });
 
 describe('form.reset()', () => {

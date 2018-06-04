@@ -50,6 +50,10 @@ class SimulatedRef {
 	click() {
 		Simulate.click(this.node);
 	}
+
+	keyPress(key) {
+		Simulate.keyPress(this.node, { key });
+	}
 }
 
 export function simulate(ref) {

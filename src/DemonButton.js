@@ -42,9 +42,11 @@ export default class DemonButton extends Component {
 		if (isFunction(onKeyPress)) onKeyPress(...args);
 		try {
 			const key = getKeyFromKeyPressEvent(...args);
+
+			/* istanbul ignore else */
 			if (key === 'Enter') this.emit();
 		}
-		catch (err) {
+		catch (err) /* istanbul ignore next */ {
 			warn(
 				`Failed to map value from "${propOnKeyPress}",`,
 				'changing "props.getKeyFromKeyPressEvent" may resolve this problem.',
