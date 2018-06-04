@@ -1,4 +1,12 @@
-import { isEmpty, isDate, isString, isNumber, isByte, padEnd } from './utils';
+import {
+	isEmpty,
+	isDate,
+	isString,
+	isNumber,
+	isArray,
+	padStart,
+	padEnd,
+} from './utils';
 
 const tsToDate = (n) => new Date(+padEnd(n, 13, '0')).toISOString();
 
@@ -12,82 +20,89 @@ const validNumber = (val) => {
 const toInt = (val) => validNumber(val) && (parseInt(val, 10) || 0);
 const toNumber = (val) => validNumber(val) && (+val || 0);
 
-const toStr = (val) => (isEmpty(val) ? '' : val.toString());
+const toStr = (val) => val.toString();
 const toBoolean = (val) =>
 	!!val &&
 	val !== '0' &&
 	val !== 'false' &&
 	val !== 'undefined' &&
 	val !== 'null';
-const toByte = (val) => {
-	const formated = toStr(val);
-	if (!isByte(formated)) throw new Error(`${val} is NOT a valid "byte" type`);
-	return formated;
-};
 
 const toDateTime = (val) => {
-	if (isEmpty(val)) {
-		return;
-	}
-
+	// handle multi dateTime string by "," seperator
 	if (isString(val) && val.includes(',')) {
 		return val.split(',').map(toDateTime);
 	}
-	else if (Array.isArray(val)) {
+	if (isArray(val)) {
 		return val.map(toDateTime);
 	}
 
-	if (isDate(val)) {
-		return val.toISOString();
+	try {
+		return `${toDate(val)}T${toTime(val)}`;
 	}
-	else if (isNumber(val)) {
-		return tsToDate(val);
+	catch (err) {
+		throw new Error(`Can NOT convert "${val}" to "dateTime" format`);
 	}
-	else if (isString(val)) {
-		if (/^\d*$/.test(val)) {
-			return tsToDate(val);
-		}
-		return new Date(val).toISOString();
-	}
-	throw new Error(`${val} is NOT a valid "dateTime" type`);
 };
 
 const toDate = (val) => {
-	if (isEmpty(val)) {
-		return;
-	}
-
+	// handle multi date string by "," seperator
 	if (isString(val) && val.includes(',')) {
 		return val.split(',').map(toDate);
 	}
-	else if (Array.isArray(val)) {
+	if (isArray(val)) {
 		return val.map(toDate);
 	}
 
-	const dateTime = toDateTime(val);
-	if (isString(dateTime)) {
-		const d = new Date(dateTime);
+	try {
+		const d = isDate(val) ? val : new Date(val);
+		if (d.toString() === 'Invalid Date') throw new Error();
 		const year = d.getFullYear();
-		let month = d.getMonth() + 1;
-		let date = d.getDate();
-		if (month < 10) {
-			month = `0${month}`;
-		}
-		if (date < 10) {
-			date = `0${date}`;
-		}
-		return [year, month, date].join('/');
+		const month = padStart(d.getMonth() + 1, 2, 0);
+		const date = padStart(d.getDate(), 2, 0);
+		return `${year}-${month}-${date}`;
 	}
-	throw new Error(`${val} is NOT a valid date type`);
+	catch (err) {
+		throw new Error(`Can NOT convert "${val}" to "date" format`);
+	}
+};
+
+const toTime = (val) => {
+	// handle multi time string by "," seperator
+	if (isString(val) && val.includes(',')) {
+		return val.split(',').map(toTime);
+	}
+	if (isArray(val)) {
+		return val.map(toTime);
+	}
+
+	try {
+		const d = isDate(val) ? val : new Date(val);
+		if (d.toString() === 'Invalid Date') throw new Error();
+		const hours = padStart(d.getHours(), 2, 0);
+		const minutes = padStart(d.getMinutes(), 2, 0);
+		const seconds = padStart(d.getSeconds(), 2, 0);
+		const milliseconds = padStart(d.getMilliseconds(), 3, 0);
+		const partialTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
+		const zoneOffset = -d.getTimezoneOffset();
+		const offsetDif = zoneOffset < 0 ? '-' : '+';
+		const offsetZoneHours = padStart(Math.abs(zoneOffset / 60), 2, 0);
+		const offsetZoneMinutes = padStart(Math.abs(zoneOffset % 60), 2, 0);
+		const offset = `${offsetDif}${offsetZoneHours}:${offsetZoneMinutes}`;
+		return partialTime + offset;
+	}
+	catch (err) {
+		throw new Error(`Can NOT convert "${val}" to "time" format`);
+	}
 };
 
 const DataTypes = {
 	integer: toInt,
 	number: toNumber,
 	string: toStr,
-	byte: toByte,
 	boolean: toBoolean,
 	date: toDate,
+	time: toTime,
 	dateTime: toDateTime,
 };
 
