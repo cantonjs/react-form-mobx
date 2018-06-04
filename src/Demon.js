@@ -14,6 +14,7 @@ export default class Demon extends Component {
 		formStore: PropTypes.object.isRequired,
 		forwardedProps: PropTypes.shape({
 			name: PropTypes.string.isRequired,
+			value: PropTypes.any,
 			defaultValue: PropTypes.any,
 			validation: PropTypes.oneOfType([
 				PropTypes.arrayOf(PropTypes.func),
@@ -67,12 +68,14 @@ export default class Demon extends Component {
 			formStore,
 			isObject,
 			isArray,
+			checkable,
 			propOnChange,
 		} = props;
 		const { name, ...otherForwardedProps } = forwardedProps;
 		const options = {
 			isObject,
 			isArray,
+			checkable,
 			...otherForwardedProps,
 		};
 		if (isObject) {
@@ -102,6 +105,7 @@ export default class Demon extends Component {
 			this.inputStore.value = value;
 
 			if (checkable) {
+				if (!this.inputStore.value) this.inputStore.value = true;
 				const checked = getCheckedFromChangeEvent(...args);
 				this.inputStore.isChecked = checked;
 			}

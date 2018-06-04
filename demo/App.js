@@ -13,6 +13,7 @@ export default class App extends Component {
 			skin: 'fair',
 		},
 		checkboxes: ['foo', 'baz'],
+		checkbox: 'test',
 	};
 
 	formRef = createRef();
@@ -94,6 +95,7 @@ export default class App extends Component {
 				<Checkbox label="foo" value="foo" name="checkboxes" />
 				<Checkbox label="bar" value="bar" name="checkboxes" />
 				<Checkbox label="baz" value="baz" name="checkboxes" />
+				<Checkbox label="checkbox" value="shit" name="checkbox" />
 
 				<Submit>submit</Submit>
 				<Reset>reset</Reset>

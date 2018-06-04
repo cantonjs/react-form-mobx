@@ -70,6 +70,10 @@ export default class ObjectStore extends PrimitiveStore {
 		}
 	}
 
+	matchValue(key, value) {
+		return this.sourceValue[key] === value;
+	}
+
 	getChildren(key) {
 		const { children } = this;
 		if (children.has(key)) return children.get(key);

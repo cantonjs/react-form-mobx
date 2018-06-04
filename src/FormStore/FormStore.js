@@ -1,5 +1,10 @@
 import { action } from 'mobx';
-import { isFunction, isArray as isArrayType, createId } from '../utils';
+import {
+	isFunction,
+	isArray as isArrayType,
+	createId,
+	isEmpty,
+} from '../utils';
 import PrimitiveStore from './PrimitiveStore';
 import ObjectStore from './ObjectStore';
 import ArrayStore from './ArrayStore';
@@ -47,6 +52,16 @@ export default class FormStore extends ObjectStore {
 			key,
 			form: this,
 		});
+		const { checkable, value: propValue } = options;
+		if (checkable) {
+			store.isChecked = parentStore.matchValue(
+				key,
+				isEmpty(propValue) ? true : propValue,
+			);
+		}
+		else {
+			store.isChecked = true;
+		}
 		parentStore.setChildren(key, store);
 		return store;
 	}

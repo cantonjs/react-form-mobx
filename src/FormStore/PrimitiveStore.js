@@ -97,7 +97,7 @@ export default class PrimitiveStore {
 		const {
 			key,
 			defaultValue,
-			isChecked = true,
+			isChecked,
 			form = this,
 			format,
 			inputFilter,
@@ -108,7 +108,6 @@ export default class PrimitiveStore {
 		this.key = key;
 		this.form = form;
 		this.defaultValue = defaultValue;
-		this.isChecked = isChecked;
 		this._bus = {};
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
@@ -118,8 +117,8 @@ export default class PrimitiveStore {
 			...options,
 		});
 		this._enforceSubmit = enforceSubmit;
-
 		const initialValue = this.getInputValue(pristineValue);
+		this.isChecked = isChecked;
 		this.actual = new Actual(initialValue);
 	}
 
