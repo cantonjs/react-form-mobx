@@ -1,14 +1,10 @@
-import {
-	isEmpty,
-	isDate,
-	isString,
-	isNumber,
-	isArray,
-	padStart,
-	padEnd,
-} from './utils';
+import { isEmpty, isDate, isString, isArray, padStart, padEnd } from './utils';
 
-const tsToDate = (n) => new Date(+padEnd(n, 13, '0')).toISOString();
+const ensureDate = (date) => {
+	if (isDate(date)) return date;
+	if (/^\d+$/.test(date)) return new Date(+padEnd(date, 13, '0'));
+	return new Date(date);
+};
 
 const validNumber = (val) => {
 	if (!/^-?\d+\.?\d*$/.test(val)) {
@@ -55,7 +51,7 @@ const toDate = (val) => {
 	}
 
 	try {
-		const d = isDate(val) ? val : new Date(val);
+		const d = ensureDate(val);
 		if (d.toString() === 'Invalid Date') throw new Error();
 		const year = d.getFullYear();
 		const month = padStart(d.getMonth() + 1, 2, 0);
@@ -77,7 +73,7 @@ const toTime = (val) => {
 	}
 
 	try {
-		const d = isDate(val) ? val : new Date(val);
+		const d = ensureDate(val);
 		if (d.toString() === 'Invalid Date') throw new Error();
 		const hours = padStart(d.getHours(), 2, 0);
 		const minutes = padStart(d.getMinutes(), 2, 0);

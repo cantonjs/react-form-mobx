@@ -305,6 +305,20 @@ describe('dateTime format', () => {
 		expect(formRef.current.submit()).toEqual({ hello: expected });
 	});
 
+	test('should convert seconds timestamp to dateTime format', () => {
+		const formRef = createRef();
+		const timestamp = Math.floor(Date.now() / 1000);
+		const date = new Date(timestamp * 1000);
+		const expected = DateTime.fromJSDate(date).toISO();
+		const value = { hello: timestamp };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
 	test('should convert string to dateTime format', () => {
 		const formRef = createRef();
 		const dateString = '2018-1-11';
