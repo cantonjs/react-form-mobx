@@ -64,7 +64,7 @@ export default class App extends Component {
 					validation={(val) => /a/.test(val)}
 					required
 				/>
-				<Input label="height" name="height" dataType="integer" />
+				<Input label="height" name="height" format="integer" />
 				<ArrayOf name="starships">
 					{(starships, { push, removeBy }) => (
 						<div>
