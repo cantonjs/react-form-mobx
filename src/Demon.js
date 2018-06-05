@@ -107,27 +107,35 @@ export default class Demon extends Component {
 		} = this.props;
 		const onChange = forwardedProps[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
-		try {
-			const value = getValueFromChangeEvent(...args);
 
-			if (checkable) {
+		if (checkable) {
+			try {
 				const checked = getCheckedFromChangeEvent(...args);
-				this.inputStore.value = isEmpty(value) ? true : value;
 				this.inputStore.isChecked = checked;
 			}
-			else {
+			catch (err) {
+				warn(
+					`Failed to get checked from "${propOnChange}",`,
+					'changing "props.getCheckedFromChangeEvent" may resolve this problem.',
+				);
+				console.error(err);
+			}
+		}
+		else {
+			try {
+				const value = getValueFromChangeEvent(...args);
 				this.inputStore.value = value;
 			}
+			catch (err) {
+				warn(
+					`Failed to get value from "${propOnChange}",`,
+					'changing "props.getValueFromChangeEvent" may resolve this problem.',
+				);
+				console.error(err);
+			}
+		}
 
-			this.inputStore.dirty();
-		}
-		catch (err) {
-			warn(
-				`Failed to map value from "${propOnChange}",`,
-				'changing "props.getValueFromChangeEvent" may resolve this problem.',
-			);
-			console.error(err);
-		}
+		this.inputStore.dirty();
 		formStore.dirty();
 		formStore.change();
 	};
@@ -141,17 +149,18 @@ export default class Demon extends Component {
 		} = this.props;
 		const onKeyPress = forwardedProps[propOnKeyPress];
 		if (isFunction(onKeyPress)) onKeyPress(...args);
+		let key;
 		try {
-			const key = getKeyFromKeyPressEvent(...args);
-			if (key === 'Enter') formStore.submit();
+			key = getKeyFromKeyPressEvent(...args);
 		}
 		catch (err) {
 			warn(
-				`Failed to map value from "${propOnKeyPress}",`,
+				`Failed to get key from "${propOnKeyPress}",`,
 				'changing "props.getKeyFromKeyPressEvent" may resolve this problem.',
 			);
 			console.error(err);
 		}
+		if (key === 'Enter') formStore.submit();
 	};
 
 	handleBlur = (...args) => {
