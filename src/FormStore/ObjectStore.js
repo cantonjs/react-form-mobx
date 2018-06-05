@@ -44,6 +44,7 @@ export default class ObjectStore extends PrimitiveStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
+		this.actual.isChecked = false;
 		this.actual.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.eachChildren((child, key) => {
@@ -64,13 +65,16 @@ export default class ObjectStore extends PrimitiveStore {
 		return this.shouldIgnore(value) ? undefined : value;
 	}
 
-	eachChildren(iterator) {
+	eachChildren(iterator, options = {}) {
+		const { checked = true } = options;
 		for (const [key, item] of this.children) {
-			if (item.isChecked) iterator(item, key, this.children);
+			if (!checked || item.isChecked) {
+				iterator(item, key, this.children);
+			}
 		}
 	}
 
-	matchValue(key, value) {
+	shouldCheck(key, value) {
 		return this.sourceValue[key] === value;
 	}
 

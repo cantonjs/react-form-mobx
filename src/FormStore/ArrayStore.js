@@ -46,6 +46,7 @@ export default class ArrayStore extends ObjectStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
+		this.actual.isChecked = false;
 		this.actual.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		const keysToBeDeleted = [];
@@ -85,12 +86,12 @@ export default class ArrayStore extends ObjectStore {
 		return this.children.findIndex((item) => item.key === key);
 	}
 
-	eachChildren(iterator) {
-		const filter = () => true;
-		// const filter = (item) => item.isChecked;
+	eachChildren(iterator, options = {}) {
+		const { checked = true } = options;
+		const filter = (item) => item.isChecked;
 		let index = 0;
 		this.children.forEach((item, _, ...args) => {
-			if (filter(item)) iterator(item, index++, ...args);
+			if (!checked || filter(item)) iterator(item, index++, ...args);
 		});
 	}
 
@@ -106,6 +107,10 @@ export default class ArrayStore extends ObjectStore {
 		if (index < 0) index = this.children.length;
 		this.children[index] = store;
 		return true;
+	}
+
+	shouldCheck(key, value) {
+		return !!~this.sourceValue.indexOf(value);
 	}
 
 	@action

@@ -1,7 +1,7 @@
 import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { isFunction, warn } from './utils';
+import { isFunction, isEmpty, warn } from './utils';
 import { FormatTypesKeys } from './FormatTypes';
 import Context from './Context';
 import withFormStore from './withFormStore';
@@ -78,9 +78,16 @@ export default class Demon extends Component {
 			checkable,
 			...otherForwardedProps,
 		};
+
+		if (checkable && isEmpty(forwardedProps.value)) {
+			options.value = true;
+			if (!forwardedProps.format) options.format = 'boolean';
+		}
+
 		if (isObject) {
 			options.onChange = otherForwardedProps[propOnChange];
 		}
+
 		this.inputStore = formStore.attach(name, options);
 		this.inputStore.dirty();
 	}
@@ -102,12 +109,14 @@ export default class Demon extends Component {
 		if (isFunction(onChange)) onChange(...args);
 		try {
 			const value = getValueFromChangeEvent(...args);
-			this.inputStore.value = value;
 
 			if (checkable) {
-				if (!this.inputStore.value) this.inputStore.value = true;
 				const checked = getCheckedFromChangeEvent(...args);
+				this.inputStore.value = isEmpty(value) ? true : value;
 				this.inputStore.isChecked = checked;
+			}
+			else {
+				this.inputStore.value = value;
 			}
 
 			this.inputStore.dirty();

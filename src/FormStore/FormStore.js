@@ -34,7 +34,7 @@ export default class FormStore extends ObjectStore {
 		if (!isArray && isArrayType(value)) {
 			let store = parentStore.getChildren(key);
 			if (!store) {
-				store = parentStore.attach(key, { isArray: true });
+				store = parentStore.attach(key, { isArray: true, parentStore });
 			}
 			return store.attach(createId(key), {
 				...options,
@@ -47,22 +47,26 @@ export default class FormStore extends ObjectStore {
 			if (isObject) return ObjectStore;
 			return PrimitiveStore;
 		})();
-		const store = new Store(value, {
+
+		const { checkable, value: propValue } = options;
+		const finalPristineValue = checkable ? propValue : value;
+		const store = new Store(finalPristineValue, {
 			...options,
 			key,
 			form: this,
+			parentStore,
 		});
-		const { checkable, value: propValue } = options;
-		if (checkable) {
-			store.isChecked = parentStore.matchValue(
-				key,
-				isEmpty(propValue) ? true : propValue,
-			);
-		}
-		else {
-			store.isChecked = true;
-		}
 		parentStore.setChildren(key, store);
+		// if (checkable) {
+		// 	store.isChecked = parentStore.shouldCheck(
+		// 		key,
+		// 		isEmpty(propValue) ? true : propValue,
+		// 	);
+		// 	console.log('store.value', store.value, store.isChecked);
+		// }
+		// else {
+		// 	store.isChecked = true;
+		// }
 		return store;
 	}
 

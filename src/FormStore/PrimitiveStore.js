@@ -15,6 +15,15 @@ class Actual {
 	@observable sourceValue;
 	@observable pristineValue;
 
+	/**
+	 * checked status
+	 *
+	 * `-1`: user unchecked, should be `false` as usual
+	 * `0` : default status, should be `undefined` as usual
+	 * `1` : user checked, should be `true` as usual
+	 */
+	@observable checkedStatus = 0;
+
 	constructor(initialValue) {
 		this.pristineValue = initialValue;
 		this.sourceValue = initialValue;
@@ -23,10 +32,6 @@ class Actual {
 }
 
 export default class PrimitiveStore {
-	// the real pristine value, provided by setting form value
-	@observable pristineValue;
-
-	@observable isChecked = true;
 	@observable isTouched = false;
 	@observable error = null;
 
@@ -64,6 +69,19 @@ export default class PrimitiveStore {
 	}
 
 	@computed
+	get isChecked() {
+		if (!this._checkable) return true;
+		const { checkedStatus } = this.actual;
+		const isDefaultChecked = this.parentStore.shouldCheck(this.key, this.value);
+		return checkedStatus ? checkedStatus > 0 : isDefaultChecked;
+	}
+	set isChecked(checked) {
+		if (!this._checkable) return true;
+		this.actual.checkedStatus = checked ? 1 : -1;
+		return true;
+	}
+
+	@computed
 	get isPristineValueEmpty() {
 		return isEmpty(this.actual.pristineValue);
 	}
@@ -96,8 +114,9 @@ export default class PrimitiveStore {
 	constructor(pristineValue, options = {}) {
 		const {
 			key,
+			parentStore,
 			defaultValue,
-			isChecked,
+			checkable,
 			form = this,
 			format,
 			inputFilter,
@@ -107,18 +126,16 @@ export default class PrimitiveStore {
 		const formatFilter = format && createFormatFunc(format);
 		this.key = key;
 		this.form = form;
+		this.parentStore = parentStore;
 		this.defaultValue = defaultValue;
 		this._bus = {};
+		this._checkable = checkable;
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
-		this.validation = new Validation({
-			formatFilter,
-			...options,
-		});
+		this.validation = new Validation({ formatFilter, ...options });
 		this._enforceSubmit = enforceSubmit;
 		const initialValue = this.getInputValue(pristineValue);
-		this.isChecked = isChecked;
 		this.actual = new Actual(initialValue);
 	}
 
@@ -185,6 +202,7 @@ export default class PrimitiveStore {
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
 		// this.pristineValue = finalValue;
+		this.actual.checkedStatus = 0;
 		this.actual.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.value = finalValue;

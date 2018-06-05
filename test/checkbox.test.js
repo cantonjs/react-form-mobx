@@ -37,7 +37,7 @@ describe('Checkbox component', () => {
 			</Form>,
 		);
 		simulate(checkboxRef).change('checked', true);
-		expect(formRef.current.submit()).toEqual({ hello: 'world' });
+		expect(formRef.current.submit()).toEqual({ hello: true });
 	});
 
 	test('should submit `true` if checked', () => {
@@ -88,5 +88,37 @@ describe('Checkbox component', () => {
 		);
 		simulate(checkboxRef).change('checked', true);
 		expect(formRef.current.submit()).toEqual({ hello: true });
+	});
+});
+
+describe('Checkbox component for array', () => {
+	test('should submit checked fields', () => {
+		const formRef = createRef();
+		const value = { hello: ['foo', 'baz'] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Checkbox name="hello" value="foo" />
+				<Checkbox name="hello" value="bar" />
+				<Checkbox name="hello" value="baz" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: ['foo', 'baz'] });
+	});
+
+	test('should submit checked fields after user checked', () => {
+		const formRef = createRef();
+		const checkboxRef1 = createRef();
+		const checkboxRef2 = createRef();
+		const value = { hello: ['foo', 'baz'] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Checkbox name="hello" value="foo" ref={checkboxRef1} />
+				<Checkbox name="hello" value="bar" ref={checkboxRef2} />
+				<Checkbox name="hello" value="baz" />
+			</Form>,
+		);
+		simulate(checkboxRef1).change('checked', false);
+		simulate(checkboxRef2).change('checked', true);
+		expect(formRef.current.submit()).toEqual({ hello: ['bar', 'baz'] });
 	});
 });
