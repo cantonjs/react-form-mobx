@@ -38,6 +38,38 @@ describe('validation prop', () => {
 	});
 });
 
+describe('required prop', () => {
+	test('should be invalid if required field is empty', () => {
+		const formRef = createRef();
+		const value = { hello: '' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" required />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be valid if required field is not empty', () => {
+		const formRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" required />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
+
 describe('enum prop', () => {
 	test('should be invalid if fail to enum', () => {
 		const formRef = createRef();
