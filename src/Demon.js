@@ -177,6 +177,7 @@ export default class Demon extends Component {
 			props: {
 				forwardedProps: {
 					defaultValue,
+					defaultChecked,
 					name,
 					validation,
 					inputFilter,

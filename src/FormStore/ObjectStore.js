@@ -82,6 +82,10 @@ export default class ObjectStore extends PrimitiveStore {
 		return false;
 	}
 
+	hasKey(key) {
+		return this.sourceValue.hasOwnProperty(key);
+	}
+
 	getChildren(key) {
 		const { children } = this;
 		if (children.has(key)) return children.get(key);

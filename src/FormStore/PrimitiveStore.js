@@ -71,9 +71,17 @@ export default class PrimitiveStore {
 	@computed
 	get isChecked() {
 		if (!this._checkable) return true;
-		const { checkedStatus } = this.actual;
-		const isDefaultChecked = this.parentStore.shouldCheck(this.key, this.value);
-		return checkedStatus ? checkedStatus > 0 : isDefaultChecked;
+		const {
+			defaultChecked,
+			parentStore,
+			key,
+			value,
+			actual: { checkedStatus },
+		} = this;
+		const shouldChecked = parentStore.shouldCheck(key, value);
+		if (checkedStatus) return checkedStatus > 0;
+		if (parentStore.hasKey(key)) return shouldChecked;
+		return isUndefined(defaultChecked) ? shouldChecked : defaultChecked;
 	}
 	set isChecked(checked) {
 		if (!this._checkable) return true;
@@ -116,6 +124,7 @@ export default class PrimitiveStore {
 			key,
 			parentStore,
 			defaultValue,
+			defaultChecked,
 			checkable,
 			form = this,
 			format,
@@ -128,6 +137,7 @@ export default class PrimitiveStore {
 		this.form = form;
 		this.parentStore = parentStore;
 		this.defaultValue = defaultValue;
+		this.defaultChecked = defaultChecked;
 		this._bus = {};
 		this._checkable = checkable;
 		this._formatFilter = formatFilter;
@@ -207,6 +217,10 @@ export default class PrimitiveStore {
 		this.sourceValue = finalValue;
 		this.value = finalValue;
 		this.dirty();
+	}
+
+	hasKey() {
+		return false;
 	}
 
 	@action
