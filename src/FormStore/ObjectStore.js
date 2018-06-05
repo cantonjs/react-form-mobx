@@ -113,13 +113,17 @@ export default class ObjectStore extends PrimitiveStore {
 		this.children.delete(key);
 	}
 
-	change = () => {
+	change = (store) => {
 		if (!isFunction(this._bus.change)) return;
 		const ev = {};
 		Object.defineProperty(ev, 'value', {
 			enumerable: true,
 			get: () => this.value,
 		});
+		// Object.defineProperty(ev, 'key', {
+		// 	enumerable: true,
+		// 	get: () => store.key,
+		// });
 		this._bus.change(ev);
 	};
 }

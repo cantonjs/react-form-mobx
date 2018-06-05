@@ -35,7 +35,10 @@ export default class Demon extends Component {
 			minimum: PropTypes.number,
 			exclusiveMinimum: PropTypes.number,
 		}).isRequired,
+
 		checkable: PropTypes.bool,
+		isRadio: PropTypes.bool,
+
 		getValueFromChangeEvent: PropTypes.func,
 		getCheckedFromChangeEvent: PropTypes.func,
 		getKeyFromKeyPressEvent: PropTypes.func,
@@ -50,6 +53,7 @@ export default class Demon extends Component {
 	static defaultProps = {
 		forwardedProps: {},
 		checkable: false,
+		isRadio: false,
 		getValueFromChangeEvent: (ev) => ev.currentTarget.value,
 		getCheckedFromChangeEvent: (ev) => ev.currentTarget.checked,
 		getKeyFromKeyPressEvent: (ev) => ev.key,
@@ -69,6 +73,7 @@ export default class Demon extends Component {
 			isObject,
 			isArray,
 			checkable,
+			isRadio,
 			propOnChange,
 		} = props;
 		const { name, ...otherForwardedProps } = forwardedProps;
@@ -76,6 +81,7 @@ export default class Demon extends Component {
 			isObject,
 			isArray,
 			checkable,
+			isRadio,
 			...otherForwardedProps,
 		};
 
@@ -103,7 +109,6 @@ export default class Demon extends Component {
 			getValueFromChangeEvent,
 			getCheckedFromChangeEvent,
 			propOnChange,
-			formStore,
 		} = this.props;
 		const onChange = forwardedProps[propOnChange];
 		if (isFunction(onChange)) onChange(...args);
@@ -136,8 +141,9 @@ export default class Demon extends Component {
 		}
 
 		this.inputStore.dirty();
-		formStore.dirty();
-		formStore.change();
+		const { parentStore } = this.inputStore;
+		parentStore.dirty();
+		parentStore.change(this.inputStore);
 	};
 
 	handleKeyPress = (...args) => {

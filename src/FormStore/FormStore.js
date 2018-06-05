@@ -28,7 +28,7 @@ export default class FormStore extends ObjectStore {
 
 	@action
 	createChildren(parentStore, key, value, options = {}) {
-		const { isArray, isObject } = options;
+		const { isArray, isObject, isRadio } = options;
 
 		// enforce array type if value is array
 		if (!isArray && isArrayType(value)) {
@@ -36,9 +36,25 @@ export default class FormStore extends ObjectStore {
 			if (!store) {
 				store = parentStore.attach(key, { isArray: true, parentStore });
 			}
+			return store.attach(createId(key), options);
+		}
+
+		if (isRadio) {
+			let store = parentStore.getChildren(key);
+			if (!store) {
+				store = parentStore.attach(key, {
+					isArray: true,
+					isObject: true,
+					parentStore,
+					outputFilter: (arr) => arr[0],
+					// onChange: ({ value }) => {
+					// 	console.log('changed', value);
+					// },
+				});
+			}
 			return store.attach(createId(key), {
 				...options,
-				isChecked: ~value.indexOf(options.value),
+				isRadio: false,
 			});
 		}
 

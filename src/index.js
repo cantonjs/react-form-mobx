@@ -8,3 +8,4 @@ export ObjectOf from './ObjectOf';
 export ArrayOf from './ArrayOf';
 export Input from './Input';
 export Checkbox from './Checkbox';
+export Radio from './Radio';

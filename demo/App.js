@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import { Form, Submit, Reset, Clear, ObjectOf, ArrayOf } from '../src';
 import Input from './Input';
 import Checkbox from './Checkbox';
+import Radio from './Radio';
 
 export default class App extends Component {
 	state = {
@@ -12,8 +13,6 @@ export default class App extends Component {
 			// hair: 'blond',
 			skin: 'fair',
 		},
-		checkboxes: ['foo', 'baz'],
-		checkbox: 'test',
 	};
 
 	formRef = createRef();
@@ -96,6 +95,10 @@ export default class App extends Component {
 				<Checkbox label="bar" value="bar" name="checkboxes" />
 				<Checkbox label="baz" value="baz" name="checkboxes" />
 				<Checkbox label="checkbox" value="shit" name="checkbox" />
+
+				<Radio label="foo" value="foo" name="radio" />
+				<Radio label="bar" value="bar" name="radio" />
+				<Radio label="baz" value="baz" name="radio" />
 
 				<Submit>submit</Submit>
 				<Reset>reset</Reset>

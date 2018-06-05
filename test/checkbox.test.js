@@ -1,11 +1,11 @@
 import React, { createRef } from 'react';
-import { Form, Checkbox, ArrayOf, ObjectOf, Reset } from '../src';
+import { Form, Checkbox } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
 describe('Checkbox component', () => {
-	test('should submit checked field', () => {
+	test('should submit matched field', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
 		mount(

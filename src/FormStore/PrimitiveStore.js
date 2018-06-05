@@ -126,6 +126,8 @@ export default class PrimitiveStore {
 			defaultValue,
 			defaultChecked,
 			checkable,
+			isRadio,
+			isRadiosGroup,
 			form = this,
 			format,
 			inputFilter,
@@ -138,6 +140,8 @@ export default class PrimitiveStore {
 		this.parentStore = parentStore;
 		this.defaultValue = defaultValue;
 		this.defaultChecked = defaultChecked;
+		this.isRadio = isRadio;
+		this.isRadiosGroup = isRadiosGroup;
 		this._bus = {};
 		this._checkable = checkable;
 		this._formatFilter = formatFilter;
