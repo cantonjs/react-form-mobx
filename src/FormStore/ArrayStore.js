@@ -110,7 +110,11 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	shouldCheck(key, value) {
-		return !!~this.sourceValue.indexOf(value);
+		const { sourceValue } = this;
+		const checked = !!~sourceValue.indexOf(value);
+		if (checked) return checked;
+		if (value === true) return !!~sourceValue.indexOf('true');
+		return false;
 	}
 
 	@action

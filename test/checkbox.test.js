@@ -89,6 +89,17 @@ describe('Checkbox component', () => {
 		simulate(checkboxRef).change('checked', true);
 		expect(formRef.current.submit()).toEqual({ hello: true });
 	});
+
+	test('should convert "true" string to boolean by default', () => {
+		const formRef = createRef();
+		const checkboxRef = createRef();
+		mount(
+			<Form value={{ hello: 'true' }} ref={formRef}>
+				<Checkbox name="hello" ref={checkboxRef} />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: true });
+	});
 });
 
 describe('Checkbox component for array', () => {

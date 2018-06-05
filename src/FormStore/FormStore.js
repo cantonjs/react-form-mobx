@@ -57,16 +57,6 @@ export default class FormStore extends ObjectStore {
 			parentStore,
 		});
 		parentStore.setChildren(key, store);
-		// if (checkable) {
-		// 	store.isChecked = parentStore.shouldCheck(
-		// 		key,
-		// 		isEmpty(propValue) ? true : propValue,
-		// 	);
-		// 	console.log('store.value', store.value, store.isChecked);
-		// }
-		// else {
-		// 	store.isChecked = true;
-		// }
 		return store;
 	}
 

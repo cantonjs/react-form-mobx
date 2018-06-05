@@ -20,7 +20,7 @@ export const isString = (s) => typeof s === 'string';
 export const isNumber = (s) => typeof s === 'number';
 export const isDate = (s) => s && isFunction(s.toISOString);
 export const isObject = (s) => typeof s === 'object';
-export const isPlainObject = (obj) => !!(obj && isObject(obj) && !isDate(obj));
+export const isPlainObject = (s) => !!s && isObject(s) && !isDate(s);
 
 export const clone = (s) => {
 	if (isArray(s)) return s.slice();

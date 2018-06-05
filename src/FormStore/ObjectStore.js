@@ -75,7 +75,11 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	shouldCheck(key, value) {
-		return this.sourceValue[key] === value;
+		const val = this.sourceValue[key];
+		const checked = val === value;
+		if (checked) return checked;
+		if (value === true) return val === 'true';
+		return false;
 	}
 
 	getChildren(key) {
