@@ -117,6 +117,10 @@ export default class ArrayStore extends ObjectStore {
 		return false;
 	}
 
+	hasKey() {
+		return this.parentStore.hasKey(this.key);
+	}
+
 	@action
 	attach(key, options = {}) {
 		const { sourceValue, form } = this;

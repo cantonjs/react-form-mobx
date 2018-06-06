@@ -44,3 +44,47 @@ describe('Radio component', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'baz' });
 	});
 });
+
+describe('Radio defaultChecked', () => {
+	test('should submit defaultChecked field', () => {
+		const formRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<Radio name="hello" defaultChecked />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: true });
+	});
+
+	test('should not submit defaultChecked=false field', () => {
+		const formRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<Radio name="hello" defaultChecked={false} />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({});
+	});
+
+	test('should submit defaultChecked=false field if user checked', () => {
+		const formRef = createRef();
+		const checkboxRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<Radio name="hello" defaultChecked ref={checkboxRef} />
+			</Form>,
+		);
+		simulate(checkboxRef).change('checked', true);
+		expect(formRef.current.submit()).toEqual({ hello: true });
+	});
+
+	test('should not submit defaultChecked field if data value is false', () => {
+		const formRef = createRef();
+		mount(
+			<Form value={{ hello: false }} ref={formRef}>
+				<Radio name="hello" defaultChecked />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({});
+	});
+});

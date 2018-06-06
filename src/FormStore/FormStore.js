@@ -46,8 +46,8 @@ export default class FormStore extends ObjectStore {
 					isArray: true,
 					isObject: true,
 					parentStore,
-					inputFilter: (input) => [].concat(input),
-					outputFilter: (arr) => arr[0],
+					inputFilter: (val) => [val],
+					outputFilter: (val) => val[0],
 					onChange: ({ key }) => store.checkKey(key),
 				});
 			}
