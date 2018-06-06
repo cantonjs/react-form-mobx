@@ -7,12 +7,7 @@ export default class ArrayStore extends ObjectStore {
 
 	_index = 0;
 
-	@computed
-	get length() {
-		return this.ids.length;
-	}
-
-	constructor(pristineValue, options = {}) {
+	constructor(pristineValue, options) {
 		super(pristineValue, options);
 		this.children = observable([]);
 	}
@@ -122,7 +117,7 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	@action
-	attach(key, options = {}) {
+	attach(key, options) {
 		const { sourceValue, form } = this;
 		const index = this._index++;
 		const value = index >= sourceValue.length ? '' : sourceValue[index];
@@ -151,10 +146,7 @@ export default class ArrayStore extends ObjectStore {
 	checkKey(key) {
 		this.eachChildren(
 			(child) => {
-				if (child.key === key && !child.isChecked) {
-					child.isChecked = false;
-				}
-				else if (child.isChecked && child.key !== key) {
+				if (child.isChecked && child.key !== key) {
 					child.isChecked = false;
 				}
 			},

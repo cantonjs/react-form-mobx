@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { Form, Input, ArrayOf, ObjectOf, Submit } from '../src';
+import { Form, Input, ObjectOf, Submit } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
@@ -76,19 +76,6 @@ describe('submit', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });
 	});
 
-	test('submitting array', () => {
-		const formRef = createRef();
-		const value = { foo: ['bar', 'baz'] };
-		mount(
-			<Form value={value} ref={formRef}>
-				<ArrayOf name="foo">
-					{(arr) => arr.map((item) => <Input name={item} key={item} />)}
-				</ArrayOf>
-			</Form>,
-		);
-		expect(formRef.current.submit()).toEqual({ foo: ['bar', 'baz'] });
-	});
-
 	test('submitting nested objects', () => {
 		const formRef = createRef();
 		const value = { foo: { bar: { baz: 'hello' } } };
@@ -135,20 +122,6 @@ describe('Submitting empty data', () => {
 				<ObjectOf name="foo">
 					<Input name="bar" />
 				</ObjectOf>
-			</Form>,
-		);
-		expect(formRef.current.submit()).toEqual({ hello: 'world' });
-	});
-
-	test('should not submit empty array', () => {
-		const formRef = createRef();
-		const value = { hello: 'world' };
-		mount(
-			<Form value={value} ref={formRef}>
-				<Input name="hello" />
-				<ArrayOf name="foo">
-					{(list) => list.map((id) => <Input key={id} name={id} />)}
-				</ArrayOf>
 			</Form>,
 		);
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });

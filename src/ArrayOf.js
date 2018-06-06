@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { isFunction, createId as createUniqueId } from './utils';
+import { createId as createUniqueId } from './utils';
 import withFormStore from './withFormStore';
 import Demon from './Demon';
-
-const childrenType = PropTypes.oneOfType([PropTypes.node, PropTypes.func])
-	.isRequired;
 
 @withFormStore()
 @observer
 class ItemGroup extends Component {
 	static propTypes = {
 		formStore: PropTypes.object.isRequired,
-		children: childrenType,
+		children: PropTypes.func.isRequired,
 		name: PropTypes.string.isRequired,
 	};
 
@@ -29,7 +26,6 @@ class ItemGroup extends Component {
 			push: () => formStore.push(createId()),
 			remove: formStore.remove,
 			removeBy: (id) => () => formStore.remove(id),
-			includes: formStore.includes,
 		};
 
 		for (let i = 0; i < length; i++) {
@@ -39,16 +35,14 @@ class ItemGroup extends Component {
 
 	render() {
 		const { children, formStore } = this.props;
-		return isFunction(children) ?
-			children(formStore.ids, this.helper) :
-			children;
+		return children(formStore.ids, this.helper);
 	}
 }
 
 @observer
 export default class ArrayOf extends Component {
 	static propTypes = {
-		children: childrenType,
+		children: PropTypes.func.isRequired,
 		name: PropTypes.string.isRequired,
 	};
 
