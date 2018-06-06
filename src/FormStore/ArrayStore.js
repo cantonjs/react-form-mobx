@@ -142,4 +142,19 @@ export default class ArrayStore extends ObjectStore {
 	};
 
 	includes = (id) => ~this.ids.indexOf(id);
+
+	@action
+	checkKey(key) {
+		this.eachChildren(
+			(child) => {
+				if (child.key === key && !child.isChecked) {
+					child.isChecked = false;
+				}
+				else if (child.isChecked && child.key !== key) {
+					child.isChecked = false;
+				}
+			},
+			{ checked: false },
+		);
+	}
 }

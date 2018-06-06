@@ -26,7 +26,9 @@ describe('Change Event', () => {
 			</Form>,
 		);
 		simulate(inputRef).change('value', 'chris');
-		expect(handleChange).toHaveBeenCalledWith({ value: { hello: 'chris' } });
+		expect(handleChange).toHaveBeenCalledWith(
+			expect.objectContaining({ value: { hello: 'chris' } }),
+		);
 	});
 
 	test('should trigger ObjectOf.onChange', () => {
@@ -40,7 +42,9 @@ describe('Change Event', () => {
 			</Form>,
 		);
 		simulate(inputRef).change('value', 'qux');
-		expect(handleChange).toHaveBeenCalledWith({ value: { bar: 'qux' } });
+		expect(handleChange).toHaveBeenCalledWith(
+			expect.objectContaining({ value: { bar: 'qux' } }),
+		);
 	});
 
 	test('should trigger ArrayOf.onChange', () => {
@@ -56,6 +60,8 @@ describe('Change Event', () => {
 			</Form>,
 		);
 		simulate(inputRef).change('value', 'qux');
-		expect(handleChange).toHaveBeenCalledWith({ value: ['bar', 'qux'] });
+		expect(handleChange).toHaveBeenCalledWith(
+			expect.objectContaining({ value: ['bar', 'qux'] }),
+		);
 	});
 });

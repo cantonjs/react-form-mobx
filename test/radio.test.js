@@ -29,7 +29,7 @@ describe('Radio component', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'bar' });
 	});
 
-	test.only('should submit user checked field in radios group', () => {
+	test('should submit user checked field in radios group', () => {
 		const formRef = createRef();
 		const radioRef = createRef();
 		const value = { hello: 'bar' };
@@ -41,6 +41,6 @@ describe('Radio component', () => {
 			</Form>,
 		);
 		simulate(radioRef).change('checked', true);
-		expect(formRef.current.submit()).toEqual({ hello: 'bar' });
+		expect(formRef.current.submit()).toEqual({ hello: 'baz' });
 	});
 });

@@ -120,10 +120,10 @@ export default class ObjectStore extends PrimitiveStore {
 			enumerable: true,
 			get: () => this.value,
 		});
-		// Object.defineProperty(ev, 'key', {
-		// 	enumerable: true,
-		// 	get: () => store.key,
-		// });
+		Object.defineProperty(ev, 'key', {
+			enumerable: true,
+			get: () => store.key,
+		});
 		this._bus.change(ev);
 	};
 }
