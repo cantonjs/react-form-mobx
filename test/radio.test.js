@@ -31,17 +31,20 @@ describe('Radio component', () => {
 
 	test('should submit user checked field in radios group', () => {
 		const formRef = createRef();
-		const radioRef = createRef();
+		const radioRef1 = createRef();
+		const radioRef2 = createRef();
 		const value = { hello: 'bar' };
 		mount(
 			<Form value={value} ref={formRef}>
-				<Radio name="hello" value="foo" />
-				<Radio name="hello" value="bar" />
-				<Radio name="hello" value="baz" ref={radioRef} />
+				<Radio name="hello" value="foo" ref={radioRef1} />
+				<Radio name="hello" value="bar" ref={radioRef2} />
+				<Radio name="hello" value="baz" />
 			</Form>,
 		);
-		simulate(radioRef).change('checked', true);
-		expect(formRef.current.submit()).toEqual({ hello: 'baz' });
+		simulate(radioRef1).change('checked', true);
+		simulate(radioRef2).change('checked', true);
+		simulate(radioRef1).change('checked', true);
+		expect(formRef.current.submit()).toEqual({ hello: 'foo' });
 	});
 });
 
