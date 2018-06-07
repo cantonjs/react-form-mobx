@@ -1,10 +1,5 @@
 import { action } from 'mobx';
-import {
-	isFunction,
-	isArray as isArrayType,
-	createId,
-	isEmpty,
-} from '../utils';
+import { isFunction, isArray as isArrayType, createId } from '../utils';
 import PrimitiveStore from './PrimitiveStore';
 import ObjectStore from './ObjectStore';
 import ArrayStore from './ArrayStore';
@@ -45,12 +40,14 @@ export default class FormStore extends ObjectStore {
 				store = parentStore.attach(key, {
 					isArray: true,
 					isObject: true,
+					isRadioGroup: true,
 					parentStore,
 					inputFilter: (val) => [val],
 					outputFilter: (val) => val[0],
 					onChange: ({ key }) => store.checkKey(key),
 				});
 			}
+
 			return store.attach(createId(key), {
 				...options,
 				isRadio: false,
