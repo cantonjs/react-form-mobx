@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { Form, Input, ArrayOf } from '../src';
+import { Form, Input, ArrayOf, Radio } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
@@ -28,6 +28,97 @@ describe('ArrayOf component', () => {
 			</Form>,
 		);
 		expect(formRef.current.submit()).toEqual({});
+	});
+
+	test('should nested array work', () => {
+		const formRef = createRef();
+		const value = { hello: [['foo', 'bar'], ['baz', 'qux']] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="hello">
+					{(outerArray) =>
+						outerArray.map((outerItem) => (
+							<ArrayOf name={outerItem} key={outerItem}>
+								{(innerArray) =>
+									innerArray.map((innerItem) => (
+										<Input name={innerItem} key={innerItem} />
+									))
+								}
+							</ArrayOf>
+						))
+					}
+				</ArrayOf>
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({
+			hello: [['foo', 'bar'], ['baz', 'qux']],
+		});
+	});
+
+	test('should array of radio groups work', () => {
+		const formRef = createRef();
+		const value = { hello: ['yes', 'no', 'yes'] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="hello">
+					{(arr) =>
+						arr.map((item) => (
+							<div key={item}>
+								<Radio name={item} value="yes" />
+								<Radio name={item} value="no" />
+							</div>
+						))
+					}
+				</ArrayOf>
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({
+			hello: ['yes', 'no', 'yes'],
+		});
+	});
+});
+
+describe('Updating value in ArrayOf component', () => {
+	test('should override array after setting new props', () => {
+		const formRef = createRef();
+		const value = { hello: ['bar', 'baz'] };
+		const wrapper = mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="hello">
+					{(list) => list.map((id) => <Input key={id} name={id} />)}
+				</ArrayOf>
+			</Form>,
+		);
+		wrapper.setProps({ value: { hello: ['qux'] } });
+		expect(formRef.current.submit()).toEqual({ hello: ['qux'] });
+	});
+
+	test('should override array if new array length greater than the prev one', () => {
+		const formRef = createRef();
+		const value = { hello: ['bar'] };
+		const wrapper = mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="hello">
+					{(list) => list.map((id) => <Input key={id} name={id} />)}
+				</ArrayOf>
+			</Form>,
+		);
+		wrapper.setProps({ value: { hello: ['foo', 'bar'] } });
+		expect(formRef.current.submit()).toEqual({ hello: ['foo', 'bar'] });
+	});
+
+	test('should override array if new array length less than the prev one', () => {
+		const formRef = createRef();
+		const value = { hello: ['foo', 'bar'] };
+		const wrapper = mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="hello">
+					{(list) => list.map((id) => <Input key={id} name={id} />)}
+				</ArrayOf>
+			</Form>,
+		);
+		wrapper.setProps({ value: { hello: ['baz'] } });
+		expect(formRef.current.submit()).toEqual({ hello: ['baz'] });
 	});
 });
 
