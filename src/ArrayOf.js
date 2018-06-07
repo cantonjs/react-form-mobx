@@ -57,7 +57,7 @@ export default class ArrayOf extends Component {
 	};
 
 	render() {
-		const { children } = this.props;
+		const { children, name } = this.props;
 		return (
 			<Demon forwardedProps={this.forwardedProps} isObject isArray>
 				{() => <ItemGroup name={name}>{children}</ItemGroup>}
