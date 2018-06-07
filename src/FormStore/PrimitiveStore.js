@@ -11,9 +11,9 @@ import {
 } from '../utils';
 
 class Actual {
+	@observable pristineValue;
 	@observable value;
 	@observable sourceValue;
-	@observable pristineValue;
 
 	/**
 	 * checked status
@@ -33,7 +33,7 @@ class Actual {
 
 export default class PrimitiveStore {
 	@observable isTouched = false;
-	@observable error = null;
+	@observable errorMessage = '';
 
 	@computed
 	get pristineValue() {
@@ -41,11 +41,7 @@ export default class PrimitiveStore {
 		return isPristineValueEmpty ? this.getDefaultStoreValue() : pristineValue;
 	}
 	set pristineValue(value) {
-		const finalValue = this.getInputValue(value);
-		this.actual.pristineValue = finalValue;
-		this.sourceValue = finalValue;
-		this.value = finalValue;
-		this.dirty();
+		this.actual.pristineValue = value;
 		return true;
 	}
 
@@ -84,7 +80,9 @@ export default class PrimitiveStore {
 		return isUndefined(defaultChecked) ? shouldChecked : defaultChecked;
 	}
 	set isChecked(checked) {
+		/* istanbul ignore next */
 		if (!this._checkable) return true;
+
 		this.actual.checkedStatus = checked ? 1 : -1;
 		return true;
 	}
@@ -106,17 +104,12 @@ export default class PrimitiveStore {
 
 	@computed
 	get isValid() {
-		return !this.error;
+		return !this.errorMessage;
 	}
 
 	@computed
 	get isInvalid() {
 		return !this.isValid;
-	}
-
-	@computed
-	get errorMessage() {
-		return this.error ? this.error.message || 'Invalid' : '';
 	}
 
 	constructor(pristineValue, options = {}) {
@@ -161,7 +154,7 @@ export default class PrimitiveStore {
 			return fn();
 		}
 		catch (error) {
-			this.error = error;
+			this.errorMessage = error.message || 'Invalid';
 		}
 	}
 
@@ -176,10 +169,10 @@ export default class PrimitiveStore {
 	getOutputValue(value) {
 		return this.try(() => {
 			const {
+				pristineValue,
 				_outputFilter,
 				_formatFilter,
 				_ensureDefaultValue,
-				actual: { pristineValue },
 			} = this;
 			return filtersFlow(
 				[_outputFilter, _formatFilter, _ensureDefaultValue],
@@ -213,16 +206,11 @@ export default class PrimitiveStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		// this.pristineValue = finalValue;
 		this.actual.checkedStatus = 0;
-		this.actual.pristineValue = finalValue;
+		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.value = finalValue;
 		this.dirty();
-	}
-
-	hasKey() {
-		return false;
 	}
 
 	@action
@@ -235,18 +223,11 @@ export default class PrimitiveStore {
 		this.try(() => {
 			this.validation.exec(this.value);
 			this.touch();
-			this.error = null;
+			this.errorMessage = '';
 		});
 	}
 
 	shouldIgnore(value) {
-		// console.log(
-		// 	this.key,
-		// 	this.isPristineValueEmpty,
-		// 	this.pristineValue,
-		// 	value,
-		// );
-
 		if (this._enforceSubmit || !this.isPristineValueEmpty) return false;
 		if (isArray(value)) return !value.length;
 		if (isPlainObject(value)) return !Object.keys(value).length;
@@ -257,8 +238,4 @@ export default class PrimitiveStore {
 		const { isValid, isInvalid, isTouched, errorMessage } = this;
 		return { isValid, isInvalid, isTouched, errorMessage };
 	}
-
-	submit = (...args) => this.form.submit(...args);
-	reset = (...args) => this.form.reset(...args);
-	clear = (...args) => this.form.clear(...args);
 }

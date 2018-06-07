@@ -45,14 +45,14 @@ export default class ObjectStore extends PrimitiveStore {
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
 		this.actual.isChecked = false;
-		this.actual.pristineValue = finalValue;
+		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.eachChildren((child, key) => {
 			const value = this.sourceValue[key];
 			child.setPristineValue(value);
 		});
 		this.value = finalValue;
-		this.dirty();
+		// this.dirty();
 	}
 
 	getFormData() {

@@ -29,7 +29,7 @@ export default class ArrayStore extends ObjectStore {
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
 		this.actual.isChecked = false;
-		this.actual.pristineValue = finalValue;
+		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		const keysToBeDeleted = [];
 		const keysToBeAdded = this.sourceValue.slice(this.children.length);

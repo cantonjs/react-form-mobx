@@ -86,7 +86,7 @@ export default class FormStore extends ObjectStore {
 
 	@action
 	reset = () => {
-		this.setPristineValue(this.actual.pristineValue);
+		this.setPristineValue(this.pristineValue);
 	};
 
 	@action
