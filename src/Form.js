@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object, func, string, oneOfType } from 'prop-types';
 import { observe } from 'mobx';
 import { observer } from 'mobx-react';
 import FormStore from './FormStore';
@@ -9,14 +9,15 @@ import { noop } from './utils';
 @observer
 export default class Form extends Component {
 	static propTypes = {
-		value: PropTypes.object,
-		onSubmit: PropTypes.func,
-		onValidChange: PropTypes.func,
-		onValid: PropTypes.func,
-		onInvalid: PropTypes.func,
-		onChange: PropTypes.func,
-		inputFilter: PropTypes.func,
-		outputFilter: PropTypes.func,
+		value: object,
+		onSubmit: func,
+		onValidChange: func,
+		onValid: func,
+		onInvalid: func,
+		onChange: func,
+		inputFilter: func,
+		outputFilter: func,
+		component: oneOfType([func, string, object]),
 	};
 
 	static defaultProps = {
@@ -25,6 +26,7 @@ export default class Form extends Component {
 		onValidChange: noop,
 		onValid: noop,
 		onInvalid: noop,
+		component: 'div',
 	};
 
 	constructor(props) {
@@ -53,6 +55,7 @@ export default class Form extends Component {
 			formStore,
 			'isValid',
 			({ type, newValue }) => {
+				/* istanbul ignore else */
 				if (type === 'update') {
 					onValidChange(newValue);
 					newValue ? onValid() : onInvalid();
@@ -63,6 +66,8 @@ export default class Form extends Component {
 
 	componentDidUpdate(prevProps) {
 		const { value } = this.props;
+
+		/* istanbul ignore else */
 		if (prevProps.value !== value) {
 			this.formStore.setPristineValue(value);
 			this.formStore.touch(false);
@@ -72,10 +77,6 @@ export default class Form extends Component {
 	componentWillUnmount() {
 		this.removeValidListener();
 	}
-
-	blockNativeSubmit = (ev) => {
-		ev.preventDefault();
-	};
 
 	submit() {
 		return this.formStore.submit();
@@ -95,6 +96,7 @@ export default class Form extends Component {
 
 	render() {
 		const {
+			component: Comp,
 			value,
 			onValidChange,
 			onValid,
@@ -106,7 +108,7 @@ export default class Form extends Component {
 		} = this.props;
 		return (
 			<Context.Provider value={this.formStore}>
-				<form {...other} onSubmit={this.blockNativeSubmit} />
+				<Comp {...other} />
 			</Context.Provider>
 		);
 	}

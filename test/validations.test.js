@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import { Form, Input } from '../src';
-import { mount, unmount } from './utils';
+import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
@@ -25,6 +25,34 @@ afterEach(unmount);
 // 		);
 // 	});
 // });
+
+describe('Form validation event props', () => {
+	test('should trigger onValid', () => {
+		const validHandler = jest.fn();
+		const inputRef = createRef();
+		const value = {};
+		mount(
+			<Form value={value} onValid={validHandler}>
+				<Input name="hello" required ref={inputRef} />
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'world');
+		expect(validHandler).toHaveBeenCalledTimes(1);
+	});
+
+	test('should trigger onInvalid', () => {
+		const invalidHandler = jest.fn();
+		const inputRef = createRef();
+		const value = { hello: 'world' };
+		mount(
+			<Form value={value} onInvalid={invalidHandler}>
+				<Input name="hello" required ref={inputRef} />
+			</Form>,
+		);
+		simulate(inputRef).change('value', '');
+		expect(invalidHandler).toHaveBeenCalledTimes(1);
+	});
+});
 
 describe('validation prop', () => {
 	test('should be invalid if fail to validate', () => {

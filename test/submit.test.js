@@ -148,4 +148,14 @@ describe('Submitting empty data', () => {
 		simulate(inputRef).change('value', '');
 		expect(formRef.current.submit()).toEqual({ hello: '' });
 	});
+
+	test('should be null if invalid', () => {
+		const formRef = createRef();
+		mount(
+			<Form value={{ hello: '' }} ref={formRef}>
+				<Input name="hello" required />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual(null);
+	});
 });

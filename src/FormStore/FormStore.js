@@ -5,7 +5,7 @@ import ObjectStore from './ObjectStore';
 import ArrayStore from './ArrayStore';
 
 export default class FormStore extends ObjectStore {
-	constructor(pristineValue, options = {}) {
+	constructor(pristineValue, options) {
 		super(pristineValue, {
 			...options,
 			key: '<FORM>',
@@ -22,7 +22,7 @@ export default class FormStore extends ObjectStore {
 	}
 
 	@action
-	createChildren(parentStore, key, value, options = {}) {
+	createChildren(parentStore, key, value, options) {
 		const { isArray, isObject, isRadio } = options;
 
 		// enforce array type if value is array
@@ -73,14 +73,16 @@ export default class FormStore extends ObjectStore {
 	}
 
 	@action
-	submit = (options = {}) => {
+	submit = () => {
 		const { isValid } = this;
 		const { submit } = this._bus;
 		this.touch();
+
+		/* istanbul ignore else */
 		if (isFunction(submit)) {
 			const value = this.getFormData();
 			submit(value, { isValid });
-			return isValid || options.force ? value : null;
+			return isValid ? value : null;
 		}
 	};
 
