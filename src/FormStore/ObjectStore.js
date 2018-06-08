@@ -5,7 +5,7 @@ import { isFunction } from '../utils';
 export default class ObjectStore extends PrimitiveStore {
 	@computed
 	get isValid() {
-		if (this.error) return false;
+		if (this.errorMessage) return false;
 
 		let isValid = true;
 		this.eachChildren((child) => {
@@ -14,7 +14,7 @@ export default class ObjectStore extends PrimitiveStore {
 		return isValid;
 	}
 
-	constructor(pristineValue, options = {}) {
+	constructor(pristineValue, options) {
 		super(pristineValue, options);
 		this.children = observable.map();
 		this._bus.change = options.onChange;
@@ -102,7 +102,7 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	@action
-	attach(key, options = {}) {
+	attach(key, options) {
 		const { sourceValue, form } = this;
 		const val = sourceValue[key];
 		return form.createChildren(this, key, val, options);
