@@ -162,3 +162,107 @@ describe('isTouched', () => {
 		);
 	});
 });
+
+describe('isValid', () => {
+	test('should `isValid` be true by default', () => {
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: true }),
+		);
+	});
+
+	test('should `isValid` be false if missing required field', () => {
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello', required: true }}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: false }),
+		);
+	});
+
+	test('should `isValid` be false if failed to format', () => {
+		const value = { hello: 'world' };
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form value={value}>
+				<Demon forwardedProps={{ name: 'hello', format: 'number' }}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: false }),
+		);
+	});
+
+	test('should `isValid` be false after typed invalid value', () => {
+		const value = { hello: 20 };
+		const inputRef = createRef();
+		const children = jest.fn((props) => <input {...props} ref={inputRef} />);
+		mount(
+			<Form value={value}>
+				<Demon forwardedProps={{ name: 'hello', format: 'number' }}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'chris');
+		expect(children).toHaveBeenLastCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: false }),
+		);
+	});
+
+	test('should `isValid` be false after set invalid value', () => {
+		const value = { hello: 20 };
+		const children = jest.fn((props) => <input {...props} />);
+		const wrapper = mount(
+			<Form value={value}>
+				<Demon forwardedProps={{ name: 'hello', format: 'number' }}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		wrapper.setProps({ value: { hello: 'chris' } });
+		expect(children).toHaveBeenLastCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: false }),
+		);
+	});
+
+	test('should `isValid` be false if inputFilter throw error', () => {
+		const value = { hello: 'world' };
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form value={value}>
+				<Demon
+					forwardedProps={{
+						name: 'hello',
+						inputFilter() {
+							throw new Error();
+						},
+					}}
+				>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isValid: false }),
+		);
+	});
+});

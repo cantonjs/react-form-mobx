@@ -25,17 +25,14 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	@action
-	setPristineValue(value) {
-		const finalValue = this.getInputValue(value);
+	applySetPristineValue() {
 		this.isChecked = false;
-		this.pristineValue = finalValue;
-		this.sourceValue = finalValue;
 		const keysToBeDeleted = [];
 		const keysToBeAdded = this.sourceValue.slice(this.children.length);
 		this.eachChildren((child, key) => {
 			if (key < this.sourceValue.length) {
-				const value = this.sourceValue[key];
-				child.setPristineValue(value);
+				const val = this.sourceValue[key];
+				child.pristineValue = val;
 			}
 			else {
 				keysToBeDeleted.push(child.key);
@@ -48,7 +45,6 @@ export default class ArrayStore extends ObjectStore {
 		keysToBeAdded.forEach(() => {
 			this.push(createId(this.key));
 		});
-		this.value = finalValue;
 	}
 
 	getFormData() {

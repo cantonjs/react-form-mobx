@@ -1,4 +1,4 @@
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import { createFormatFunc } from '../FormatTypes';
 import Validation from '../Validation';
 import {
@@ -41,7 +41,13 @@ export default class PrimitiveStore {
 		return isPristineValueEmpty ? this.getDefaultStoreValue() : pristineValue;
 	}
 	set pristineValue(value) {
-		this._actual.pristineValue = value;
+		const finalValue = this.getInputValue(value);
+		this._actual.checkedStatus = 0;
+		this._actual.pristineValue = finalValue;
+		this.sourceValue = finalValue;
+		if (this.applySetPristineValue) this.applySetPristineValue(finalValue);
+		this.value = finalValue;
+		this.validate();
 		return true;
 	}
 
@@ -139,7 +145,7 @@ export default class PrimitiveStore {
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
-		this.validation = new Validation({ formatFilter, ...options });
+		this._validation = new Validation({ formatFilter, ...options });
 		this._enforceSubmit = enforceSubmit;
 		const initialValue = this.getInputValue(pristineValue);
 		this._actual = new Actual(initialValue);
@@ -149,17 +155,16 @@ export default class PrimitiveStore {
 		return '';
 	}
 
-	@action
-	try(fn) {
+	_try(fn) {
 		try {
-			return fn();
+			return runInAction(fn);
 		}
 		catch (error) {
 			this.errorMessage = error.message || 'Invalid';
 		}
 	}
 
-	_ensureDefaultValue = (value) => {
+	_defaultValueFilter = (value) => {
 		const { defaultValue } = this;
 		if (!isUndefined(defaultValue) && isEmpty(value)) {
 			return defaultValue;
@@ -168,15 +173,15 @@ export default class PrimitiveStore {
 	};
 
 	getOutputValue(value) {
-		return this.try(() => {
+		return this._try(() => {
 			const {
 				pristineValue,
 				_outputFilter,
 				_formatFilter,
-				_ensureDefaultValue,
+				_defaultValueFilter,
 			} = this;
 			return filtersFlow(
-				[_outputFilter, _formatFilter, _ensureDefaultValue],
+				[_outputFilter, _formatFilter, _defaultValueFilter],
 				value,
 				{ pristineValue },
 			);
@@ -184,9 +189,9 @@ export default class PrimitiveStore {
 	}
 
 	getInputValue(value) {
-		return this.try(() => {
-			const { _inputFilter, _ensureDefaultValue } = this;
-			return filtersFlow([_inputFilter, _ensureDefaultValue], value);
+		return this._try(() => {
+			const { _inputFilter, _defaultValueFilter } = this;
+			return filtersFlow([_inputFilter, _defaultValueFilter], value);
 		});
 	}
 
@@ -201,23 +206,22 @@ export default class PrimitiveStore {
 	}
 
 	@action
-	setPristineValue(value) {
-		const finalValue = this.getInputValue(value);
-		this._actual.checkedStatus = 0;
-		this.pristineValue = finalValue;
-		this.sourceValue = finalValue;
-		this.value = finalValue;
-	}
-
-	@action
 	touch(isTouched = true) {
 		this.isTouched = isTouched;
 	}
 
-	@action
 	validate() {
-		this.try(() => {
-			this.validation.exec(this.value);
+		if (!this.errorMessage) {
+			this._try(() => {
+				this._validation.exec(this.value);
+				this.errorMessage = '';
+			});
+		}
+	}
+
+	clearAndValidate() {
+		this._try(() => {
+			this._validation.exec(this.value);
 			this.errorMessage = '';
 		});
 	}

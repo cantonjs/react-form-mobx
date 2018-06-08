@@ -140,10 +140,10 @@ export default class Demon extends Component {
 			}
 		}
 
-		this.inputStore.validate();
+		this.inputStore.clearAndValidate();
 		this.inputStore.touch();
+
 		const { parentStore } = this.inputStore;
-		parentStore.validate();
 		parentStore.change(this.inputStore);
 	};
 

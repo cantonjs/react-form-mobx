@@ -69,7 +69,7 @@ export default class Form extends Component {
 
 		/* istanbul ignore else */
 		if (prevProps.value !== value) {
-			this.formStore.setPristineValue(value);
+			this.formStore.pristineValue = value;
 			this.formStore.touch(false);
 		}
 	}

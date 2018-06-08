@@ -5,7 +5,7 @@ import { mount, unmount, simulate } from './utils';
 afterEach(unmount);
 
 // TODO:
-// describe('Error handling', () => {
+// describe.only('Error handling', () => {
 // 	test('should be invalid if something wrong', () => {
 // 		const formRef = createRef();
 // 		const value = { hello: 'world' };
