@@ -17,7 +17,6 @@ export const isArray = (s) =>
 	(s && s.constructor === Array) || isObservableArray(s);
 export const isEmpty = (s) => !s && s !== false && s !== 0;
 export const isString = (s) => typeof s === 'string';
-export const isNumber = (s) => typeof s === 'number';
 export const isDate = (s) => s && isFunction(s.toISOString);
 export const isObject = (s) => typeof s === 'object';
 export const isPlainObject = (s) => !!s && isObject(s) && !isDate(s);
