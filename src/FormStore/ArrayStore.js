@@ -18,8 +18,7 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	@action
-	applySetValue(newValue) {
-		this.actual.value = newValue;
+	applySetValue() {
 		this.eachChildren((child, index) => {
 			child.value = this.value[index];
 		});
@@ -28,7 +27,7 @@ export default class ArrayStore extends ObjectStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		this.actual.isChecked = false;
+		this.isChecked = false;
 		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		const keysToBeDeleted = [];

@@ -17,7 +17,7 @@ export default class ObjectStore extends PrimitiveStore {
 	constructor(pristineValue, options) {
 		super(pristineValue, options);
 		this.children = observable.map();
-		this._bus.change = options.onChange;
+		this.bus.change = options.onChange;
 	}
 
 	getDefaultStoreValue() {
@@ -33,9 +33,8 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	@action
-	applySetValue(newValue) {
+	applySetValue() {
 		// TODO: should handle deleted and added keys
-		this.actual.value = newValue;
 		this.eachChildren((child, key) => {
 			child.value = this.value[key];
 		});
@@ -44,7 +43,7 @@ export default class ObjectStore extends PrimitiveStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		this.actual.isChecked = false;
+		this.isChecked = false;
 		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.eachChildren((child, key) => {
@@ -52,7 +51,7 @@ export default class ObjectStore extends PrimitiveStore {
 			child.setPristineValue(value);
 		});
 		this.value = finalValue;
-		// this.dirty();
+		this.dirty();
 	}
 
 	getFormData() {
@@ -114,16 +113,21 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	change = (store) => {
-		if (!isFunction(this._bus.change)) return;
+		if (!isFunction(this.bus.change)) return;
 		const ev = {};
-		Object.defineProperty(ev, 'value', {
-			enumerable: true,
-			get: () => this.value,
+		const defineProperty = (prop, get) => {
+			Object.defineProperty(ev, prop, {
+				enumerable: true,
+				configurable: true,
+				get,
+			});
+		};
+		defineProperty('value', () => this.value);
+		defineProperty('key', () => store.key);
+		this.bus.change(ev);
+		process.nextTick(() => {
+			delete ev.value;
+			delete ev.key;
 		});
-		Object.defineProperty(ev, 'key', {
-			enumerable: true,
-			get: () => store.key,
-		});
-		this._bus.change(ev);
 	};
 }

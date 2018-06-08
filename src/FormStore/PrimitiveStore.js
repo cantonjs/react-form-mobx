@@ -37,21 +37,21 @@ export default class PrimitiveStore {
 
 	@computed
 	get pristineValue() {
-		const { actual: { pristineValue }, isPristineValueEmpty } = this;
+		const { _actual: { pristineValue }, isPristineValueEmpty } = this;
 		return isPristineValueEmpty ? this.getDefaultStoreValue() : pristineValue;
 	}
 	set pristineValue(value) {
-		this.actual.pristineValue = value;
+		this._actual.pristineValue = value;
 		return true;
 	}
 
 	@computed
 	get sourceValue() {
-		const { actual: { sourceValue }, isSourceValueEmpty } = this;
+		const { _actual: { sourceValue }, isSourceValueEmpty } = this;
 		return isSourceValueEmpty ? this.getDefaultStoreValue() : sourceValue;
 	}
 	set sourceValue(value) {
-		this.actual.sourceValue = clone(value);
+		this._actual.sourceValue = clone(value);
 		return true;
 	}
 
@@ -60,7 +60,8 @@ export default class PrimitiveStore {
 		return this.applyGetValue();
 	}
 	set value(value) {
-		this.applySetValue(value);
+		this._actual.value = value;
+		if (this.applySetValue) this.applySetValue(value);
 		return true;
 	}
 
@@ -72,7 +73,7 @@ export default class PrimitiveStore {
 			parentStore,
 			key,
 			value,
-			actual: { checkedStatus },
+			_actual: { checkedStatus },
 		} = this;
 		const shouldChecked = parentStore.shouldCheck(key, value);
 		if (checkedStatus) return checkedStatus > 0;
@@ -83,23 +84,23 @@ export default class PrimitiveStore {
 		/* istanbul ignore next */
 		if (!this._checkable) return true;
 
-		this.actual.checkedStatus = checked ? 1 : -1;
+		this._actual.checkedStatus = checked ? 1 : -1;
 		return true;
 	}
 
 	@computed
 	get isPristineValueEmpty() {
-		return isEmpty(this.actual.pristineValue);
+		return isEmpty(this._actual.pristineValue);
 	}
 
 	@computed
 	get isSourceValueEmpty() {
-		return isEmpty(this.actual.sourceValue);
+		return isEmpty(this._actual.sourceValue);
 	}
 
 	@computed
 	get isValueEmpty() {
-		return isEmpty(this.actual.value);
+		return isEmpty(this._actual.value);
 	}
 
 	@computed
@@ -133,7 +134,7 @@ export default class PrimitiveStore {
 		this.defaultValue = defaultValue;
 		this.defaultChecked = defaultChecked;
 		this.isRadio = isRadio;
-		this._bus = {};
+		this.bus = {};
 		this._checkable = checkable;
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
@@ -141,7 +142,7 @@ export default class PrimitiveStore {
 		this.validation = new Validation({ formatFilter, ...options });
 		this._enforceSubmit = enforceSubmit;
 		const initialValue = this.getInputValue(pristineValue);
-		this.actual = new Actual(initialValue);
+		this._actual = new Actual(initialValue);
 	}
 
 	getDefaultStoreValue() {
@@ -190,12 +191,8 @@ export default class PrimitiveStore {
 	}
 
 	applyGetValue() {
-		const { isValueEmpty, actual: { value } } = this;
+		const { isValueEmpty, _actual: { value } } = this;
 		return isValueEmpty ? this.getDefaultStoreValue() : value;
-	}
-
-	applySetValue(newValue) {
-		this.actual.value = newValue;
 	}
 
 	getFormData() {
@@ -206,7 +203,7 @@ export default class PrimitiveStore {
 	@action
 	setPristineValue(value) {
 		const finalValue = this.getInputValue(value);
-		this.actual.checkedStatus = 0;
+		this._actual.checkedStatus = 0;
 		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.value = finalValue;

@@ -1,6 +1,6 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import { Form, Demon } from '../src';
-import { mount, unmount, simulate } from './utils';
+import { mount, unmount } from './utils';
 
 afterEach(unmount);
 

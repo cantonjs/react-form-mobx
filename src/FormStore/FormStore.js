@@ -12,7 +12,7 @@ export default class FormStore extends ObjectStore {
 		});
 
 		const { submit, clear, reset, change } = options;
-		this._bus = {
+		this.bus = {
 			...this.bus,
 			submit,
 			change,
@@ -75,7 +75,7 @@ export default class FormStore extends ObjectStore {
 	@action
 	submit = () => {
 		const { isValid } = this;
-		const { submit } = this._bus;
+		const { submit } = this.bus;
 		this.touch();
 
 		/* istanbul ignore else */
