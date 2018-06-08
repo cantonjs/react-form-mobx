@@ -49,7 +49,6 @@ export default class ArrayStore extends ObjectStore {
 			this.push(createId(this.key));
 		});
 		this.value = finalValue;
-		this.dirty();
 	}
 
 	getFormData() {

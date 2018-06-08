@@ -95,7 +95,7 @@ export default class Demon extends Component {
 		}
 
 		this.inputStore = formStore.attach(name, options);
-		this.inputStore.dirty();
+		this.inputStore.validate();
 	}
 
 	componentWillUnmount() {
@@ -140,9 +140,10 @@ export default class Demon extends Component {
 			}
 		}
 
-		this.inputStore.dirty();
+		this.inputStore.validate();
+		this.inputStore.touch();
 		const { parentStore } = this.inputStore;
-		parentStore.dirty();
+		parentStore.validate();
 		parentStore.change(this.inputStore);
 	};
 

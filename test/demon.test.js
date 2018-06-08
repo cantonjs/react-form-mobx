@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { Form, Demon } from '../src';
-import { mount, unmount } from './utils';
+import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
@@ -22,6 +22,7 @@ describe('Demon component', () => {
 				onBlur: expect.any(Function),
 			}),
 			expect.objectContaining({
+				isTouched: false,
 				isValid: true,
 				isInvalid: false,
 				errorMessage: '',
@@ -49,7 +50,7 @@ describe('Catching errors on events', () => {
 				</Demon>
 			</Form>,
 		);
-		expect(log).toHaveBeenCalledTimes(2);
+		expect(log).toHaveBeenCalled();
 	});
 
 	test('should catch error if `getCheckedFromChangeEvent` failed', () => {
@@ -65,7 +66,7 @@ describe('Catching errors on events', () => {
 				</Demon>
 			</Form>,
 		);
-		expect(log).toHaveBeenCalledTimes(2);
+		expect(log).toHaveBeenCalled();
 	});
 
 	test('should catch error if `getKeyFromKeyPressEvent` failed', () => {
@@ -81,6 +82,83 @@ describe('Catching errors on events', () => {
 				</Demon>
 			</Form>,
 		);
-		expect(log).toHaveBeenCalledTimes(2);
+		expect(log).toHaveBeenCalled();
+	});
+});
+
+describe('isTouched', () => {
+	test('should `isTouched` be false by default', () => {
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: false }),
+		);
+	});
+
+	test('should `isTouched` be true after blured', () => {
+		const inputRef = createRef();
+		const children = jest.fn((props) => <input {...props} ref={inputRef} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		simulate(inputRef).blur();
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: true }),
+		);
+	});
+
+	test('should `isTouched` be true after typed', () => {
+		const inputRef = createRef();
+		const children = jest.fn((props) => <input {...props} ref={inputRef} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'chris');
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: true }),
+		);
+	});
+
+	test('should `isTouched` be true after submitted', () => {
+		const formRef = createRef();
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form ref={formRef}>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		formRef.current.submit();
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: true }),
+		);
+	});
+
+	test('should `isTouched` be false after set new value', () => {
+		const value = { hello: 'world' };
+		const formRef = createRef();
+		const children = jest.fn((props) => <input {...props} />);
+		const wrapper = mount(
+			<Form value={value} ref={formRef}>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		formRef.current.submit();
+		wrapper.setProps({ value: { hello: 'chris' } });
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: false }),
+		);
 	});
 });

@@ -207,7 +207,6 @@ export default class PrimitiveStore {
 		this.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		this.value = finalValue;
-		this.dirty();
 	}
 
 	@action
@@ -216,10 +215,9 @@ export default class PrimitiveStore {
 	}
 
 	@action
-	dirty() {
+	validate() {
 		this.try(() => {
 			this.validation.exec(this.value);
-			this.touch();
 			this.errorMessage = '';
 		});
 	}

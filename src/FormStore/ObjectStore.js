@@ -51,7 +51,6 @@ export default class ObjectStore extends PrimitiveStore {
 			child.setPristineValue(value);
 		});
 		this.value = finalValue;
-		this.dirty();
 	}
 
 	getFormData() {
