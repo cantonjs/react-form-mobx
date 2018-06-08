@@ -64,4 +64,21 @@ describe('Change Event', () => {
 			expect.objectContaining({ value: ['bar', 'qux'] }),
 		);
 	});
+
+	test('should not able to access event in an asynchronous way', (done) => {
+		const handleChange = jest.fn();
+		const inputRef = createRef();
+		mount(
+			<Form value={{ foo: { bar: 'baz' } }}>
+				<ObjectOf name="foo" onChange={handleChange}>
+					<Input name="bar" ref={inputRef} />
+				</ObjectOf>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'qux');
+		setTimeout(() => {
+			expect('value' in handleChange.mock.calls[0][0]).toBe(false);
+			done();
+		}, 0);
+	});
 });
