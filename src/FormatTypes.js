@@ -26,7 +26,7 @@ const toBoolean = (val) =>
 
 const toDateTime = (val) => {
 	// handle multi dateTime string by "," seperator
-	if (isString(val) && val.includes(',')) {
+	if (isString(val) && ~val.indexOf(',')) {
 		return val
 			.split(',')
 			.map(toDateTime)
@@ -43,7 +43,7 @@ const toDateTime = (val) => {
 
 const toDate = (val) => {
 	// handle multi date string by "," seperator
-	if (isString(val) && val.includes(',')) {
+	if (isString(val) && ~val.indexOf(',')) {
 		return val
 			.split(',')
 			.map(toDate)
@@ -65,7 +65,7 @@ const toDate = (val) => {
 
 const toTime = (val) => {
 	// handle multi time string by "," seperator
-	if (isString(val) && val.includes(',')) {
+	if (isString(val) && ~val.indexOf(',')) {
 		return val
 			.split(',')
 			.map(toTime)
