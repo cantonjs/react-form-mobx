@@ -158,4 +158,20 @@ describe('Submitting empty data', () => {
 		);
 		expect(formRef.current.submit()).toEqual(null);
 	});
+
+	test('should submit on pressing ENTER key in Input component', () => {
+		const inputRef = createRef();
+		const value = { hello: 'world' };
+		const handleSubmit = jest.fn();
+		mount(
+			<Form value={value} onSubmit={handleSubmit}>
+				<Input name="hello" ref={inputRef} />
+			</Form>,
+		);
+		simulate(inputRef).keyPress('Enter');
+		expect(handleSubmit).toHaveBeenCalledWith(
+			{ hello: 'world' },
+			expect.any(Object),
+		);
+	});
 });

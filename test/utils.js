@@ -51,6 +51,10 @@ class SimulatedRef {
 		Simulate.click(this.node);
 	}
 
+	blur() {
+		Simulate.blur(this.node);
+	}
+
 	keyPress(key) {
 		Simulate.keyPress(this.node, { key });
 	}
