@@ -112,7 +112,7 @@ export default class PrimitiveStore {
 		return !this.isValid;
 	}
 
-	constructor(pristineValue, options = {}) {
+	constructor(pristineValue, options) {
 		const {
 			key,
 			parentStore,
