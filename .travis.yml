@@ -8,5 +8,8 @@ services:
 node_js:
   - 6
 
+after_script:
+  - yarn coveralls
+
 notifications:
   email: false
