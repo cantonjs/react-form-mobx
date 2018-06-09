@@ -1,4 +1,4 @@
-# [WIP] react-form-mobx
+# react-form-mobx
 
 [![CircleCI](https://circleci.com/gh/cantonjs/react-form-mobx.svg?style=shield)](https://circleci.com/gh/cantonjs/react-form-mobx)
 [![Build Status](https://travis-ci.org/cantonjs/react-form-mobx.svg?branch=master)](https://travis-ci.org/cantonjs/react-form-mobx)
