@@ -91,14 +91,15 @@ export default class App extends Component {
 					<Input label="skin color" name="skin" />
 				</ObjectOf>
 
-				<Checkbox label="foo" value="foo" name="checkboxes" />
-				<Checkbox label="bar" value="bar" name="checkboxes" />
-				<Checkbox label="baz" value="baz" name="checkboxes" />
+				<ArrayOf name="checkboxes">
+					<Checkbox label="foo" value="foo" />
+					<Checkbox label="bar" value="bar" />
+					<Checkbox label="baz" value="baz" />
+				</ArrayOf>
 				<Checkbox label="checkbox" value="shit" name="checkbox" />
 
-				<Radio label="foo" value="foo" name="radio" />
-				<Radio label="bar" value="bar" name="radio" />
-				<Radio label="baz" value="baz" name="radio" />
+				<Radio label="yes" value={true} name="radio" />
+				<Radio label="no" value={false} name="radio" />
 
 				<Submit>submit</Submit>
 				<Reset>reset</Reset>
