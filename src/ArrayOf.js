@@ -1,25 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { createId as createUniqueId } from './utils';
+import { createId as createUniqueId, isFunction } from './utils';
 import withFormStore from './withFormStore';
 import Demon from './Demon';
+
+const childrenType = PropTypes.oneOfType([PropTypes.func, PropTypes.node])
+	.isRequired;
 
 @withFormStore()
 @observer
 class ItemGroup extends Component {
 	static propTypes = {
 		formStore: PropTypes.object.isRequired,
-		children: PropTypes.func.isRequired,
+		children: childrenType,
 		name: PropTypes.string.isRequired,
 	};
 
 	constructor(props) {
 		super(props);
 
-		const { formStore, name } = props;
-		const { sourceValue: { length } } = formStore;
+		const { formStore, name, children } = props;
 		const createId = () => createUniqueId(name);
+		const length = isFunction(children) ?
+			formStore.sourceValue.length :
+			Children.count(children);
 
 		this.helper = {
 			createId,
@@ -34,15 +39,18 @@ class ItemGroup extends Component {
 	}
 
 	render() {
-		const { children, formStore } = this.props;
-		return children(formStore.ids, this.helper);
+		const { children, formStore: { ids } } = this.props;
+		if (isFunction(children)) return children(ids, this.helper);
+		return Children.map(children, (child, index) =>
+			cloneElement(child, { name: ids[index] }),
+		);
 	}
 }
 
 @observer
 export default class ArrayOf extends Component {
 	static propTypes = {
-		children: PropTypes.func.isRequired,
+		children: childrenType,
 		name: PropTypes.string.isRequired,
 	};
 
