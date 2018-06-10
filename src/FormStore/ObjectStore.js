@@ -1,19 +1,8 @@
-import { observable, computed, action } from 'mobx';
+import { observable, action } from 'mobx';
 import PrimitiveStore from './PrimitiveStore';
 import { isFunction } from '../utils';
 
 export default class ObjectStore extends PrimitiveStore {
-	@computed
-	get isValid() {
-		if (this.errorMessage) return false;
-
-		let isValid = true;
-		this.eachChildren((child) => {
-			if (!isValid || !child.isValid) isValid = false;
-		});
-		return isValid;
-	}
-
 	constructor(pristineValue, options) {
 		super(pristineValue, options);
 		this.children = observable.map();
@@ -47,6 +36,14 @@ export default class ObjectStore extends PrimitiveStore {
 			const val = this.sourceValue[key];
 			child.pristineValue = val;
 		});
+	}
+
+	applyGetErrorMessage() {
+		let errorMessage = '';
+		this.eachChildren((child) => {
+			if (!errorMessage) errorMessage = child.errorMessage;
+		});
+		return errorMessage;
 	}
 
 	getFormData() {

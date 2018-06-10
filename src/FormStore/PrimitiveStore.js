@@ -15,6 +15,8 @@ class Actual {
 	@observable value;
 	@observable sourceValue;
 
+	@observable errorMessage = '';
+
 	/**
 	 * checked status
 	 *
@@ -24,7 +26,7 @@ class Actual {
 	 */
 	@observable checkedStatus = 0;
 
-	constructor(initialValue) {
+	setInitialValue(initialValue) {
 		this.pristineValue = initialValue;
 		this.sourceValue = initialValue;
 		this.value = initialValue;
@@ -33,7 +35,6 @@ class Actual {
 
 export default class PrimitiveStore {
 	@observable isTouched = false;
-	@observable errorMessage = '';
 
 	@computed
 	get pristineValue() {
@@ -68,6 +69,19 @@ export default class PrimitiveStore {
 	set value(value) {
 		this._actual.value = value;
 		if (this.applySetValue) this.applySetValue(value);
+		return true;
+	}
+
+	@computed
+	get errorMessage() {
+		const { errorMessage } = this._actual;
+		const childErrorMessage =
+			this.applyGetErrorMessage && this.applyGetErrorMessage();
+		if (errorMessage) return errorMessage;
+		return childErrorMessage || '';
+	}
+	set errorMessage(errorMessage) {
+		this._actual.errorMessage = errorMessage;
 		return true;
 	}
 
@@ -141,6 +155,7 @@ export default class PrimitiveStore {
 		this.defaultChecked = defaultChecked;
 		this.isRadio = isRadio;
 		this.bus = {};
+		this._actual = new Actual();
 		this._checkable = checkable;
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
@@ -148,7 +163,7 @@ export default class PrimitiveStore {
 		this._validation = new Validation({ formatFilter, ...options });
 		this._enforceSubmit = enforceSubmit;
 		const initialValue = this.getInputValue(pristineValue);
-		this._actual = new Actual(initialValue);
+		this._actual.setInitialValue(initialValue);
 	}
 
 	getDefaultStoreValue() {
