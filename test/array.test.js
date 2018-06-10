@@ -1,11 +1,11 @@
 import React, { createRef } from 'react';
-import { Form, Input, ArrayOf, Radio } from '../src';
+import { Form, Input, ArrayOf, Radio, Checkbox } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
-describe('ArrayOf component', () => {
-	test('should ArrayOf component work', () => {
+describe('ArrayOf component with function children', () => {
+	test('should ArrayOf component work with callback', () => {
 		const formRef = createRef();
 		const value = { foo: ['bar', 'baz'] };
 		mount(
@@ -75,6 +75,37 @@ describe('ArrayOf component', () => {
 		expect(formRef.current.submit()).toEqual({
 			hello: ['yes', 'no', 'yes'],
 		});
+	});
+});
+
+describe('ArrayOf component with node children', () => {
+	test('should ArrayOf component work with children', () => {
+		const formRef = createRef();
+		const value = { foo: ['bar', 'baz'] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="foo">
+					<Input />
+					<Input />
+				</ArrayOf>
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ foo: ['bar', 'baz'] });
+	});
+
+	test('should array of checkboxes work', () => {
+		const formRef = createRef();
+		const value = { foo: ['bar', 'baz'] };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ArrayOf name="foo">
+					<Checkbox value="bar" />
+					<Checkbox value="baz" />
+					<Checkbox value="qux" />
+				</ArrayOf>
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ foo: ['bar', 'baz'] });
 	});
 });
 
