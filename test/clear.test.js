@@ -33,6 +33,24 @@ describe('Clear component', () => {
 		expect(formRef.current.submit()).toEqual({});
 	});
 
+	test('should ENTER key to clear in nested Input component', () => {
+		const formRef = createRef();
+		const inputRef = createRef();
+		const buttonRef = createRef();
+		const value = { foo: { bar: 'baz' } };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ObjectOf name="foo">
+					<Input name="bar" ref={inputRef} />
+					<Clear ref={buttonRef} />
+				</ObjectOf>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'qux');
+		simulate(buttonRef).keyPress('Enter');
+		expect(formRef.current.submit()).toEqual({});
+	});
+
 	test('should onClick() work', () => {
 		const handleClick = jest.fn();
 		const buttonRef = createRef();

@@ -37,6 +37,24 @@ describe('Reset component', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });
 	});
 
+	test('should ENTER key to reset in nested Input component', () => {
+		const formRef = createRef();
+		const inputRef = createRef();
+		const buttonRef = createRef();
+		const value = { foo: { bar: 'baz' } };
+		mount(
+			<Form value={value} ref={formRef}>
+				<ObjectOf name="foo">
+					<Input name="bar" ref={inputRef} />
+					<Reset ref={buttonRef} />
+				</ObjectOf>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'qux');
+		simulate(buttonRef).keyPress('Enter');
+		expect(formRef.current.submit()).toEqual({ foo: { bar: 'baz' } });
+	});
+
 	test('should onClick() work', () => {
 		const handleClick = jest.fn();
 		const buttonRef = createRef();
