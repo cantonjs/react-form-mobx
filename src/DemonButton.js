@@ -48,7 +48,7 @@ export default class DemonButton extends Component {
 		}
 		catch (err) /* istanbul ignore next */ {
 			warn(
-				`Failed to map value from "${propOnKeyPress}",`,
+				`Failed to get value from "${propOnKeyPress}",`,
 				'changing "props.getKeyFromKeyPressEvent" may resolve this problem.',
 			);
 			console.error(err);
