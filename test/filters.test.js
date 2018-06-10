@@ -191,3 +191,46 @@ describe('Output filters', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'chris!' });
 	});
 });
+
+describe('Filter error handling', () => {
+	test('should be invalid if inputFilter throw error', () => {
+		const formRef = createRef();
+		const value = { hello: 'world' };
+		const inputFilter = () => {
+			throw new Error();
+		};
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="foo" inputFilter={inputFilter} />
+				<Input name="hello" />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isInvalid: true,
+				errorMessage: 'Invalid',
+			}),
+		);
+	});
+
+	test('should be invalid if outputFilter throw error', () => {
+		const formRef = createRef();
+		const inputRef = createRef();
+		const outputFilter = () => {
+			throw new Error();
+		};
+		mount(
+			<Form ref={formRef}>
+				<Input name="foo" outputFilter={outputFilter} ref={inputRef} />
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'bar');
+		expect(formRef.current.submit()).toEqual({});
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isInvalid: true,
+				errorMessage: 'Invalid',
+			}),
+		);
+	});
+});

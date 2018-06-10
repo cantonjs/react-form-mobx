@@ -4,28 +4,6 @@ import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
 
-// TODO:
-// describe.only('Error handling', () => {
-// 	test('should be invalid if something wrong', () => {
-// 		const formRef = createRef();
-// 		const value = { hello: 'world' };
-// 		const inputFilter = () => {
-// 			throw new Error();
-// 		};
-// 		mount(
-// 			<Form value={value} ref={formRef}>
-// 				<Input name="hello" inputFilter={inputFilter} />
-// 			</Form>,
-// 		);
-// 		expect(formRef.current.getValidState()).toEqual(
-// 			expect.objectContaining({
-// 				isInvalid: true,
-// 				errorMessage: 'Invalid',
-// 			}),
-// 		);
-// 	});
-// });
-
 describe('Form validation event props', () => {
 	test('should trigger onValid', () => {
 		const validHandler = jest.fn();
