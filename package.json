@@ -21,13 +21,7 @@
 		"build": "run-p build:*",
 		"preversion": "yarn test && yarn build"
 	},
-	"files": [
-		"README.md",
-		"LICENSE.md",
-		"lib",
-		"es",
-		"dist"
-	],
+	"files": ["README.md", "LICENSE.md", "lib", "es", "dist"],
 	"main": "lib/index.js",
 	"module": "es/index.js",
 	"jsnext:main": "es/index.js",
@@ -84,16 +78,12 @@
 		"yarn": "^1.6.0"
 	},
 	"peerDependencies": {
+		"react": "^15.0.0 || ^16.0.0",
 		"mobx": "^4.3.0",
 		"mobx-react": "^5.1.2"
 	},
 	"jest": {
-		"collectCoverageFrom": [
-			"src/**/*.js"
-		],
-		"modulePathIgnorePatterns": [
-			"node_modules",
-			"lib"
-		]
+		"collectCoverageFrom": ["src/**/*.js"],
+		"modulePathIgnorePatterns": ["node_modules", "lib"]
 	}
 }
