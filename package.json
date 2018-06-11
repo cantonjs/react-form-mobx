@@ -1,6 +1,6 @@
 {
 	"name": "react-form-mobx",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Declarative Form components for React, built on top of MobX",
 	"repository": "cantonjs/react-form-mobx",
 	"scripts": {
@@ -21,7 +21,13 @@
 		"build": "run-p build:*",
 		"preversion": "yarn test && yarn build"
 	},
-	"files": ["README.md", "LICENSE.md", "lib", "es", "dist"],
+	"files": [
+		"README.md",
+		"LICENSE.md",
+		"lib",
+		"es",
+		"dist"
+	],
 	"main": "lib/index.js",
 	"module": "es/index.js",
 	"jsnext:main": "es/index.js",
@@ -83,7 +89,12 @@
 		"react": "^15.0.0 || ^16.0.0"
 	},
 	"jest": {
-		"collectCoverageFrom": ["src/**/*.js"],
-		"modulePathIgnorePatterns": ["node_modules", "lib"]
+		"collectCoverageFrom": [
+			"src/**/*.js"
+		],
+		"modulePathIgnorePatterns": [
+			"node_modules",
+			"lib"
+		]
 	}
 }
