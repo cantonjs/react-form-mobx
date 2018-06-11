@@ -10,17 +10,62 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
 
 ![screenshot](/.github/screenshot.png)
 
-## WTF
+
+## Table of Contents
+<!-- TOC -->
+
+- [Table of Contents](#table-of-contents)
+- [Philosophy](#philosophy)
+  - [Features Included](#features-included)
+  - [Features NOT Included](#features-not-included)
+- [Getting Started](#getting-started)
+  - [Installing](#installing)
+  - [Usage](#usage)
+- [Advanced Guides](#advanced-guides)
+  - [Dynamic Array Items](#dynamic-array-items)
+  - [Creating Custom Input Component](#creating-custom-input-component)
+- [License](#license)
+
+<!-- /TOC -->
+
+## Philosophy
+
+Declarative, just like React and HTML
+
+### Features Included
+
+- Support nested objects and arrays
+- Easy to create custom Input components
+- Easy to push, update or remove array items
+- Built-in validations (eg `required`, `pattern`, `enum`, etc)
+- Built-in formats (eg `integer`, `number`, `boolean`, etc)
+- Support data transformers / filters
+
+### Features NOT Included
+
+- No styles, just the original appearance, but you could add style easily
+- No HTTP requests, but you could choose any HTTP request library you like
+
+## Getting Started
+
+### Installing
+
+```bash
+yarn add react-form-mobx
+```
+
+**Please note that you also need to install `react`, `mobx` and `mobx-react`**
+
+### Usage
 
 ```jsx
 import React, { Component } from 'react';
-import { Form, Input, Checkbox, ObjectOf } from 'react-form-mobx';
+import { Form, Input, ObjectOf } from 'react-form-mobx';
 
 export default class MyFriend extends Component {
   myData = {
     name: 'Luke Skywalker',
     height: 172,
-    films: ['A New Hope', 'The Empire Strikes Back', 'Return of the Jedi'],
     colors: {
       hair: 'blond',
       skin: 'fair',
@@ -36,9 +81,6 @@ export default class MyFriend extends Component {
       <Form value={this.myData} onSubmit={this.handleSubmit}>
         <Input name="name" />
         <Input name="height" format="number" />
-        <Checkbox name="films" value="A New Hope" />
-        <Checkbox name="films" value="The Empire Strikes Back" />
-        <Checkbox name="films" value="Return of the Jedi" />
         <ObjectOf name="colors">
           <Input name="hair" />
           <Input name="skin" />
@@ -49,7 +91,9 @@ export default class MyFriend extends Component {
 }
 ```
 
-## Dynamic Array Items
+## Advanced Guides
+
+### Dynamic Array Items
 
 ```jsx
 import React, { Component } from 'react';
@@ -88,7 +132,7 @@ export default class MyFriend extends Component {
 }
 ```
 
-## Creating Custom Input Component
+### Creating Custom Input Component
 
 **MyInput.js**
 
