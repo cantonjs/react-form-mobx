@@ -10,21 +10,36 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
 
 ![screenshot](/.github/screenshot.png)
 
-
 ## Table of Contents
+
 <!-- TOC -->
 
-- [Table of Contents](#table-of-contents)
-- [Philosophy](#philosophy)
-  - [Features Included](#features-included)
-  - [Features NOT Included](#features-not-included)
-- [Getting Started](#getting-started)
-  - [Installing](#installing)
-  - [Usage](#usage)
-- [Advanced Guides](#advanced-guides)
-  - [Dynamic Array Items](#dynamic-array-items)
-  - [Creating Custom Input Component](#creating-custom-input-component)
-- [License](#license)
+- [react-form-mobx](#react-form-mobx)
+  - [Table of Contents](#table-of-contents)
+  - [Philosophy](#philosophy)
+    - [Features Included](#features-included)
+    - [Features NOT Included](#features-not-included)
+  - [Getting Started](#getting-started)
+    - [Installing](#installing)
+    - [Usage](#usage)
+  - [Advanced Guides](#advanced-guides)
+    - [Dynamic Array Items](#dynamic-array-items)
+    - [Creating Custom Input Component](#creating-custom-input-component)
+  - [References](#references)
+    - [Form Component](#form-component)
+      - [Props](#props)
+    - [Input Components](#input-components)
+      - [Props](#props)
+    - [ObjectOf Component](#objectof-component)
+      - [Props](#props)
+    - [ArrayOf Component](#arrayof-component)
+      - [Props](#props)
+      - [Function Child](#function-child)
+    - [Demon Component](#demon-component)
+      - [Props](#props)
+      - [Function Child](#function-child)
+      - [Proxied Props](#proxied-props)
+  - [License](#license)
 
 <!-- /TOC -->
 
@@ -177,6 +192,133 @@ export default class MyApp extends Component {
   }
 }
 ```
+
+## References
+
+### Form Component
+
+Form component, just like HTML `form` component.
+
+#### Props
+
+| Property      | Description                                                         | Type     | Default |
+| ------------- | ------------------------------------------------------------------- | -------- | ------- |
+| value         | Form data                                                           | Object   | `{}`    |
+| onSubmit      | Defines a function will be called when form submit                  | Function |         |
+| onValid       | Defines a function will be called when form is valid                | Function |         |
+| onInvalid     | Defines a function will be called when form is invalid              | Function |         |
+| onValidChange | Defines a function will be called when form valid status changed    | Function |         |
+| onChange      | Defines a function will be called when form data changed            | Function |         |
+| inputFilter   | Defines a filter function will be called when providing a new value | Function |         |
+| outputFilter  | Defines a filter function will be called when getting output value  | Function |         |
+
+### Input Components
+
+These Input Components mean `Input`, `Checkbox`, `Radio` or other custom input components created by `Demon`.
+
+#### Props
+
+| Property         | Description                                                                  | Type                                                   | Default |
+| ---------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ | ------- |
+| name             | Field name                                                                   | String `Required`                                      |         |
+| defaultValue     | Default value when value is empty                                            | Any                                                    |         |
+| defaultChecked   | Default checked, only work in checkable components (eg: `Checkbox`, `Radio`) | Boolean                                                |         |
+| format           | Data format                                                                  | integer, number, string, boolean, date, time, dateTime |         |
+| required         | Indicates whether field is required                                          | Boolean                                                | `false` |
+| enum             | Validate a value from a list of possible values                              | Array of `String`                                      | `[]`    |
+| pattern          | Validate from a regular expression                                           | RegExp                                                 |         |
+| maxLength        | Validate a max length of the field                                           | Number                                                 |         |
+| minLength        | Validate a min length of the field                                           | Number                                                 |         |
+| maximum          | Validate if the field is less than or exactly equal to "maximum"             | Number                                                 |         |
+| exclusiveMaximum | Validate if the field is less than (not equal to) "exclusiveMaximum"         | Number                                                 |         |
+| minimum          | Validate if the field is greater than or exactly equal to "minimum"          | Number                                                 |         |
+| exclusiveMinimum | Validate if the field is greater than or exactly equal to "exclusiveMinimum" | Number                                                 |         |
+| validation       | Defines a validator function, should throw error if invalid                  | Function                                               |         |
+| inputFilter      | Defines a filter function will be called when providing a new value to form  | Function                                               |         |
+| outputFilter     | Defines a filter function will be called when getting output value from form | Function                                               |         |
+| enforceSubmit    | Indicates whether to submit if the field is empty                            | Boolean                                                | `false` |
+
+The rest of the props of Input are exactly the same as the original [input](https://reactjs.org/docs/events.html#supported-events).
+
+### ObjectOf Component
+
+`ObjectOf` component provides nested fields.
+
+#### Props
+
+| Property     | Description                                                                  | Type              | Default |
+| ------------ | ---------------------------------------------------------------------------- | ----------------- | ------- |
+| name         | Field name                                                                   | String `Required` |         |
+| children     | Nested input nodes                                                           | Node `Required`   |         |
+| onChange     | Defines a function will be called when data changed                          | Function          |         |
+| inputFilter  | Defines a filter function will be called when providing a new value to form  | Function          |         |
+| outputFilter | Defines a filter function will be called when getting output value from form | Function          |         |
+
+### ArrayOf Component
+
+`ArrayOf` component provides array fields, and could be push, update or remove easily.
+
+#### Props
+
+| Property     | Description                                                                  | Type                        | Default |
+| ------------ | ---------------------------------------------------------------------------- | --------------------------- | ------- |
+| name         | Field name                                                                   | String `Required`           |         |
+| children     | Nested input nodes or function child that should return a node               | Node or Function `Required` |         |
+| onChange     | Defines a function will be called when data changed                          | Function                    |         |
+| inputFilter  | Defines a filter function will be called when providing a new value to form  | Function                    |         |
+| outputFilter | Defines a filter function will be called when getting output value from form | Function                    |         |
+
+#### Function Child
+
+If `children` prop is a callback renderer function, it will provide two arguments:
+
+1. `names` \<Array\>: An array of unique names that could be used as the `key` and `name` props of chidren components
+2. `helper` \<Object\>: A helper object to manipulate the array:
+  - `push()` \<Function\>: To push a new item
+  - `remove(name)` \<Function\>: To remove a item by `name`
+  - `removeBy(name)` \<Function\>: To create and return a `remove(name)` currying function
+
+Please checkout [Dynamic Array Items](#dynamic-array-items) for usage example.
+
+### Demon Component
+
+`Demon` component is the core of creating custom input components.
+
+#### Props
+
+| Property                  | Description                                                  | Type                | Default                          |
+| ------------------------- | ------------------------------------------------------------ | ------------------- | -------------------------------- |
+| name                      | Field name                                                   | String `Required`   |                                  |
+| children                  | Function child that should return a node                     | Function `Required` |                                  |
+| forwardedProps            | Forward props, `Demon` will decide to handle or forward them | Object              | `{}`                             |
+| checkable                 | Indicates whether the component is checkable                 | Boolean             | `false`                          |
+| getValueFromChangeEvent   | Defines a function to get `value` in `onChange` arguments    | Function            | (ev) => ev.currentTarget.value   |
+| getCheckedFromChangeEvent | Defines a function to get `checked` in `onChange` arguments  | Function            | (ev) => ev.currentTarget.checked |
+| getKeyFromKeyPressEvent   | Defines a function to get `key` in `onPress` arguments       | Function            | (ev) => ev.key                   |
+| propOnChange              | Defines the prop name of change event                        | String              | onChange                         |
+| propOnKeyPress            | Defines the prop name of key press event                     | String              | onKeyPress                       |
+| propOnBlur                | Defines the prop name of blur event                          | String              | onBlur                           |
+
+#### Function Child
+
+`children` prop provides two arguments:
+
+1. `forwardedProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `pattern` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...forwardedProps} />`)
+2. `validState` \<Object\>: Valid state helper object, includeing:
+  - `errorMessage` \<String\>: Error message. Would be empty if the status is valid
+  - `isValid` \<Boolean\>: Would be true if the status is valid
+  - `isInvalid` \<Boolean\>: Would be true if the status is invalid
+  - `isTouched` \<Boolean\>: Is touched or not. Useful if you don't want to show `errorMessage` when field is not touched
+
+#### Proxied Props
+
+By default, `onChange`, `onKeyPress`, `onBlur` props will be proxied.
+
+- `onChange`: `Demon` need to get the changed `value` or `checked` from the `change` event object to update value. You can change the getting function by setting `getValueFromChangeEvent` or `getCheckedFromChangeEvent` prop to `Demon` component.
+- `onKeyPress`: `Demon` need to get the `key` from the `keyPress` event object to decide to submit. You can change the getting function by settting `propOnKeyPress` prop to `Demon` component
+- `onBlur`: `Demon` need to listen to the `blur` event to set `isTouched` to `true`
+
+Please checkout [Creating Custom Input Component](#creating-custom-input-component) for usage example.
 
 ## License
 
