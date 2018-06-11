@@ -37,6 +37,16 @@ describe('defaultValue prop', () => {
 		simulate(inputRef).change('value', 'world');
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });
 	});
+
+	test('should submit `undefined` if defaultValue is set `undefined`', () => {
+		const formRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<Input name="hello" defaultValue={undefined} />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: undefined });
+	});
 });
 
 describe('onKeyPress prop', () => {

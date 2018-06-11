@@ -11,7 +11,6 @@ const pad = function pad(target, length, fillString, calc) {
 
 export const noop = () => {};
 
-export const isUndefined = (s) => typeof s === 'undefined';
 export const isFunction = (s) => typeof s === 'function';
 export const isArray = (s) =>
 	(s && s.constructor === Array) || isObservableArray(s);

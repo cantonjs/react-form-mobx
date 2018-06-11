@@ -1,14 +1,7 @@
 import { observable, computed, action, runInAction } from 'mobx';
 import { createFormatFunc } from '../FormatTypes';
 import Validation from '../Validation';
-import {
-	isEmpty,
-	isArray,
-	isUndefined,
-	isPlainObject,
-	clone,
-	filtersFlow,
-} from '../utils';
+import { isEmpty, isArray, isPlainObject, clone, filtersFlow } from '../utils';
 
 class Actual {
 	@observable pristineValue;
@@ -90,7 +83,7 @@ export default class PrimitiveStore {
 	get isChecked() {
 		if (!this._checkable) return true;
 		const {
-			defaultChecked,
+			_options,
 			parentStore,
 			key,
 			value,
@@ -99,7 +92,9 @@ export default class PrimitiveStore {
 		const shouldChecked = parentStore.shouldCheck(key, value);
 		if (checkedStatus) return checkedStatus > 0;
 		if (parentStore.hasKey(key)) return shouldChecked;
-		return isUndefined(defaultChecked) ? shouldChecked : defaultChecked;
+		return _options.hasOwnProperty('defaultChecked') ?
+			_options.defaultChecked :
+			shouldChecked;
 	}
 	set isChecked(checked) {
 		/* istanbul ignore next */
@@ -138,8 +133,6 @@ export default class PrimitiveStore {
 		const {
 			key,
 			parentStore,
-			defaultValue,
-			defaultChecked,
 			checkable,
 			isRadio,
 			form = this,
@@ -152,8 +145,7 @@ export default class PrimitiveStore {
 		this.key = key;
 		this.form = form;
 		this.parentStore = parentStore;
-		this.defaultValue = defaultValue;
-		this.defaultChecked = defaultChecked;
+		this._options = options;
 		this.isRadio = isRadio;
 		this.bus = {};
 		this._actual = new Actual();
@@ -168,7 +160,9 @@ export default class PrimitiveStore {
 	}
 
 	getDefaultStoreValue() {
-		return '';
+		return this._options.hasOwnProperty('defaultValue') ?
+			this._options.defaultValue :
+			'';
 	}
 
 	_try(fn) {
@@ -181,9 +175,9 @@ export default class PrimitiveStore {
 	}
 
 	_defaultValueFilter = (value) => {
-		const { defaultValue } = this;
-		if (!isUndefined(defaultValue) && isEmpty(value)) {
-			return defaultValue;
+		const { _options } = this;
+		if (_options.hasOwnProperty('defaultValue') && isEmpty(value)) {
+			return _options.defaultValue;
 		}
 		return value;
 	};
