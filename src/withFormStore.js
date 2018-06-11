@@ -18,8 +18,16 @@ export default function withFormStore() {
 				this.wrapped.inputStore.value = value;
 			}
 
+			getPristineValue() {
+				return this.wrapped.inputStore.pristineValue;
+			}
+
 			setPristineValue(value) {
 				this.wrapped.inputStore.pristineValue = value;
+			}
+
+			getValidState() {
+				return this.wrapped.inputStore.getValidState();
 			}
 
 			render() {

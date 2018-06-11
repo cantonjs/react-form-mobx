@@ -266,3 +266,79 @@ describe('isValid', () => {
 		);
 	});
 });
+
+describe('Demon instance methods', () => {
+	test('should `getValue()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		expect(demonRef.current.getValue()).toBe('world');
+	});
+
+	test('should `setValue()` work', () => {
+		const formRef = createRef();
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }} ref={formRef}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		demonRef.current.setValue('chris');
+		expect(demonRef.current.getValue()).toBe('chris');
+		expect(formRef.current.submit()).toEqual({ hello: 'chris' });
+	});
+
+	test('should `getPristineValue()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		expect(demonRef.current.getPristineValue()).toBe('world');
+		demonRef.current.setValue('chris');
+		expect(demonRef.current.getPristineValue()).toBe('world');
+	});
+
+	test('should `setPristineValue()` work', () => {
+		const formRef = createRef();
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }} ref={formRef}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		demonRef.current.setPristineValue('chris');
+		expect(demonRef.current.getValue()).toBe('chris');
+		expect(demonRef.current.getPristineValue()).toBe('chris');
+		expect(formRef.current.submit()).toEqual({ hello: 'chris' });
+	});
+
+	test('should `getValidState()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		expect(demonRef.current.getValidState()).toMatchObject({
+			isValid: true,
+			isInvalid: false,
+			isTouched: false,
+			errorMessage: '',
+		});
+	});
+});
