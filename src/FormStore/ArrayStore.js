@@ -18,9 +18,9 @@ export default class ArrayStore extends ObjectStore {
 	}
 
 	@action
-	applySetValue() {
+	applySetValue(value) {
 		this.eachChildren((child, index) => {
-			child.value = this.value[index];
+			child.value = value[index];
 		});
 	}
 

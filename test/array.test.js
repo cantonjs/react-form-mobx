@@ -240,3 +240,80 @@ describe('ArrayOf callback render helper', () => {
 		expect(formRef.current.submit()).toEqual({ foo: ['bar'] });
 	});
 });
+
+describe('ArrayOf instance methods', () => {
+	test('should `getValue()` work', () => {
+		const arrayRef = createRef();
+		mount(
+			<Form>
+				<ArrayOf name="hello" ref={arrayRef}>
+					<Input defaultValue="world" />
+				</ArrayOf>
+			</Form>,
+		);
+		expect(arrayRef.current.getValue()).toEqual(['world']);
+	});
+
+	test('should `setValue()` work', () => {
+		const formRef = createRef();
+		const arrayRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<ArrayOf name="hello" ref={arrayRef}>
+					<Input defaultValue="world" />
+				</ArrayOf>
+			</Form>,
+		);
+		arrayRef.current.setValue(['chris']);
+		expect(arrayRef.current.getValue()).toEqual(['chris']);
+		expect(formRef.current.submit()).toEqual({ hello: ['chris'] });
+	});
+
+	test('should `getPristineValue()` work', () => {
+		const arrayRef = createRef();
+		const inputRef = createRef();
+		mount(
+			<Form>
+				<ArrayOf name="hello" ref={arrayRef}>
+					<Input defaultValue="world" ref={inputRef} />
+				</ArrayOf>
+			</Form>,
+		);
+		expect(arrayRef.current.getPristineValue()).toEqual([]);
+		simulate(inputRef).change('value', 'chris');
+		expect(arrayRef.current.getPristineValue()).toEqual([]);
+	});
+
+	test('should `setPristineValue()` work', () => {
+		const formRef = createRef();
+		const arrayRef = createRef();
+		mount(
+			<Form ref={formRef}>
+				<ArrayOf name="hello" ref={arrayRef}>
+					<Input defaultValue="world" />
+				</ArrayOf>
+			</Form>,
+		);
+		arrayRef.current.setPristineValue(['chris']);
+		expect(arrayRef.current.getValue()).toEqual(['chris']);
+		expect(arrayRef.current.getPristineValue()).toEqual(['chris']);
+		expect(formRef.current.submit()).toEqual({ hello: ['chris'] });
+	});
+
+	test('should `getValidState()` work', () => {
+		const arrayRef = createRef();
+		mount(
+			<Form>
+				<ArrayOf name="hello" ref={arrayRef}>
+					<Input defaultValue="world" />
+				</ArrayOf>
+			</Form>,
+		);
+		expect(arrayRef.current.getValidState()).toMatchObject({
+			isValid: true,
+			isInvalid: false,
+			isTouched: false,
+			errorMessage: '',
+		});
+	});
+});

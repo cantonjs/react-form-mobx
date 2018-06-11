@@ -64,10 +64,35 @@ export default class ArrayOf extends Component {
 		name: this.props.name,
 	};
 
+	getValue() {
+		return this.demon.getValue();
+	}
+
+	setValue(value) {
+		this.demon.setValue(value);
+	}
+
+	getPristineValue() {
+		return this.demon.getPristineValue();
+	}
+
+	setPristineValue(value) {
+		this.demon.setPristineValue(value);
+	}
+
+	getValidState() {
+		return this.demon.getValidState();
+	}
+
 	render() {
 		const { children, name } = this.props;
 		return (
-			<Demon forwardedProps={this.forwardedProps} isObject isArray>
+			<Demon
+				forwardedProps={this.forwardedProps}
+				isObject
+				isArray
+				ref={(demon) => (this.demon = demon)}
+			>
 				{() => <ItemGroup name={name}>{children}</ItemGroup>}
 			</Demon>
 		);
