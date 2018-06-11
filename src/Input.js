@@ -5,7 +5,7 @@ export default class Input extends Component {
 	render() {
 		return (
 			<Demon forwardedProps={this.props}>
-				{(props) => <input {...props} />}
+				{(props) => <input {...props} ref={(node) => (this.node = node)} />}
 			</Demon>
 		);
 	}

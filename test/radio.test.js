@@ -46,6 +46,16 @@ describe('Radio component', () => {
 		simulate(radioRef1).change('checked', true);
 		expect(formRef.current.submit()).toEqual({ hello: 'foo' });
 	});
+
+	test('should be able to get dom node', () => {
+		const checkboxRef = createRef();
+		mount(
+			<Form>
+				<Radio name="hello" ref={checkboxRef} />
+			</Form>,
+		);
+		expect(checkboxRef.current.node.nodeName).toBe('INPUT');
+	});
 });
 
 describe('Radio defaultChecked', () => {

@@ -5,7 +5,9 @@ export default class Radio extends Component {
 	render() {
 		return (
 			<Demon forwardedProps={this.props} checkable isRadio>
-				{(props) => <input {...props} type="radio" />}
+				{(props) => (
+					<input {...props} type="radio" ref={(node) => (this.node = node)} />
+				)}
 			</Demon>
 		);
 	}

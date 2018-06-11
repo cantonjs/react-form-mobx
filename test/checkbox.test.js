@@ -100,6 +100,16 @@ describe('Checkbox component', () => {
 		);
 		expect(formRef.current.submit()).toEqual({ hello: true });
 	});
+
+	test('should be able to get dom node', () => {
+		const checkboxRef = createRef();
+		mount(
+			<Form>
+				<Checkbox name="hello" ref={checkboxRef} />
+			</Form>,
+		);
+		expect(checkboxRef.current.node.nodeName).toBe('INPUT');
+	});
 });
 
 describe('Checkbox component for array', () => {
