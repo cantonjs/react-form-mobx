@@ -90,6 +90,22 @@ export default class Form extends Component {
 		return this.formStore.clear();
 	}
 
+	getValue() {
+		return this.formStore.value;
+	}
+
+	setValue(value) {
+		this.formStore.value = value;
+	}
+
+	getPristineValue() {
+		return this.formStore.pristineValue;
+	}
+
+	setPristineValue(value) {
+		this.formStore.pristineValue = value;
+	}
+
 	getValidState() {
 		return this.formStore.getValidState();
 	}

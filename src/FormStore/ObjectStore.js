@@ -22,10 +22,9 @@ export default class ObjectStore extends PrimitiveStore {
 	}
 
 	@action
-	applySetValue() {
-		// TODO: should handle deleted and added keys
+	applySetValue(value) {
 		this.eachChildren((child, key) => {
-			child.value = this.value[key];
+			child.value = value[key];
 		});
 	}
 

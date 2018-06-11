@@ -47,7 +47,8 @@ export default class PrimitiveStore {
 		this._actual.pristineValue = finalValue;
 		this.sourceValue = finalValue;
 		if (this.applySetPristineValue) this.applySetPristineValue(finalValue);
-		this.value = finalValue;
+		this._actual.value = finalValue;
+		if (this.applySetValue) this.applySetValue(this.value);
 		this.validate();
 		return true;
 	}
