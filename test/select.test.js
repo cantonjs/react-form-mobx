@@ -65,4 +65,14 @@ describe('Select component', () => {
 		simulate(selectRef).change('value', 'bar');
 		expect(formRef.current.submit()).toEqual({ hello: 'bar' });
 	});
+
+	test('should be able to get dom node', () => {
+		const selectRef = createRef();
+		mount(
+			<Form>
+				<Select name="hello" ref={selectRef} />
+			</Form>,
+		);
+		expect(selectRef.current.node.nodeName).toBe('SELECT');
+	});
 });

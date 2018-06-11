@@ -48,13 +48,13 @@ describe('Radio component', () => {
 	});
 
 	test('should be able to get dom node', () => {
-		const checkboxRef = createRef();
+		const radioRef = createRef();
 		mount(
 			<Form>
-				<Radio name="hello" ref={checkboxRef} />
+				<Radio name="hello" ref={radioRef} />
 			</Form>,
 		);
-		expect(checkboxRef.current.node.nodeName).toBe('INPUT');
+		expect(radioRef.current.node.nodeName).toBe('INPUT');
 	});
 });
 
