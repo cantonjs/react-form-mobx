@@ -12,36 +12,23 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
 
 ## Table of Contents
 
-<!-- TOC -->
-
-- [react-form-mobx](#react-form-mobx)
-  - [Table of Contents](#table-of-contents)
-  - [Philosophy](#philosophy)
-    - [Features Included](#features-included)
-    - [Features NOT Included](#features-not-included)
-  - [Getting Started](#getting-started)
-    - [Installing](#installing)
-    - [Usage](#usage)
-  - [Advanced Guides](#advanced-guides)
-    - [Dynamic Array Items](#dynamic-array-items)
-    - [Creating Custom Input Component](#creating-custom-input-component)
-  - [References](#references)
-    - [Form Component](#form-component)
-      - [Props](#props)
-    - [Input Components](#input-components)
-      - [Props](#props)
-    - [ObjectOf Component](#objectof-component)
-      - [Props](#props)
-    - [ArrayOf Component](#arrayof-component)
-      - [Props](#props)
-      - [Function Child](#function-child)
-    - [Demon Component](#demon-component)
-      - [Props](#props)
-      - [Function Child](#function-child)
-      - [Proxied Props](#proxied-props)
-  - [License](#license)
-
-<!-- /TOC -->
+- [Table of Contents](#table-of-contents)
+- [Philosophy](#philosophy)
+  - [Features Included](#features-included)
+  - [Features NOT Included](#features-not-included)
+- [Getting Started](#getting-started)
+  - [Installing](#installing)
+  - [Usage](#usage)
+- [Advanced Guides](#advanced-guides)
+  - [Dynamic Array Items](#dynamic-array-items)
+  - [Creating Custom Input Component](#creating-custom-input-component)
+- [References](#references)
+  - [Form Component](#form-component)
+  - [Input Components](#input-components)
+  - [ObjectOf Component](#objectof-component)
+  - [ArrayOf Component](#arrayof-component)
+  - [Demon Component](#demon-component)
+- [License](#license)
 
 ## Philosophy
 
@@ -69,7 +56,12 @@ Declarative, just like React and HTML
 yarn add react-form-mobx
 ```
 
-**Please note that you also need to install `react`, `mobx` and `mobx-react`**
+You may also need to install `react`, `mobx` and `mobx-react`
+
+```bash
+yarn add react mobx mobx-react react-form-mobx
+```
+
 
 ### Usage
 
@@ -304,7 +296,7 @@ Please checkout [Dynamic Array Items](#dynamic-array-items) for usage example.
 `children` prop provides two arguments:
 
 1. `forwardedProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `pattern` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...forwardedProps} />`)
-2. `validState` \<Object\>: Valid state helper object, includeing:
+2. `validState` \<Object\>: Valid state helper object, including:
   - `errorMessage` \<String\>: Error message. Would be empty if the status is valid
   - `isValid` \<Boolean\>: Would be true if the status is valid
   - `isInvalid` \<Boolean\>: Would be true if the status is invalid
