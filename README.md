@@ -206,7 +206,7 @@ Form component, just like HTML `form` component.
 
 ### Input Components
 
-These Input Components mean `Input`, `Checkbox`, `Radio` or other custom input components created by `Demon`.
+These Input Components mean `Input`, `Checkbox`, `Radio`, `Select` or other custom input components created by `Demon`.
 
 #### Props
 
