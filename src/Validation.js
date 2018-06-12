@@ -121,21 +121,21 @@ export default class Validation {
 			this._rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
 		}
 
-		if (formatFilter) {
-			const formatFilterValidator = (val) => {
-				val = preFormat ? preFormat(val) : val;
-				formatFilter(val);
-				return true;
-			};
-			this._rules.push(formatFilterValidator);
-		}
-		else if (formatFunc) {
+		if (formatFunc) {
 			const formatFuncValidator = (val) => {
 				val = preFormat ? preFormat(val) : val;
 				formatFunc(val);
 				return true;
 			};
 			this._rules.push(formatFuncValidator);
+		}
+		else if (formatFilter) {
+			const formatFilterValidator = (val) => {
+				val = preFormat ? preFormat(val) : val;
+				formatFilter(val);
+				return true;
+			};
+			this._rules.push(formatFilterValidator);
 		}
 	}
 
