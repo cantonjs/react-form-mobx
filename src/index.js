@@ -11,3 +11,4 @@ export Checkbox from './Checkbox';
 export Radio from './Radio';
 export Select from './Select';
 export Option from './Option';
+export { formatHelper } from './FormatTypes';

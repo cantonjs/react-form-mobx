@@ -95,7 +95,7 @@ const toTime = (val) => {
 	}
 };
 
-const formatTypes = {
+export const formatHelper = {
 	integer: toInt,
 	number: toNumber,
 	string: toStr,
@@ -105,12 +105,12 @@ const formatTypes = {
 	dateTime: toDateTime,
 };
 
-export const FormatTypesKeys = Object.keys(formatTypes);
+export const FormatTypesKeys = Object.keys(formatHelper);
 
 // TODO: add cache
 export function createFormatFunc(type) {
 	return function format(val) {
 		if (isEmpty(val)) return val;
-		return formatTypes[type](val);
+		return formatHelper[type](val);
 	};
 }

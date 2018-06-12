@@ -26,6 +26,7 @@ export default class Demon extends Component {
 			outputFilter: PropTypes.func,
 			preFormat: PropTypes.func,
 			format: PropTypes.oneOf(FormatTypesKeys),
+			formatFunc: PropTypes.func,
 			enforceSubmit: PropTypes.bool,
 
 			enum: PropTypes.array,
@@ -194,6 +195,7 @@ export default class Demon extends Component {
 					outputFilter,
 					preFormat,
 					format,
+					formatFunc,
 					enforceSubmit,
 					enum: enumeration,
 					pattern,

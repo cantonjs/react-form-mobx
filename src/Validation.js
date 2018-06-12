@@ -102,6 +102,7 @@ export default class Validation {
 			exclusiveMinimum,
 			preFormat,
 			formatFilter,
+			formatFunc,
 		} = options;
 		this.required = required;
 		this._rules = [].concat(rules).filter(Boolean);
@@ -127,6 +128,14 @@ export default class Validation {
 				return true;
 			};
 			this._rules.push(formatFilterValidator);
+		}
+		else if (formatFunc) {
+			const formatFuncValidator = (val) => {
+				val = preFormat ? preFormat(val) : val;
+				formatFunc(val);
+				return true;
+			};
+			this._rules.push(formatFuncValidator);
 		}
 	}
 

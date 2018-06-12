@@ -29,6 +29,19 @@ describe('preFormat prop', () => {
 		expect(preFormat).toHaveBeenCalledTimes(1);
 		expect(formRef.current.submit()).toEqual({ hello: 1 });
 	});
+
+	test('should transform value before formatFunc', () => {
+		const formRef = createRef();
+		const preFormat = jest.fn((val) => val.length);
+		const formatFunc = (val) => val + '';
+		mount(
+			<Form value={{ hello: ['a'] }} ref={formRef}>
+				<Input name="hello" preFormat={preFormat} formatFunc={formatFunc} />
+			</Form>,
+		);
+		expect(preFormat).toHaveBeenCalledTimes(1);
+		expect(formRef.current.submit()).toEqual({ hello: '1' });
+	});
 });
 
 describe('integer format', () => {
@@ -430,6 +443,39 @@ describe('dateTime format', () => {
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+});
+
+describe('formatFunc prop', () => {
+	test('should formatFunc work', () => {
+		const formRef = createRef();
+		const value = { hello: '32' };
+		const formatFunc = jest.fn((val) => +val);
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" formatFunc={formatFunc} />
+			</Form>,
+		);
+		expect(formatFunc).toHaveBeenCalled();
+		expect(formRef.current.submit()).toEqual({ hello: 32 });
+	});
+
+	test('should be invalid if formatFunc throw error', () => {
+		const formRef = createRef();
+		const value = { hello: 'foo' };
+		const formatFunc = jest.fn(() => {
+			throw new Error();
+		});
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" formatFunc={formatFunc} />
 			</Form>,
 		);
 		expect(formRef.current.getValidState()).toEqual(

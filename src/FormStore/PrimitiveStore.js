@@ -153,6 +153,7 @@ export default class PrimitiveStore {
 			form = this,
 			preFormat,
 			format,
+			formatFunc,
 			inputFilter,
 			outputFilter,
 			enforceSubmit,
@@ -168,6 +169,7 @@ export default class PrimitiveStore {
 		this._checkable = checkable;
 		this._preFormatFilter = preFormat;
 		this._formatFilter = formatFilter;
+		this._formatFuncFilter = formatFunc;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this._validation = new Validation({ formatFilter, ...options });
@@ -206,10 +208,17 @@ export default class PrimitiveStore {
 				_outputFilter,
 				_preFormatFilter,
 				_formatFilter,
+				_formatFuncFilter,
 				_defaultValueFilter,
 			} = this;
 			return filtersFlow(
-				[_outputFilter, _preFormatFilter, _formatFilter, _defaultValueFilter],
+				[
+					_outputFilter,
+					_preFormatFilter,
+					_formatFilter,
+					_formatFuncFilter,
+					_defaultValueFilter,
+				],
 				value,
 				{ pristineValue },
 			);
