@@ -158,7 +158,7 @@ export default class PrimitiveStore {
 			outputFilter,
 			enforceSubmit,
 		} = options;
-		const formatFilter = format && createFormatFunc(format);
+		const formatFilter = formatFunc || (format && createFormatFunc(format));
 		this.key = key;
 		this.form = form;
 		this.parentStore = parentStore;
@@ -169,7 +169,6 @@ export default class PrimitiveStore {
 		this._checkable = checkable;
 		this._preFormatFilter = preFormat;
 		this._formatFilter = formatFilter;
-		this._formatFuncFilter = formatFunc;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this._validation = new Validation({ formatFilter, ...options });
@@ -208,17 +207,10 @@ export default class PrimitiveStore {
 				_outputFilter,
 				_preFormatFilter,
 				_formatFilter,
-				_formatFuncFilter,
 				_defaultValueFilter,
 			} = this;
 			return filtersFlow(
-				[
-					_outputFilter,
-					_preFormatFilter,
-					_formatFilter,
-					_formatFuncFilter,
-					_defaultValueFilter,
-				],
+				[_outputFilter, _preFormatFilter, _formatFilter, _defaultValueFilter],
 				value,
 				{ pristineValue },
 			);

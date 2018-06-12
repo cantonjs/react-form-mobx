@@ -102,7 +102,6 @@ export default class Validation {
 			exclusiveMinimum,
 			preFormat,
 			formatFilter,
-			formatFunc,
 		} = options;
 		this.required = required;
 		this._rules = [].concat(rules).filter(Boolean);
@@ -121,15 +120,7 @@ export default class Validation {
 			this._rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
 		}
 
-		if (formatFunc) {
-			const formatFuncValidator = (val) => {
-				val = preFormat ? preFormat(val) : val;
-				formatFunc(val);
-				return true;
-			};
-			this._rules.push(formatFuncValidator);
-		}
-		else if (formatFilter) {
+		if (formatFilter) {
 			const formatFilterValidator = (val) => {
 				val = preFormat ? preFormat(val) : val;
 				formatFilter(val);
