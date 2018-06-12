@@ -1,6 +1,7 @@
 import React, { createRef } from 'react';
 import { Form, Input } from '../src';
 import { mount, unmount } from './utils';
+import moment from 'moment';
 import { DateTime } from 'luxon';
 
 afterEach(unmount);
@@ -218,7 +219,9 @@ describe('date format', () => {
 	test('should convert date object to date format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISODate();
+		const expected = moment(date)
+			.format()
+			.split('T')[0];
 		const value = { hello: date };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -231,7 +234,9 @@ describe('date format', () => {
 	test('should convert timestamp to date format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISODate();
+		const expected = moment(date)
+			.format()
+			.split('T')[0];
 		const value = { hello: date.getTime() };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -245,7 +250,9 @@ describe('date format', () => {
 		const formRef = createRef();
 		const dateString = '2018-1-11';
 		const date = new Date(dateString);
-		const expected = DateTime.fromJSDate(date).toISODate();
+		const expected = moment(date)
+			.format()
+			.split('T')[0];
 		const value = { hello: dateString };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -262,7 +269,12 @@ describe('date format', () => {
 			new Date('2018-7-20 5:20:00'),
 		];
 		const expected = dates
-			.map((date) => DateTime.fromJSDate(date).toISODate())
+			.map(
+				(date) =>
+					moment(date)
+						.format()
+						.split('T')[0],
+			)
 			.join(',');
 		const value = { hello: dates.map((date) => date.getTime()).join(',') };
 		mount(
@@ -293,7 +305,9 @@ describe('time format', () => {
 	test('should convert date object to time format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISOTime();
+		const expected = moment(date)
+			.format()
+			.split('T')[1];
 		const value = { hello: date };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -306,7 +320,9 @@ describe('time format', () => {
 	test('should convert timestamp to time format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISOTime();
+		const expected = moment(date)
+			.format()
+			.split('T')[1];
 		const value = { hello: date.getTime() };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -320,7 +336,9 @@ describe('time format', () => {
 		const formRef = createRef();
 		const dateString = '2018-1-11';
 		const date = new Date(dateString);
-		const expected = DateTime.fromJSDate(date).toISOTime();
+		const expected = moment(date)
+			.format()
+			.split('T')[1];
 		const value = { hello: dateString };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -337,7 +355,12 @@ describe('time format', () => {
 			new Date('2018-7-20 5:20:00'),
 		];
 		const expected = dates
-			.map((date) => DateTime.fromJSDate(date).toISOTime())
+			.map(
+				(date) =>
+					moment(date)
+						.format()
+						.split('T')[1],
+			)
 			.join(',');
 		const value = { hello: dates.map((date) => date.getTime()).join(',') };
 		mount(
@@ -368,7 +391,7 @@ describe('dateTime format', () => {
 	test('should convert date object to dateTime format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISO();
+		const expected = moment(date).format();
 		const value = { hello: date };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -381,7 +404,7 @@ describe('dateTime format', () => {
 	test('should convert timestamp to dateTime format', () => {
 		const formRef = createRef();
 		const date = new Date();
-		const expected = DateTime.fromJSDate(date).toISO();
+		const expected = moment(date).format();
 		const value = { hello: date.getTime() };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -395,7 +418,7 @@ describe('dateTime format', () => {
 		const formRef = createRef();
 		const timestamp = Math.floor(Date.now() / 1000);
 		const date = new Date(timestamp * 1000);
-		const expected = DateTime.fromJSDate(date).toISO();
+		const expected = moment(date).format();
 		const value = { hello: timestamp };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -409,8 +432,35 @@ describe('dateTime format', () => {
 		const formRef = createRef();
 		const dateString = '2018-1-11';
 		const date = new Date(dateString);
-		const expected = DateTime.fromJSDate(date).toISO();
+		const expected = moment(date).format();
 		const value = { hello: dateString };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
+	test('should convert moment instance to dateTime format', () => {
+		const formRef = createRef();
+		const momentDate = moment(new Date('2018-1-11'));
+		const expected = momentDate.format();
+		const value = { hello: momentDate };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.submit()).toEqual({ hello: expected });
+	});
+
+	test('should convert luxon DateTime instance to dateTime format', () => {
+		const formRef = createRef();
+		const date = new Date('2018-1-11');
+		const luxonDate = DateTime.fromJSDate(date);
+		const expected = moment(date).format();
+		const value = { hello: luxonDate };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" format="dateTime" />
@@ -425,9 +475,7 @@ describe('dateTime format', () => {
 			new Date('2018-1-11 5:20:00'),
 			new Date('2018-7-20 5:20:00'),
 		];
-		const expected = dates
-			.map((date) => DateTime.fromJSDate(date).toISO())
-			.join(',');
+		const expected = dates.map((date) => moment(date).format()).join(',');
 		const value = { hello: dates.map((date) => date.getTime()).join(',') };
 		mount(
 			<Form value={value} ref={formRef}>
@@ -437,9 +485,24 @@ describe('dateTime format', () => {
 		expect(formRef.current.submit()).toEqual({ hello: expected });
 	});
 
-	test('should be invalid if value could not convert to dateTime format', () => {
+	test('should be invalid if value could not convert to dateTime format from string', () => {
 		const formRef = createRef();
 		const value = { hello: 'foo' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" format="dateTime" />
+			</Form>,
+		);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: false,
+			}),
+		);
+	});
+
+	test('should be invalid if value could not convert to dateTime format from object', () => {
+		const formRef = createRef();
+		const value = { hello: {} };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" format="dateTime" />

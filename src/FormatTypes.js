@@ -1,7 +1,22 @@
-import { isEmpty, isDate, isString, padStart, padEnd } from './utils';
+import {
+	isEmpty,
+	isDate,
+	isObject,
+	isFunction,
+	isString,
+	padStart,
+	padEnd,
+} from './utils';
 
 const ensureDate = (date) => {
 	if (isDate(date)) return date;
+	if (isObject(date)) {
+		// for moment() like object
+		if (isFunction(date.toDate)) return date.toDate();
+
+		// for luxon.DateTime
+		if (isFunction(date.toJSDate)) return date.toJSDate();
+	}
 	if (/^\d+$/.test(date)) return new Date(+padEnd(date, 13, '0'));
 	return new Date(date);
 };
@@ -78,8 +93,7 @@ const toTime = (val) => {
 		const hours = padStart(d.getHours(), 2, 0);
 		const minutes = padStart(d.getMinutes(), 2, 0);
 		const seconds = padStart(d.getSeconds(), 2, 0);
-		const milliseconds = padStart(d.getMilliseconds(), 3, 0);
-		const partialTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
+		const partialTime = `${hours}:${minutes}:${seconds}`;
 		const zoneOffset = -d.getTimezoneOffset();
 
 		/* istanbul ignore next */
