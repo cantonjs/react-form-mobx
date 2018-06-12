@@ -12,8 +12,8 @@ const pad = function pad(target, length, fillString, calc) {
 export const noop = () => {};
 
 export const isFunction = (s) => typeof s === 'function';
-export const isArray = (s) =>
-	(s && s.constructor === Array) || isObservableArray(s);
+export const isNativeArray = (s) => s && s.constructor === Array;
+export const isArray = (s) => isNativeArray(s) || isObservableArray(s);
 export const isEmpty = (s) => !s && s !== false && s !== 0;
 export const isString = (s) => typeof s === 'string';
 export const isDate = (s) => s && isFunction(s.toISOString);

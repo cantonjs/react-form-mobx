@@ -1,6 +1,7 @@
 import React, { createRef } from 'react';
 import { Form, Demon } from '../src';
 import { mount, unmount, simulate } from './utils';
+import { observable, isObservableArray } from 'mobx';
 
 afterEach(unmount);
 
@@ -28,6 +29,21 @@ describe('Demon component', () => {
 				errorMessage: '',
 			}),
 		);
+	});
+
+	test('should array value be native array', () => {
+		const children = jest.fn(() => <span />);
+		const demonRef = createRef();
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		demonRef.current.setValue(observable(['foo', 'bar']));
+		const lastCall = children.mock.calls[children.mock.calls.length - 1];
+		expect(isObservableArray(lastCall[0].value)).toBe(false);
 	});
 });
 

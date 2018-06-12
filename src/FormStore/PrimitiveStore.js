@@ -1,7 +1,20 @@
-import { observable, computed, action, runInAction } from 'mobx';
 import { createFormatFunc } from '../FormatTypes';
 import Validation from '../Validation';
-import { isEmpty, isArray, isPlainObject, clone, filtersFlow } from '../utils';
+import {
+	observable,
+	computed,
+	action,
+	runInAction,
+	isObservableArray,
+} from 'mobx';
+import {
+	isEmpty,
+	isArray,
+	isNativeArray,
+	isPlainObject,
+	clone,
+	filtersFlow,
+} from '../utils';
 
 class Actual {
 	@observable pristineValue;
@@ -58,7 +71,9 @@ export default class PrimitiveStore {
 
 	@computed
 	get value() {
-		return this.applyGetValue();
+		const value = this.applyGetValue();
+		if (isObservableArray(value) && !isNativeArray(value)) return value.slice();
+		return value;
 	}
 	set value(value) {
 		this._actual.value = value;
