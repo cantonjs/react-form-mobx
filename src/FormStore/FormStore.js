@@ -1,5 +1,5 @@
 import { action } from 'mobx';
-import { isFunction, isArray as isArrayType, createId } from '../utils';
+import { isFunction, createId } from '../utils';
 import PrimitiveStore from './PrimitiveStore';
 import ObjectStore from './ObjectStore';
 import ArrayStore from './ArrayStore';
@@ -24,15 +24,6 @@ export default class FormStore extends ObjectStore {
 	@action
 	createChildren(parentStore, key, value, options) {
 		const { isArray, isObject, isRadio } = options;
-
-		// enforce array type if value is array
-		if (!isArray && isArrayType(value)) {
-			let store = parentStore.getChildren(key);
-			if (!store) {
-				store = parentStore.attach(key, { isArray: true, parentStore });
-			}
-			return store.attach(createId(key), options);
-		}
 
 		if (isRadio) {
 			let store = parentStore.getChildren(key);

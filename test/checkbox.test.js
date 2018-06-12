@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { Form, Checkbox } from '../src';
+import { Form, Checkbox, ArrayOf } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
@@ -118,9 +118,11 @@ describe('Checkbox component for array', () => {
 		const value = { hello: ['foo', 'baz'] };
 		mount(
 			<Form value={value} ref={formRef}>
-				<Checkbox name="hello" value="foo" />
-				<Checkbox name="hello" value="bar" />
-				<Checkbox name="hello" value="baz" />
+				<ArrayOf name="hello">
+					<Checkbox value="foo" />
+					<Checkbox value="bar" />
+					<Checkbox value="baz" />
+				</ArrayOf>
 			</Form>,
 		);
 		expect(formRef.current.submit()).toEqual({ hello: ['foo', 'baz'] });
@@ -133,9 +135,11 @@ describe('Checkbox component for array', () => {
 		const value = { hello: ['foo', 'baz'] };
 		mount(
 			<Form value={value} ref={formRef}>
-				<Checkbox name="hello" value="foo" ref={checkboxRef1} />
-				<Checkbox name="hello" value="bar" ref={checkboxRef2} />
-				<Checkbox name="hello" value="baz" />
+				<ArrayOf name="hello">
+					<Checkbox value="foo" ref={checkboxRef1} />
+					<Checkbox value="bar" ref={checkboxRef2} />
+					<Checkbox value="baz" />
+				</ArrayOf>
 			</Form>,
 		);
 		simulate(checkboxRef1).change('checked', false);

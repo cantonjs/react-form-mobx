@@ -151,6 +151,7 @@ export default class PrimitiveStore {
 			checkable,
 			isRadio,
 			form = this,
+			preFormat,
 			format,
 			inputFilter,
 			outputFilter,
@@ -165,6 +166,7 @@ export default class PrimitiveStore {
 		this.bus = {};
 		this._actual = new Actual();
 		this._checkable = checkable;
+		this._preFormatFilter = preFormat;
 		this._formatFilter = formatFilter;
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
@@ -202,11 +204,12 @@ export default class PrimitiveStore {
 			const {
 				pristineValue,
 				_outputFilter,
+				_preFormatFilter,
 				_formatFilter,
 				_defaultValueFilter,
 			} = this;
 			return filtersFlow(
-				[_outputFilter, _formatFilter, _defaultValueFilter],
+				[_outputFilter, _preFormatFilter, _formatFilter, _defaultValueFilter],
 				value,
 				{ pristineValue },
 			);

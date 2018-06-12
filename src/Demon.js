@@ -16,6 +16,7 @@ export default class Demon extends Component {
 			name: PropTypes.string.isRequired,
 			value: PropTypes.any,
 			defaultValue: PropTypes.any,
+			preValidate: PropTypes.func,
 			validation: PropTypes.oneOfType([
 				PropTypes.arrayOf(PropTypes.func),
 				PropTypes.func,
@@ -23,6 +24,7 @@ export default class Demon extends Component {
 			required: PropTypes.bool,
 			inputFilter: PropTypes.func,
 			outputFilter: PropTypes.func,
+			preFormat: PropTypes.func,
 			format: PropTypes.oneOf(FormatTypesKeys),
 			enforceSubmit: PropTypes.bool,
 
@@ -186,9 +188,11 @@ export default class Demon extends Component {
 					defaultValue,
 					defaultChecked,
 					name,
+					preValidate,
 					validation,
 					inputFilter,
 					outputFilter,
+					preFormat,
 					format,
 					enforceSubmit,
 					enum: enumeration,

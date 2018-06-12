@@ -17,6 +17,20 @@ describe('formating empty data', () => {
 	});
 });
 
+describe('preFormat prop', () => {
+	test('should transform value before format', () => {
+		const formRef = createRef();
+		const preFormat = jest.fn((val) => val.length);
+		mount(
+			<Form value={{ hello: ['a'] }} ref={formRef}>
+				<Input name="hello" preFormat={preFormat} format="integer" />
+			</Form>,
+		);
+		expect(preFormat).toHaveBeenCalledTimes(1);
+		expect(formRef.current.submit()).toEqual({ hello: 1 });
+	});
+});
+
 describe('integer format', () => {
 	test('should integer work', () => {
 		const formRef = createRef();

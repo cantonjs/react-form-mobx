@@ -89,6 +89,7 @@ export default class Validation {
 
 	constructor(options) {
 		const {
+			preValidate,
 			validation: rules,
 			required,
 			enum: enumeration,
@@ -99,40 +100,49 @@ export default class Validation {
 			exclusiveMaximum,
 			minimum,
 			exclusiveMinimum,
+			preFormat,
 			formatFilter,
 		} = options;
 		this.required = required;
-		this.rules = [].concat(rules).filter(Boolean);
+		this._rules = [].concat(rules).filter(Boolean);
+		this._preValidate = preValidate;
 
-		if (enumeration) this.rules.push(Validation.enum(enumeration));
-		if (pattern) this.rules.push(Validation.pattern(pattern));
-		if (maxLength) this.rules.push(Validation.maxLength(maxLength));
-		if (minLength) this.rules.push(Validation.minLength(minLength));
-		if (maximum) this.rules.push(Validation.maximum(maximum));
+		if (enumeration) this._rules.push(Validation.enum(enumeration));
+		if (pattern) this._rules.push(Validation.pattern(pattern));
+		if (maxLength) this._rules.push(Validation.maxLength(maxLength));
+		if (minLength) this._rules.push(Validation.minLength(minLength));
+		if (maximum) this._rules.push(Validation.maximum(maximum));
 		if (exclusiveMaximum) {
-			this.rules.push(Validation.exclusiveMaximum(exclusiveMaximum));
+			this._rules.push(Validation.exclusiveMaximum(exclusiveMaximum));
 		}
-		if (minimum) this.rules.push(Validation.minimum(minimum));
+		if (minimum) this._rules.push(Validation.minimum(minimum));
 		if (exclusiveMinimum) {
-			this.rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
+			this._rules.push(Validation.exclusiveMinimum(exclusiveMinimum));
 		}
 
 		if (formatFilter) {
-			const formatFilterValidator = (val) => formatFilter(val) || true;
-			this.rules.push(formatFilterValidator);
+			const formatFilterValidator = (val) => {
+				val = preFormat ? preFormat(val) : val;
+				formatFilter(val);
+				return true;
+			};
+			this._rules.push(formatFilterValidator);
 		}
 	}
 
 	exec(value) {
-		const { length } = this.rules;
+		const { _rules, _preValidate } = this;
+		const { length } = _rules;
 
 		if (isEmpty(value)) {
 			if (this.required) throw new Error('Required');
 			return;
 		}
 
+		if (_preValidate) value = _preValidate(value);
+
 		for (let index = 0; index < length; index++) {
-			const rule = this.rules[index];
+			const rule = _rules[index];
 			const isValid = rule(value);
 			if (!isValid) {
 				throw new Error('Invalid');

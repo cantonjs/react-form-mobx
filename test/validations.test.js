@@ -32,6 +32,25 @@ describe('Form validation event props', () => {
 	});
 });
 
+describe('preValidate prop', () => {
+	test('should run preValidate() before validate', () => {
+		const formRef = createRef();
+		const preValidate = jest.fn((val) => val + 'r');
+		const value = { hello: 'ba' };
+		mount(
+			<Form value={value} ref={formRef}>
+				<Input name="hello" preValidate={preValidate} enum={['foo', 'bar']} />
+			</Form>,
+		);
+		expect(preValidate).toHaveBeenCalledTimes(1);
+		expect(formRef.current.getValidState()).toEqual(
+			expect.objectContaining({
+				isValid: true,
+			}),
+		);
+	});
+});
+
 describe('validation prop', () => {
 	test('should be invalid if fail to validate', () => {
 		const formRef = createRef();
