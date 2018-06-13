@@ -126,8 +126,9 @@ export default class ArrayStore extends ObjectStore {
 		this.children.splice(index, 1);
 	}
 
-	push = (id) => this.ids.push(id);
+	@action push = (id) => this.ids.push(id);
 
+	@action
 	remove = (id) => {
 		const removed = this.ids.remove(id);
 

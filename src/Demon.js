@@ -143,11 +143,7 @@ export default class Demon extends Component {
 			}
 		}
 
-		this.inputStore.clearAndValidate();
-		this.inputStore.touch();
-
-		const { parentStore } = this.inputStore;
-		parentStore.change(this.inputStore);
+		this.inputStore.emitChange();
 	};
 
 	handleKeyPress = (...args) => {

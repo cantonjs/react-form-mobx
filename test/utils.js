@@ -2,8 +2,11 @@
 
 import React, { Component, cloneElement } from 'react';
 import { render, unmountComponentAtNode, findDOMNode } from 'react-dom';
+import { configure } from 'mobx';
 import PropTypes from 'prop-types';
 import { Simulate } from 'react-dom/test-utils';
+
+configure({ enforceActions: true });
 
 let div;
 

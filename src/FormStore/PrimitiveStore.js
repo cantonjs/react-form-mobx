@@ -248,10 +248,13 @@ export default class PrimitiveStore {
 		}
 	}
 
-	clearAndValidate() {
+	@action
+	emitChange() {
 		this._try(() => {
 			this._validation.exec(this.value);
+			this.isTouched = true;
 			this.errorMessage = '';
+			this.parentStore.change(this);
 		});
 	}
 
