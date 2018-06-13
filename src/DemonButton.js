@@ -8,9 +8,7 @@ export default class DemonButton extends Component {
 	static propTypes = {
 		children: PropTypes.func.isRequired,
 		type: PropTypes.oneOf(['submit', 'reset', 'clear']),
-		formStore: PropTypes.shape({
-			disabled: PropTypes.bool,
-		}).isRequired,
+		formStore: PropTypes.object.isRequired,
 		forwardedProps: PropTypes.object,
 		getKeyFromKeyPressEvent: PropTypes.func,
 		propOnClick: PropTypes.string,
@@ -24,6 +22,12 @@ export default class DemonButton extends Component {
 		propOnClick: 'onClick',
 		propOnKeyPress: 'onKeyPress',
 	};
+
+	constructor(props) {
+		super(props);
+
+		this.inputStore = props.formStore;
+	}
 
 	handleClick = (...args) => {
 		const { forwardedProps, propOnClick } = this.props;
