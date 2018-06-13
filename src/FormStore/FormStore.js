@@ -81,10 +81,8 @@ export default class FormStore extends ObjectStore {
 	reset = () => {
 		const { pristineValue } = this;
 		this.pristineValue = pristineValue;
+		return pristineValue;
 	};
 
-	@action
-	clear = () => {
-		this.pristineValue = {};
-	};
+	@action clear = () => (this.pristineValue = {});
 }

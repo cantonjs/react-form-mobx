@@ -30,6 +30,18 @@ export default function withFormStore() {
 				return this.wrapped.inputStore.getValidState();
 			}
 
+			submit() {
+				return this.wrapped.inputStore.submit();
+			}
+
+			clear() {
+				return this.wrapped.inputStore.clear();
+			}
+
+			reset() {
+				return this.wrapped.inputStore.reset();
+			}
+
 			render() {
 				return (
 					<Context.Consumer>

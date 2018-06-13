@@ -56,22 +56,8 @@ export default class DemonButton extends Component {
 	};
 
 	emit() {
-		this[this.props.type]();
-	}
-
-	submit() {
-		const { formStore } = this.props;
-		return formStore.submit();
-	}
-
-	clear() {
-		const { formStore } = this.props;
-		return formStore.clear();
-	}
-
-	reset() {
-		const { formStore } = this.props;
-		return formStore.reset();
+		const { formStore, type } = this.props;
+		formStore[type]();
 	}
 
 	render() {

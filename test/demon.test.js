@@ -357,4 +357,41 @@ describe('Demon instance methods', () => {
 			errorMessage: '',
 		});
 	});
+
+	test('should `submit()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		expect(demonRef.current.submit()).toEqual({ hello: 'world' });
+	});
+
+	test('should `clear()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		expect(demonRef.current.clear()).toEqual({});
+	});
+
+	test('should `reset()` work', () => {
+		const demonRef = createRef();
+		mount(
+			<Form value={{ hello: 'world' }}>
+				<Demon forwardedProps={{ name: 'hello' }} ref={demonRef}>
+					{() => <span />}
+				</Demon>
+			</Form>,
+		);
+		demonRef.current.setValue('chris');
+		expect(demonRef.current.reset()).toEqual({ hello: 'world' });
+	});
 });
