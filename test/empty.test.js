@@ -51,23 +51,23 @@ describe('Submitting empty data with empty pristine value', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'world' });
 	});
 
-	test('should submit empty data if `enforceSubmit` is `true`', () => {
+	test('should submit empty data if `withEmpty` is `true`', () => {
 		const formRef = createRef();
 		mount(
 			<Form value={{}} ref={formRef}>
-				<Input name="hello" enforceSubmit />
+				<Input name="hello" withEmpty />
 			</Form>,
 		);
 		expect(formRef.current.submit()).toEqual({ hello: '' });
 	});
 
-	test('should submit empty object if `enforceSubmit` is `true`', () => {
+	test('should submit empty object if `withEmpty` is `true`', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" />
-				<ObjectOf name="foo" enforceSubmit>
+				<ObjectOf name="foo" withEmpty>
 					<Input name="bar" />
 				</ObjectOf>
 			</Form>,
@@ -75,14 +75,14 @@ describe('Submitting empty data with empty pristine value', () => {
 		expect(formRef.current.submit()).toEqual({ hello: 'world', foo: {} });
 	});
 
-	test('should submit nested empty data if `enforceSubmit` is `true`', () => {
+	test('should submit nested empty data if `withEmpty` is `true`', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" />
-				<ObjectOf name="foo" enforceSubmit>
-					<Input name="bar" enforceSubmit />
+				<ObjectOf name="foo" withEmpty>
+					<Input name="bar" withEmpty />
 				</ObjectOf>
 			</Form>,
 		);
@@ -92,13 +92,13 @@ describe('Submitting empty data with empty pristine value', () => {
 		});
 	});
 
-	test('should submit empty array if `enforceSubmit` is `true`', () => {
+	test('should submit empty array if `withEmpty` is `true`', () => {
 		const formRef = createRef();
 		const value = { hello: 'world' };
 		mount(
 			<Form value={value} ref={formRef}>
 				<Input name="hello" />
-				<ArrayOf name="foo" enforceSubmit>
+				<ArrayOf name="foo" withEmpty>
 					{(list) => list.map((item) => <Input key={item} name={item} />)}
 				</ArrayOf>
 			</Form>,
@@ -130,12 +130,12 @@ describe('Submitting empty data with pristine value', () => {
 		expect(formRef.current.submit()).toEqual({ hello: '' });
 	});
 
-	test('should not submit empty data if `enforceSubmit` is `false`', () => {
+	test('should not submit empty data if `withEmpty` is `false`', () => {
 		const formRef = createRef();
 		const inputRef = createRef();
 		mount(
 			<Form value={{ hello: 'world' }} ref={formRef}>
-				<Input name="hello" ref={inputRef} enforceSubmit={false} />
+				<Input name="hello" ref={inputRef} withEmpty={false} />
 			</Form>,
 		);
 		simulate(inputRef).change('value', '');
@@ -168,13 +168,13 @@ describe('Submitting empty data with pristine value', () => {
 		expect(formRef.current.submit()).toEqual({ foo: [] });
 	});
 
-	test('should not submit empty array if `enforceSubmit` is `false`', () => {
+	test('should not submit empty array if `withEmpty` is `false`', () => {
 		const value = { foo: ['bar'] };
 		const formRef = createRef();
 		const buttonRef = createRef();
 		mount(
 			<Form value={value} ref={formRef}>
-				<ArrayOf name="foo" enforceSubmit={false}>
+				<ArrayOf name="foo" withEmpty={false}>
 					{(list, { remove }) =>
 						list.map((id) => (
 							<div key={id}>

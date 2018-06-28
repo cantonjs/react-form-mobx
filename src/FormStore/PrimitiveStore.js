@@ -156,7 +156,7 @@ export default class PrimitiveStore {
 			formatFunc,
 			inputFilter,
 			outputFilter,
-			enforceSubmit,
+			withEmpty,
 		} = options;
 		const formatFilter = formatFunc || (format && createFormatFunc(format));
 		this.key = key;
@@ -172,7 +172,7 @@ export default class PrimitiveStore {
 		this._inputFilter = inputFilter;
 		this._outputFilter = outputFilter;
 		this._validation = new Validation({ formatFilter, ...options });
-		this._enforceSubmit = enforceSubmit;
+		this._withEmpty = withEmpty;
 		const initialValue = this.getInputValue(pristineValue);
 		this._actual.setInitialValue(initialValue);
 	}
@@ -259,7 +259,7 @@ export default class PrimitiveStore {
 	}
 
 	shouldIgnore(value) {
-		const enforce = this._enforceSubmit;
+		const enforce = this._withEmpty;
 		if (enforce === true || (enforce !== false && !this.isPristineValueEmpty)) {
 			return false;
 		}

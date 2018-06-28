@@ -238,9 +238,16 @@ These Input Components mean `Input`, `Checkbox`, `Radio`, `Select`, `TextArea` o
 | validation       | Defines a validator function, should throw error if invalid                  | Function                                                             |         |
 | inputFilter      | Defines a filter function will be called when providing a new value to form  | Function                                                             |         |
 | outputFilter     | Defines a filter function will be called when getting output value from form | Function                                                             |         |
-| enforceSubmit    | Indicates whether to submit if the field is empty                            | Boolean                                                              | `false` |
+| withEmpty        | Indicates whether submit empty value or not                                  | "auto", `true`, `false`                                              | "auto"  |
 
 The rest of the props are exactly the same as the original [DOM attributes](https://reactjs.org/docs/dom-elements.html#all-supported-html-attributes).
+
+##### Notes
+
+- `withEmpty`: If value is empty (saying `""`, `undefined`, `null`, `{}` or `[]`):
+  * `"auto"` (Default): Will submit empty value only if pristine value is NOT empty
+  * `true`: Will submit empty value
+  * `false`: Will not submit empty value
 
 ### ObjectOf Component
 
