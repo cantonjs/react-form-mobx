@@ -27,7 +27,9 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
   - [Input Components](#input-components)
   - [ObjectOf Component](#objectof-component)
   - [ArrayOf Component](#arrayof-component)
+  - [Submit, Reset, Clear Component](#submit-reset-clear-component)
   - [Demon Component](#demon-component)
+  - [DemonButton Component](#demonbutton-component)
 - [License](#license)
 
 ## Philosophy
@@ -37,7 +39,7 @@ Declarative, just like React and HTML
 ### Features Included
 
 - Support nested objects and arrays
-- Easy to create custom Input components
+- Easy to create custom Input (or Select, Checkbox, Radio, etc) components
 - Easy to push, update or remove array items
 - Built-in validations (eg `required`, `pattern`, `enum`, etc)
 - Built-in formats (eg `integer`, `number`, `boolean`, etc)
@@ -189,6 +191,10 @@ export default class MyApp extends Component {
 
 ### Form Component
 
+```jsx
+import { Form } from 'react-form-mobx';
+```
+
 Form component, just like HTML `form` component.
 
 #### Props
@@ -206,7 +212,11 @@ Form component, just like HTML `form` component.
 
 ### Input Components
 
-These Input Components mean `Input`, `Checkbox`, `Radio`, `Select` or other custom input components created by `Demon`.
+```jsx
+import { Input, Checkbox, Radio, Select, TextArea } from 'react-form-mobx';
+```
+
+These Input Components mean `Input`, `Checkbox`, `Radio`, `Select`, `TextArea` or other custom input components created by `Demon`.
 
 #### Props
 
@@ -230,9 +240,13 @@ These Input Components mean `Input`, `Checkbox`, `Radio`, `Select` or other cust
 | outputFilter     | Defines a filter function will be called when getting output value from form | Function                                               |         |
 | enforceSubmit    | Indicates whether to submit if the field is empty                            | Boolean                                                | `false` |
 
-The rest of the props of Input are exactly the same as the original [input](https://reactjs.org/docs/events.html#supported-events).
+The rest of the props are exactly the same as the original [DOM attributes](https://reactjs.org/docs/dom-elements.html#all-supported-html-attributes).
 
 ### ObjectOf Component
+
+```jsx
+import { ObjectOf } from 'react-form-mobx';
+```
 
 `ObjectOf` component provides nested fields.
 
@@ -247,6 +261,10 @@ The rest of the props of Input are exactly the same as the original [input](http
 | outputFilter | Defines a filter function will be called when getting output value from form | Function          |         |
 
 ### ArrayOf Component
+
+```jsx
+import { ArrayOf } from 'react-form-mobx';
+```
 
 `ArrayOf` component provides array fields, and could be push, update or remove easily.
 
@@ -264,15 +282,37 @@ The rest of the props of Input are exactly the same as the original [input](http
 
 If `children` prop is a callback renderer function, it will provide two arguments:
 
-1. `names` \<Array\>: An array of unique names that could be used as the `key` and `name` props of chidren components
-2. `helper` \<Object\>: A helper object to manipulate the array:
-  - `push()` \<Function\>: To push a new item
-  - `remove(name)` \<Function\>: To remove a item by `name`
-  - `removeBy(name)` \<Function\>: To create and return a `remove(name)` currying function
+- `names` \<Array\>: An array of unique names that could be used as the `key` and `name` props of chidren components
+- `helper` \<Object\>: A helper object to manipulate the array:
+  * `push()` \<Function\>: To push a new item
+  * `remove(name)` \<Function\>: To remove a item by `name`
+  * `removeBy(name)` \<Function\>: To create and return a `remove(name)` currying function
 
 Please checkout [Dynamic Array Items](#dynamic-array-items) for usage example.
 
+### Submit, Reset, Clear Component
+
+```jsx
+import { Submit, Reset, Clear } from 'react-form-mobx';
+```
+
+- Submit: just like HTML `button` component. Will emit `onSubmit()` in `Form` when click.
+- Reset: just like HTML `button` component. Will reset all input values to pristine values in `Form` when click
+- Clear: just like HTML `button` component. Will clear all input values in `Form` when click.
+
+#### Props
+
+| Property | Description | Type | Default |
+| -------- | ----------- | ---- | ------- |
+| children | children    | Node |         |
+
+The rest of the props are exactly the same as the original [DOM attributes](https://reactjs.org/docs/dom-elements.html#all-supported-html-attributes).
+
 ### Demon Component
+
+```jsx
+import { Demon } from 'react-form-mobx';
+```
 
 `Demon` component is the core of creating custom input components.
 
@@ -295,12 +335,13 @@ Please checkout [Dynamic Array Items](#dynamic-array-items) for usage example.
 
 `children` prop provides two arguments:
 
-1. `forwardedProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `pattern` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...forwardedProps} />`)
-2. `validState` \<Object\>: Valid state helper object, including:
-  - `errorMessage` \<String\>: Error message. Would be empty if the status is valid
-  - `isValid` \<Boolean\>: Would be true if the status is valid
-  - `isInvalid` \<Boolean\>: Would be true if the status is invalid
-  - `isTouched` \<Boolean\>: Is touched or not. Useful if you don't want to show `errorMessage` when field is not touched
+- `proxiedProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `pattern` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...proxiedProps} />`)
+
+- `validState` \<Object\>: Valid state helper object, including:
+  * `errorMessage` \<String\>: Error message. Would be empty if the status is valid
+  * `isValid` \<Boolean\>: Would be true if the status is valid
+  * `isInvalid` \<Boolean\>: Would be true if the status is invalid
+  * `isTouched` \<Boolean\>: Is touched or not. Useful if you don't want to show `errorMessage` when field is not touched
 
 #### Proxied Props
 
@@ -311,6 +352,30 @@ By default, `onChange`, `onKeyPress`, `onBlur` props will be proxied.
 - `onBlur`: `Demon` need to listen to the `blur` event to set `isTouched` to `true`
 
 Please checkout [Creating Custom Input Component](#creating-custom-input-component) for usage example.
+
+### DemonButton Component
+
+```jsx
+import { DemonButton } from 'react-form-mobx';
+```
+
+`DemonButton` component is the core of creating custom button (Submit, Reset or Clear) components.
+
+#### Props
+
+| Property                | Description                                                        | Type                 | Default        |
+| ----------------------- | ------------------------------------------------------------------ | -------------------- | -------------- |
+| children                | Function child that should return a node                           | Function `Required`  |                |
+| type                    | Button type                                                        | submit, reset, clear | 'submit'       |
+| forwardedProps          | Forward props, `DemonButton` will decide to handle or forward them | Object               | `{}`           |
+| getKeyFromKeyPressEvent | Defines a function to get `key` in `onPress` arguments             | Function             | (ev) => ev.key |
+| propOnKeyPress          | Defines the prop name of key press event                           | String               | onKeyPress     |
+
+#### Function Child
+
+`children` prop provides one argument:
+
+- `proxiedProps` \<Object\>: Forwarded props object. Can be directly pass to child component (like `<button {...proxiedProps} type="button" />`)
 
 ## License
 
