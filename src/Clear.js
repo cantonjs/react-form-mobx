@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { MaybePureComponent } from './utils';
 import DemonButton from './DemonButton';
 
-export default class Clear extends Component {
+export default class Clear extends MaybePureComponent {
 	render() {
 		return (
 			<DemonButton forwardedProps={this.props} type="clear">

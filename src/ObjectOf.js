@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { MaybePureComponent } from './utils';
 import PropTypes from 'prop-types';
 import Demon from './Demon';
 
-export default class ObjectOf extends Component {
+export default class ObjectOf extends MaybePureComponent {
 	static propTypes = {
 		children: PropTypes.node,
 		name: PropTypes.string.isRequired,

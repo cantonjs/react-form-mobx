@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { MaybePureComponent } from './utils';
 import Demon from './Demon';
 
-export default class Select extends Component {
+export default class Select extends MaybePureComponent {
 	componentDidMount() {
 		this.demon.setValue(this.node.value);
 	}

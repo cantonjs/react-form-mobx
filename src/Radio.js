@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { MaybePureComponent } from './utils';
 import Demon from './Demon';
 
-export default class Radio extends Component {
+export default class Radio extends MaybePureComponent {
 	render() {
 		return (
 			<Demon forwardedProps={this.props} checkable isRadio>

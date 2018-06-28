@@ -1,3 +1,4 @@
+import { Component, PureComponent } from 'react';
 import { isObservableArray } from 'mobx';
 import warning from 'warning';
 
@@ -8,6 +9,9 @@ const pad = function pad(target, length, fillString, calc) {
 	while (prev.length < length) prev = calc(prev);
 	return prev;
 };
+
+export const MaybePureComponent =
+	PureComponent || /* istanbul ignore next */ Component;
 
 export const noop = () => {};
 

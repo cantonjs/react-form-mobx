@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { MaybePureComponent } from './utils';
 import Demon from './Demon';
 
-export default class Checkbox extends Component {
+export default class Checkbox extends MaybePureComponent {
 	render() {
 		return (
 			<Demon forwardedProps={this.props} checkable>
