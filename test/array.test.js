@@ -18,18 +18,6 @@ describe('ArrayOf component with function children', () => {
 		expect(formRef.current.submit()).toEqual({ foo: ['bar', 'baz'] });
 	});
 
-	test('should not submit empty array', () => {
-		const formRef = createRef();
-		mount(
-			<Form ref={formRef}>
-				<ArrayOf name="foo">
-					{(list) => list.map((id) => <Input key={id} name={id} />)}
-				</ArrayOf>
-			</Form>,
-		);
-		expect(formRef.current.submit()).toEqual({});
-	});
-
 	test('should nested array work', () => {
 		const formRef = createRef();
 		const value = { hello: [['foo', 'bar'], ['baz', 'qux']] };

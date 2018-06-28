@@ -259,7 +259,10 @@ export default class PrimitiveStore {
 	}
 
 	shouldIgnore(value) {
-		if (this._enforceSubmit || !this.isPristineValueEmpty) return false;
+		const enforce = this._enforceSubmit;
+		if (enforce === true || (enforce !== false && !this.isPristineValueEmpty)) {
+			return false;
+		}
 		if (isArray(value)) return !value.length;
 		if (isPlainObject(value)) return !Object.keys(value).length;
 		return isEmpty(value);

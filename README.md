@@ -220,25 +220,25 @@ These Input Components mean `Input`, `Checkbox`, `Radio`, `Select`, `TextArea` o
 
 #### Props
 
-| Property         | Description                                                                  | Type                                                   | Default |
-| ---------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ | ------- |
-| name             | Field name                                                                   | String `Required`                                      |         |
-| defaultValue     | Default value when value is empty                                            | Any                                                    |         |
-| defaultChecked   | Default checked, only work in checkable components (eg: `Checkbox`, `Radio`) | Boolean                                                |         |
-| format           | Data format                                                                  | integer, number, string, boolean, date, time, dateTime |         |
-| required         | Indicates whether field is required                                          | Boolean                                                | `false` |
-| enum             | Validate a value from a list of possible values                              | Array of `String`                                      | `[]`    |
-| pattern          | Validate from a regular expression                                           | RegExp                                                 |         |
-| maxLength        | Validate a max length of the field                                           | Number                                                 |         |
-| minLength        | Validate a min length of the field                                           | Number                                                 |         |
-| maximum          | Validate if the field is less than or exactly equal to "maximum"             | Number                                                 |         |
-| exclusiveMaximum | Validate if the field is less than (not equal to) "exclusiveMaximum"         | Number                                                 |         |
-| minimum          | Validate if the field is greater than or exactly equal to "minimum"          | Number                                                 |         |
-| exclusiveMinimum | Validate if the field is greater than or exactly equal to "exclusiveMinimum" | Number                                                 |         |
-| validation       | Defines a validator function, should throw error if invalid                  | Function                                               |         |
-| inputFilter      | Defines a filter function will be called when providing a new value to form  | Function                                               |         |
-| outputFilter     | Defines a filter function will be called when getting output value from form | Function                                               |         |
-| enforceSubmit    | Indicates whether to submit if the field is empty                            | Boolean                                                | `false` |
+| Property         | Description                                                                  | Type                                                                 | Default |
+| ---------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------- |
+| name             | Field name                                                                   | String `Required`                                                    |         |
+| defaultValue     | Default value when value is empty                                            | Any                                                                  |         |
+| defaultChecked   | Default checked, only work in checkable components (eg: `Checkbox`, `Radio`) | Boolean                                                              |         |
+| format           | Data format                                                                  | "integer", "number", "string", "boolean", "date", "time", "dateTime" |         |
+| required         | Indicates whether field is required                                          | Boolean                                                              | `false` |
+| enum             | Validate a value from a list of possible values                              | Array of `String`                                                    | `[]`    |
+| pattern          | Validate from a regular expression                                           | RegExp                                                               |         |
+| maxLength        | Validate a max length of the field                                           | Number                                                               |         |
+| minLength        | Validate a min length of the field                                           | Number                                                               |         |
+| maximum          | Validate if the field is less than or exactly equal to "maximum"             | Number                                                               |         |
+| exclusiveMaximum | Validate if the field is less than (not equal to) "exclusiveMaximum"         | Number                                                               |         |
+| minimum          | Validate if the field is greater than or exactly equal to "minimum"          | Number                                                               |         |
+| exclusiveMinimum | Validate if the field is greater than or exactly equal to "exclusiveMinimum" | Number                                                               |         |
+| validation       | Defines a validator function, should throw error if invalid                  | Function                                                             |         |
+| inputFilter      | Defines a filter function will be called when providing a new value to form  | Function                                                             |         |
+| outputFilter     | Defines a filter function will be called when getting output value from form | Function                                                             |         |
+| enforceSubmit    | Indicates whether to submit if the field is empty                            | Boolean                                                              | `false` |
 
 The rest of the props are exactly the same as the original [DOM attributes](https://reactjs.org/docs/dom-elements.html#all-supported-html-attributes).
 
@@ -296,9 +296,9 @@ Please checkout [Dynamic Array Items](#dynamic-array-items) for usage example.
 import { Submit, Reset, Clear } from 'react-form-mobx';
 ```
 
-- Submit: just like HTML `button` component. Will emit `onSubmit()` in `Form` when click.
-- Reset: just like HTML `button` component. Will reset all input values to pristine values in `Form` when click
-- Clear: just like HTML `button` component. Will clear all input values in `Form` when click.
+- `Submit`: Just like HTML `button` component. Will emit `onSubmit()` in `Form` when click.
+- `Reset`: Just like HTML `button` component. Will reset all input values to pristine values in `Form` when click
+- `Clear`: Just like HTML `button` component. Will clear all input values in `Form` when click.
 
 #### Props
 
@@ -318,24 +318,24 @@ import { Demon } from 'react-form-mobx';
 
 #### Props
 
-| Property                  | Description                                                  | Type                | Default                          |
-| ------------------------- | ------------------------------------------------------------ | ------------------- | -------------------------------- |
-| name                      | Field name                                                   | String `Required`   |                                  |
-| children                  | Function child that should return a node                     | Function `Required` |                                  |
-| forwardedProps            | Forward props, `Demon` will decide to handle or forward them | Object              | `{}`                             |
-| checkable                 | Indicates whether the component is checkable                 | Boolean             | `false`                          |
-| getValueFromChangeEvent   | Defines a function to get `value` in `onChange` arguments    | Function            | (ev) => ev.currentTarget.value   |
-| getCheckedFromChangeEvent | Defines a function to get `checked` in `onChange` arguments  | Function            | (ev) => ev.currentTarget.checked |
-| getKeyFromKeyPressEvent   | Defines a function to get `key` in `onPress` arguments       | Function            | (ev) => ev.key                   |
-| propOnChange              | Defines the prop name of change event                        | String              | onChange                         |
-| propOnKeyPress            | Defines the prop name of key press event                     | String              | onKeyPress                       |
-| propOnBlur                | Defines the prop name of blur event                          | String              | onBlur                           |
+| Property                  | Description                                                  | Type                | Default                            |
+| ------------------------- | ------------------------------------------------------------ | ------------------- | ---------------------------------- |
+| name                      | Field name                                                   | String `Required`   |                                    |
+| children                  | Function child that should return a node                     | Function `Required` |                                    |
+| forwardedProps            | Forward props, `Demon` will decide to handle or forward them | Object              | `{}`                               |
+| checkable                 | Indicates whether the component is checkable                 | Boolean             | `false`                            |
+| getValueFromChangeEvent   | Defines a function to get `value` in `onChange` arguments    | Function            | `(ev) => ev.currentTarget.value`   |
+| getCheckedFromChangeEvent | Defines a function to get `checked` in `onChange` arguments  | Function            | `(ev) => ev.currentTarget.checked` |
+| getKeyFromKeyPressEvent   | Defines a function to get `key` in `onPress` arguments       | Function            | `(ev) => ev.key`                   |
+| propOnChange              | Defines the prop name of change event                        | String              | "onChange"                         |
+| propOnKeyPress            | Defines the prop name of key press event                     | String              | "onKeyPress"                       |
+| propOnBlur                | Defines the prop name of blur event                          | String              | "onBlur"                           |
 
 #### Function Child
 
 `children` prop provides two arguments:
 
-- `proxiedProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `pattern` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...proxiedProps} />`)
+- `proxyProps` \<Object\>: Forwarded props object including `value` or `checked`, but excluding `name`, `format`, `enum` and other props only work in `Demon` component. Can be directly pass to child component (like `<input {...proxyProps} />`)
 
 - `validState` \<Object\>: Valid state helper object, including:
   * `errorMessage` \<String\>: Error message. Would be empty if the status is valid
@@ -363,19 +363,19 @@ import { DemonButton } from 'react-form-mobx';
 
 #### Props
 
-| Property                | Description                                                        | Type                 | Default        |
-| ----------------------- | ------------------------------------------------------------------ | -------------------- | -------------- |
-| children                | Function child that should return a node                           | Function `Required`  |                |
-| type                    | Button type                                                        | submit, reset, clear | 'submit'       |
-| forwardedProps          | Forward props, `DemonButton` will decide to handle or forward them | Object               | `{}`           |
-| getKeyFromKeyPressEvent | Defines a function to get `key` in `onPress` arguments             | Function             | (ev) => ev.key |
-| propOnKeyPress          | Defines the prop name of key press event                           | String               | onKeyPress     |
+| Property                | Description                                                        | Type                       | Default          |
+| ----------------------- | ------------------------------------------------------------------ | -------------------------- | ---------------- |
+| children                | Function child that should return a node                           | Function `Required`        |                  |
+| type                    | Button type                                                        | "submit", "reset", "clear" | "submit"         |
+| forwardedProps          | Forward props, `DemonButton` will decide to handle or forward them | Object                     | `{}`             |
+| getKeyFromKeyPressEvent | Defines a function to get `key` in `onPress` arguments             | Function                   | `(ev) => ev.key` |
+| propOnKeyPress          | Defines the prop name of key press event                           | String                     | "onKeyPress"     |
 
 #### Function Child
 
 `children` prop provides one argument:
 
-- `proxiedProps` \<Object\>: Forwarded props object. Can be directly pass to child component (like `<button {...proxiedProps} type="button" />`)
+- `proxyProps` \<Object\>: Forwarded props object. Can be directly pass to child component (like `<button {...proxyProps} type="button" />`)
 
 ## License
 

@@ -27,7 +27,7 @@ export default class Demon extends Component {
 			preFormat: PropTypes.func,
 			format: PropTypes.oneOf(FormatTypesKeys),
 			formatFunc: PropTypes.func,
-			enforceSubmit: PropTypes.bool,
+			enforceSubmit: PropTypes.oneOf(['auto', true, false]),
 
 			enum: PropTypes.array,
 			pattern: PropTypes.instanceOf(RegExp),
@@ -194,7 +194,6 @@ export default class Demon extends Component {
 					formatFunc,
 					enforceSubmit,
 					enum: enumeration,
-					pattern,
 					maxLength,
 					minLength,
 					maximum,
