@@ -7,6 +7,7 @@ export Clear from './Clear';
 export ObjectOf from './ObjectOf';
 export ArrayOf from './ArrayOf';
 export Input from './Input';
+export TextArea from './TextArea';
 export Checkbox from './Checkbox';
 export Radio from './Radio';
 export Select from './Select';
