@@ -84,5 +84,10 @@ export default class FormStore extends ObjectStore {
 		return pristineValue;
 	};
 
-	@action clear = () => (this.pristineValue = {});
+	@action
+	clear = () => {
+		const pristineValue = (this.pristineValue = {});
+		this.touch();
+		return pristineValue;
+	};
 }

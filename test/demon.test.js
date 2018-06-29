@@ -194,6 +194,22 @@ describe('isTouched', () => {
 			expect.objectContaining({ isTouched: false }),
 		);
 	});
+
+	test('should `isTouched` be true after form.clear()', () => {
+		const value = { hello: 'world' };
+		const formRef = createRef();
+		const children = jest.fn((props) => <input {...props} />);
+		mount(
+			<Form value={value} ref={formRef}>
+				<Demon forwardedProps={{ name: 'hello' }}>{children}</Demon>
+			</Form>,
+		);
+		formRef.current.clear();
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: true }),
+		);
+	});
 });
 
 describe('isValid', () => {
