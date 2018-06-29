@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  font: 14px/1.5 -apple-system, "Avenir Next", "helvetica neue", "helvetica",
+    "arial";
+}
+
+.console {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 40px;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+}
+
+.form {
+  flex: 1 1 auto;
+  padding: 50px;
+}
+
+.input {
+  margin: 6px 0;
+}
+
+.label {
+  display: inline-block;
+  width: 80px;
+}
+
+.array {
+  margin: 16px 0;
+}
+
+.array .input {
+  margin: 4px 0;
+}
+
+.actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #ddd;
+}

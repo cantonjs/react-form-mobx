@@ -32,6 +32,11 @@ module.exports = (webpackEnv = {}) => {
 						babelrc: false,
 					},
 				},
+				{
+					test: /\.css$/,
+					include: [demoDir],
+					loaders: ['style-loader', 'css-loader'],
+				},
 			],
 		},
 		plugins: [

@@ -19,9 +19,9 @@ export default class Input extends Component {
 					{ display, label, ...other },
 					{ isTouched, isInvalid, errorMessage },
 				) => (
-					<div style={{ margin: '1em', display }}>
+					<div className="input" style={{ display }}>
 						<label>
-							<span>{label}</span>
+							<span className="label">{label}</span>
 							<input {...other} />
 							{isTouched &&
 								isInvalid && (
