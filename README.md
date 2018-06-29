@@ -16,6 +16,7 @@ Declarative Form components for [React](https://reactjs.org/), built on top of [
 - [Philosophy](#philosophy)
   - [Features Included](#features-included)
   - [Features NOT Included](#features-not-included)
+- [Live Demo](#live-demo)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
   - [Usage](#usage)
@@ -49,6 +50,10 @@ Declarative, just like React and HTML
 
 - No styles, just the original appearance, but you could add style easily
 - No HTTP requests, but you could choose any HTTP request library you like
+
+## Live Demo
+
+[Live demo on codesandbox](https://codesandbox.io/s/52v7y2v304)
 
 ## Getting Started
 
