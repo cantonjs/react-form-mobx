@@ -47,6 +47,9 @@ module.exports = (webpackEnv = {}) => {
 		resolve: {
 			modules: [srcDir, 'node_modules'],
 			extensions: ['.js'],
+			alias: {
+				'react-form-mobx': srcDir,
+			},
 		},
 		resolveLoader: {
 			moduleExtensions: ['-loader'],

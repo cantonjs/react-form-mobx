@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Submit, Clear, ObjectOf, ArrayOf } from '../src';
+import { Form, Submit, Clear, ObjectOf, ArrayOf } from 'react-form-mobx';
 import Input from './Input';
 import Console from './Console';
+import GithubCorner from 'react-github-corner';
+
+const projectURL = 'https://github.com/cantonjs/react-form-mobx';
 
 export default class App extends Component {
 	state = {
@@ -38,6 +41,7 @@ export default class App extends Component {
 		const { data, isValid } = this.state;
 		return (
 			<div className="container">
+				<GithubCorner href={projectURL} />
 				<Console className="console" data={data} />
 				<Form
 					className="form"
