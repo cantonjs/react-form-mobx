@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import { Form, Demon } from '../src';
 import { mount, unmount, simulate } from './utils';
-import { observable, isObservableArray } from 'mobx';
+import { observable } from 'mobx';
 
 afterEach(unmount);
 
@@ -43,7 +43,7 @@ describe('Demon component', () => {
 		);
 		demonRef.current.setValue(observable(['foo', 'bar']));
 		const lastCall = children.mock.calls[children.mock.calls.length - 1];
-		expect(isObservableArray(lastCall[0].value)).toBe(false);
+		expect(Array.isArray(lastCall[0].value)).toBe(true);
 	});
 });
 
