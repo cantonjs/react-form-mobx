@@ -146,6 +146,23 @@ describe('isTouched', () => {
 		);
 	});
 
+	test('should `isTouched` be true after typed and invalid', () => {
+		const inputRef = createRef();
+		const children = jest.fn((props) => <input {...props} ref={inputRef} />);
+		mount(
+			<Form>
+				<Demon forwardedProps={{ name: 'hello', required: true }}>
+					{children}
+				</Demon>
+			</Form>,
+		);
+		simulate(inputRef).change('value', '');
+		expect(children).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.objectContaining({ isTouched: true }),
+		);
+	});
+
 	test('should `isTouched` be true after submitted', () => {
 		const formRef = createRef();
 		const children = jest.fn((props) => <input {...props} />);

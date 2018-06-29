@@ -251,8 +251,8 @@ export default class PrimitiveStore {
 	@action
 	emitChange() {
 		this._try(() => {
-			this._validation.exec(this.value);
 			this.isTouched = true;
+			this._validation.exec(this.value);
 			this.errorMessage = '';
 			this.parentStore.change(this);
 		});
