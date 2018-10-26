@@ -11,14 +11,8 @@ export default class FormStore extends ObjectStore {
 			key: '<FORM>',
 		});
 
-		const { submit, clear, reset, change } = options;
-		this.bus = {
-			...this.bus,
-			submit,
-			change,
-			clear,
-			reset,
-		};
+		const { submit, change } = options;
+		this.bus = { ...this.bus, submit, change };
 	}
 
 	@action
