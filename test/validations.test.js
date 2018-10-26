@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { Form, Input } from '../src';
+import { Form, ObjectOf, Input } from '../src';
 import { mount, unmount, simulate } from './utils';
 
 afterEach(unmount);
@@ -28,6 +28,21 @@ describe('Form validation event props', () => {
 			</Form>,
 		);
 		simulate(inputRef).change('value', '');
+		expect(invalidHandler).toHaveBeenCalledTimes(1);
+	});
+
+	test('should trigger onInvalid if nested input invalid', () => {
+		const invalidHandler = jest.fn();
+		const inputRef = createRef();
+		const value = { foo: { bar: 'bar' } };
+		mount(
+			<Form value={value} onInvalid={invalidHandler}>
+				<ObjectOf name="foo">
+					<Input name="bar" enum={['foo', 'bar']} ref={inputRef} />
+				</ObjectOf>
+			</Form>,
+		);
+		simulate(inputRef).change('value', 'baz');
 		expect(invalidHandler).toHaveBeenCalledTimes(1);
 	});
 });

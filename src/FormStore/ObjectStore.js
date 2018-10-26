@@ -121,4 +121,14 @@ export default class ObjectStore extends PrimitiveStore {
 			delete ev.key;
 		});
 	};
+
+	setReason = (reason) => {
+		if (this.parentStore) {
+			const { key } = reason;
+			this.parentStore.setReason({
+				...reason,
+				key: `${this.key}.${key}`,
+			});
+		}
+	};
 }

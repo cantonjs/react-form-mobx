@@ -12,7 +12,12 @@ export default class FormStore extends ObjectStore {
 		});
 
 		const { submit, change } = options;
-		this.bus = { ...this.bus, submit, change };
+		this.errorReason = {};
+		this.bus = {
+			...this.bus,
+			submit,
+			change,
+		};
 	}
 
 	@action
@@ -83,5 +88,9 @@ export default class FormStore extends ObjectStore {
 		const pristineValue = (this.pristineValue = {});
 		this.touch();
 		return pristineValue;
+	};
+
+	setReason = (reason) => {
+		this.reason = reason;
 	};
 }

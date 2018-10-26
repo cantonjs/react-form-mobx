@@ -58,7 +58,7 @@ export default class Form extends Component {
 				/* istanbul ignore else */
 				if (type === 'update') {
 					onValidChange(newValue);
-					newValue ? onValid() : onInvalid();
+					newValue ? onValid() : onInvalid(formStore.reason);
 				}
 			},
 		);

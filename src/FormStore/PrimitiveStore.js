@@ -188,6 +188,11 @@ export default class PrimitiveStore {
 			return runInAction(fn);
 		}
 		catch (error) {
+			if (this.parentStore) {
+				const { value } = this._actual;
+				const { key } = this;
+				this.parentStore.setReason({ key, value });
+			}
 			this.errorMessage = error.message || 'Invalid';
 		}
 	}
